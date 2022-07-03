@@ -34,6 +34,8 @@
             android:layout_width="320dp"
             android:layout_height="50dp"
             android:layout_marginLeft="30dp"
+            android:completionHint="@string/find_course_here"
+            android:completionThreshold="1"
             android:hint="@string/find_course_here"
             tools:layout_conversion_absoluteHeight="50dp"
             tools:layout_conversion_absoluteWidth="262dp"

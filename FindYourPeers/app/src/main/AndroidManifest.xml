@@ -4,6 +4,7 @@
     package="com.example.findyourpeers">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -16,6 +17,9 @@
         android:theme="@style/Theme.FindYourPeers"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ProfilePage"
+            android:exported="false" />
         <activity
             android:name=".BrowseCourse"
             android:exported="false" />

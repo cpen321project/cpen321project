@@ -3,10 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/drawable/ic_user_gray_24dp.xml" value="0.105" />
-        <entry key="app/src/main/res/layout/activity_browse_course.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_create_profile.xml" value="0.24592391304347827" />
+        <entry key="app/src/main/res/layout/activity_browse_course.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/activity_create_profile.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/activity_profile_page.xml" value="0.19610507246376813" />
       </map>
     </option>
   </component>

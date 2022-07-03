@@ -6,6 +6,7 @@
     <string name="displayname_title">Display Name</string>
     <string name="coop_title">Currently on Co-op</string>
     <string name="yearstanding_title">Year Standing</string>
+    <string name="my_profile">My Profile</string>
     <string-array name="year_standing">
         <item>1</item>
         <item>2</item>
