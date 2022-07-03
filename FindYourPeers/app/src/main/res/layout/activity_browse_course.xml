@@ -57,11 +57,18 @@
         android:id="@+id/addcourse_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/ubc_darkblue"
+        android:backgroundTint="@color/ubc_lightblue"
         android:text="Add Course"
         tools:layout_conversion_absoluteHeight="48dp"
         tools:layout_conversion_absoluteWidth="129dp"
         tools:layout_editor_absoluteX="141dp"
         tools:layout_editor_absoluteY="463dp" />
+
+    <Button
+        android:id="@+id/get_back_profile_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/ubc_darkblue"
+        android:text="Get My Profile" />
 
 </LinearLayout>

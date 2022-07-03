@@ -41,6 +41,7 @@ public class BrowseCourse extends AppCompatActivity {
         AutoCompleteTextView actvCourse = (AutoCompleteTextView) findViewById(R.id.autocompletecourse);
         ImageView dropDownButton = findViewById(R.id.dropdown_button);
         Button addCourseButton = findViewById(R.id.addcourse_button);
+        Button getProfileBackBtn = findViewById(R.id.get_back_profile_button);
 
         ArrayList<String> courseList = new ArrayList<>();
         String urlcourse = "https://ubcexplorer.io/getAllCourses";
@@ -87,6 +88,14 @@ public class BrowseCourse extends AppCompatActivity {
             }
         });
 
+        getProfileBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent displayProfileBackIntent = new Intent(BrowseCourse.this, ProfilePage.class);
+                displayProfileBackIntent.putExtra("userID", userID);
+                startActivity(displayProfileBackIntent);
+            }
+        });
 
     }
 

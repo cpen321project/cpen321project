@@ -7,6 +7,10 @@
         <entry key="app/src/main/res/layout/activity_create_profile.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/activity_profile_page.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/activity_student_list_page.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/activity_view_other_profile.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/coursename_buttons_layout.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/studentname_button_layout.xml" value="0.19610507246376813" />
       </map>
     </option>
   </component>
