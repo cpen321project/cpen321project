@@ -44,6 +44,8 @@ public class BrowseCourse extends AppCompatActivity {
         Button getProfileBackBtn = findViewById(R.id.get_back_profile_button);
 
         ArrayList<String> courseList = new ArrayList<>();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlcourse = "https://ubcexplorer.io/getAllCourses";
         JsonArrayRequest requestCourse = new JsonArrayRequest(Request.Method.GET, urlcourse, null, new Response.Listener<JSONArray>() {
             @Override
@@ -66,7 +68,8 @@ public class BrowseCourse extends AppCompatActivity {
             }
         }
         );
-        BrowseCourseSingleton.getInstance(BrowseCourse.this).addToRequestQueue(requestCourse);
+        //BrowseCourseSingleton.getInstance(BrowseCourse.this).addToRequestQueue(requestCourse);
+        requestQueue.add(requestCourse);
 
         ArrayAdapter<String> adapterCourse = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, courseList);
         actvCourse.setAdapter(adapterCourse);
@@ -83,8 +86,14 @@ public class BrowseCourse extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String inputCourse = actvCourse.getText().toString();
-                addCourseToUser(inputCourse);
-                addUserToCourse(inputCourse,displayName);
+                if(courseList.contains(inputCourse)){
+
+                    addCourseToUser(inputCourse);
+                    addUserToCourse(inputCourse,displayName);
+
+                }else{
+                    Toast.makeText(BrowseCourse.this, "No such course available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
