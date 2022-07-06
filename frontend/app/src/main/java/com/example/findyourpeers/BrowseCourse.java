@@ -86,14 +86,18 @@ public class BrowseCourse extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String inputCourse = actvCourse.getText().toString();
-                if(courseList.contains(inputCourse)){
+                addCourseToUser(inputCourse);
+                addUserToCourse(inputCourse,displayName);
+                Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
 
-                    addCourseToUser(inputCourse);
-                    addUserToCourse(inputCourse,displayName);
-
-                }else{
-                    Toast.makeText(BrowseCourse.this, "No such course available", Toast.LENGTH_SHORT).show();
-                }
+//                if(courseList.contains(inputCourse)){
+//
+//                    addCourseToUser(inputCourse);
+//                    addUserToCourse(inputCourse,displayName);
+//
+//                }else{
+//                    Toast.makeText(BrowseCourse.this, "No such course available", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
 
