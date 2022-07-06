@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk')
-const { retry } = require('statuses')
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
 const USERPOOLID = process.env.USERPOOLID
@@ -12,14 +11,10 @@ AWS.config.update({
 })
 const cognito = new AWS.CognitoIdentityServiceProvider({
     apiVersion: "2016-04-18",
-    maxRetries: 1
 })
 
-
-
-
 exports.createNewUser = async (email, password) => {
-    
+    count = 0
     const cognitoParams = {
         UserPoolId: USERPOOLID,
         Username: email,
@@ -32,29 +27,20 @@ exports.createNewUser = async (email, password) => {
             Value: "true",
         },
         ],
-        //generate temporary password consisting of alphanumeric and special characters
         TemporaryPassword: "FindYourPeersCS@gmail.com"
     }
-    cognito.adminCreateUser(cognitoParams, (err, res) => {
-        console.log("1")
-        console.log(err)
-        console.log("2")
-        console.log(res)
+    try {
+        await cognito.adminCreateUser(cognitoParams).promise()
+    }
+    catch (e) {
+        return e.code
+    }
 
-    }).promise().then(async () => {
-        await cognito.adminSetUserPassword({
-            "Password": password,
-            "Permanent": true,
-            "Username": email,
-            "UserPoolId": USERPOOLID
-        }, (err, res) => {
-            if (res) {
-                throw (new Error(err.code))
-            }
-        }).promise()
-    })
     
+    await cognito.adminSetUserPassword({
+        "Password": password,
+        "Permanent": true,
+        "Username": email,
+        "UserPoolId": USERPOOLID
+    }).promise()
 }
-
-exports.createNewUser("nancynagy66@gmail.com", "bhbGG1234???")
-
