@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Find Your Peers"
+rootProject.name = "FindYourPeers"
 include ':app'

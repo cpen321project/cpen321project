@@ -7,8 +7,19 @@ initializeApp({
     //databaseURL: 'https://<DATABASE_NAME>.firebaseio.com' dont think we need it at the moment
 });
 
-const { client } = require("./db/dbConnector.js");
-let dbUser, dbCourse, userCollection
+// const { client } = require("./db/dbConnector.js");
+// let dbUser, dbCourse, userCollection
+// dbUser = client.db("user")
+// dbCourse = client.db("course")
+// userCollection = dbUser.collection("userCollection")
+
+const {MongoClient} = require("mongodb")
+const uri = "mongodb://localhost:27017"
+const client = new MongoClient(uri)
+client.connect()
+
+let dbUser, userCollection
+
 dbUser = client.db("user")
 dbCourse = client.db("course")
 userCollection = dbUser.collection("userCollection")
@@ -94,19 +105,39 @@ module.exports = {
                     }
                 });
 
-
-
-
         }
 
         catch (err) {
-            console.log("for sending user added notification, the err:" + err)
+            console.log("For sending user added notification, the err:" + err)
             // res.status(400).send(err)
         }
 
 
 
 
+    },
+
+    newRegistrationToken : async (req,res) => {
+       try{
+        await userCollection.updateOne({userID: req.body.userID}, {$set: {registrationToken: req.body.registrationToken}})
+            if (err) {
+                console.error(err)
+                res.status(500).json({ err: err })
+                return
+            }
+            res.status(200).json({ok:true})
+            // resultstudent.forEach(student => {
+            //     if (student.userID != userID) {
+            //         userAddedNotification(student.userID, courseID)
+            //     }
+            // }
+            // )
+        }
+        catch (err) {
+            console.log("Could not update token for" + req.body.userID + " with the error " + err)
+            // res.status(400).send(err)
+        }
+       
     },
 
     // sendMessageNotification : (stff,stuff2) = {
