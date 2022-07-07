@@ -8,6 +8,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool({
     UserPoolId: USERPOOLID,
     ClientId: CLIENTID
 });
+
 //Update AWS configuration with the correct credentials and region
 AWS.config.update({
     credentials: {
@@ -21,6 +22,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
 })
 
 exports.signUserUp = async (email, password, username) => {
+    // Signs the user up and sends a confirmation code to the provided email
     const cognitoParams = {
         "ClientId": CLIENTID,
         "Password": password,
@@ -39,16 +41,17 @@ exports.signUserUp = async (email, password, username) => {
     })
 }
 
-exports.confrimSignUP = async (username, confirmationCode,) => {
+exports.confrimSignUP = async (username, confirmationCode) => {
+    // Changes the status of the user to CONFIRMED in AWS cognito
     const cognitoParams = {
         "ClientId": CLIENTID,
         "ConfirmationCode": confirmationCode,
-        "ForceAliasCreation": false,
         "Username": username
     }
     cognito.confirmSignUp(cognitoParams, (err, res) => {
         if (err) {
-            throw (err.code) // Example error codes: ExpiredCodeException (expired or incorrect), InvalidParameterType (invalid email)
+            console.log(err)
+            throw (err.code) // Example error codes: ExpiredCodeException (expired or incorrect or invalid username), InvalidParameterType (invalid email)
         }
         return res
     })
@@ -76,4 +79,17 @@ exports.login = async (username, password) => {
     })
 }
 
-exports.confrimSignUP("nancy.mak@ecoation.com", 304068)
+exports.resendConfrimationCode = async (username) => {
+    // Resened confirmation code in case the previous confirmation code was expired
+    cognitoParams = {
+        "ClientId": CLIENTID,
+        "Username": username
+    }
+    cognito.resendConfirmationCode(cognitoParams, (err, res) => {
+        if (err) {
+            console.log(err)
+            throw(err.code)
+        }
+        return res
+    })
+}
