@@ -44,13 +44,6 @@
         android:textColor="@color/ubc_darkblue"
         android:textSize="20sp" />
 
-    <LinearLayout
-        android:id="@+id/layout_button_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="10dp"></LinearLayout>
-
     <Button
         android:id="@+id/find_course_button"
         android:layout_width="match_parent"
@@ -59,4 +52,18 @@
         android:layout_marginEnd="40dp"
         android:backgroundTint="@color/ubc_lightblue"
         android:text="Find Course" />
+
+    <ScrollView
+        android:id="@+id/scroll_view_course_pp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_button_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"></LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
