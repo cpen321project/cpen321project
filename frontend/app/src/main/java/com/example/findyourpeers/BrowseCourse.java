@@ -31,6 +31,8 @@ import java.util.UUID;
 public class BrowseCourse extends AppCompatActivity {
 
     public String userID, displayName;
+    public ArrayList<String> studentCourseList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class BrowseCourse extends AppCompatActivity {
         Intent intentCourse = getIntent();
         userID = intentCourse.getExtras().getString("userID");
         displayName = intentCourse.getExtras().getString("displayName");
+        studentCourseList = (ArrayList<String>) intentCourse.getSerializableExtra("courselist");
 
         AutoCompleteTextView actvCourse = (AutoCompleteTextView) findViewById(R.id.autocompletecourse);
         ImageView dropDownButton = findViewById(R.id.dropdown_button);
@@ -98,9 +101,13 @@ public class BrowseCourse extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String inputCourse = actvCourse.getText().toString();
-                addCourseToUser(inputCourse);
-                addUserToCourse(inputCourse,displayName);
-                Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
+                if(studentCourseList.contains(inputCourse)){
+                    Toast.makeText(BrowseCourse.this, "Course has been added before", Toast.LENGTH_SHORT).show();
+                }else{
+                    addCourseToUser(inputCourse);
+                    addUserToCourse(inputCourse,displayName);
+                    Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
+                }
 
 //                if(courseList.contains(inputCourse)){
 //

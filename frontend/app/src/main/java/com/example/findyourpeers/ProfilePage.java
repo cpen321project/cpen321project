@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
@@ -41,6 +42,7 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
+        ArrayList<String> courseListAL = new ArrayList<>();
 
         layoutCourseButton = findViewById(R.id.layout_button_list);
 
@@ -78,6 +80,7 @@ public class ProfilePage extends AppCompatActivity {
                                     //courseArrayList.add(coursesJSONArray.getString(i));
                                     String courseNameSingle = coursesJSONArray.getString(i);
                                     addCourseButton(courseNameSingle, userID);
+                                    courseListAL.add(courseNameSingle);
                                 }
                             }
 
@@ -116,6 +119,7 @@ public class ProfilePage extends AppCompatActivity {
                 Intent browseCourseIntent = new Intent(ProfilePage.this, BrowseCourse.class);
                 browseCourseIntent.putExtra("userID", userID);
                 browseCourseIntent.putExtra("displayName", displayname);
+                browseCourseIntent.putExtra("courselist", courseListAL);
                 startActivity(browseCourseIntent);
             }
         });
