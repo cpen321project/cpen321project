@@ -106,6 +106,7 @@ public class BrowseCourse extends AppCompatActivity {
                 }else{
                     addCourseToUser(inputCourse);
                     addUserToCourse(inputCourse,displayName);
+                    studentCourseList.add(inputCourse);
                     Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
                 }
 
