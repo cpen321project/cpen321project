@@ -30,6 +30,7 @@ public class ViewOtherProfile extends AppCompatActivity {
     private Button messageButton, blockButton;
 
     private int isBlocked = 0;
+    private boolean otherUserIsBlockedAlready = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +69,11 @@ public class ViewOtherProfile extends AppCompatActivity {
                             otheryearstanding = student.getString("yearStanding");
                             JSONArray blockedUsersJSONArray= student.getJSONArray("blockedUser");
                             // check if this other user has blocked the current user
-                            for (int i = 0; i < blockedUsersJSONArray.length(); i++)
+                            for (int i = 0; i < blockedUsersJSONArray.length(); i++) {
                                 if (blockedUsersJSONArray.getString(i).equals(currentUserID)) {
                                     isBlocked = 1; // true
                                 }
+                            }
 
                             // Display the formatted json data in text view
                             otherDisplayNameTV.setText(otherdisplayname);
@@ -128,38 +130,85 @@ public class ViewOtherProfile extends AppCompatActivity {
                     Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    String url = "http://10.0.2.2:3010/block";
-                    JSONObject blockObj = new JSONObject();
-                    try {
-                        //input your API parameters
-                        blockObj.put("userID", currentUserID);
-                        blockObj.put("blockedUserAdd", userID);//the other user's id
-                        Log.d("viewOtherProfile:block", "userID: "+currentUserID);
-                        Log.d("viewOtherProfile:block", "blockedUserAdd: "+userID);
+                    String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID;
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
-                            url, blockObj,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    Toast.makeText(ViewOtherProfile.this,
-                                            "You will no longer receive messages from this user.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(ViewOtherProfile.this,
-                                    "Error: failed to block", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    requestQueue.add(jsonObjectRequest);
+                    JsonArrayRequest jsonArrayRequest2 =
+                            new JsonArrayRequest(Request.Method.GET, urlCurrentUser,null,
+                                    new Response.Listener<JSONArray>() {
+                                        @Override
+                                        public void onResponse(JSONArray response) {
+                                            try{
+                                                JSONObject student = response.getJSONObject(0);
+
+                                                JSONArray blockedUsers =
+                                                        student.getJSONArray("blockedUser");
+
+                                                // check current user already blocked the other user
+                                                for (int i = 0; i < blockedUsers.length(); i++) {
+                                                    if (blockedUsers.getString(i).equals(userID)) {
+                                                        otherUserIsBlockedAlready = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                if (otherUserIsBlockedAlready) {
+                                                    Toast.makeText(ViewOtherProfile.this,
+                                                            "You have already blocked this user.",
+                                                            Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    makeBlockUserRequest(currentUserID, userID, requestQueue);
+                                                }
+                                            }catch (JSONException e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    },
+                                    new Response.ErrorListener(){
+                                        @Override
+                                        public void onErrorResponse(VolleyError error){
+                                            Toast.makeText(ViewOtherProfile.this,
+                                                    "Request error: unable to block user", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                            );
+                    requestQueue.add(jsonArrayRequest2);
+
                 }
             }
         });
 
     }
+
+    private void makeBlockUserRequest(String currentUserID, String userID, RequestQueue requestQueue) {
+        String url = "http://10.0.2.2:3010/block";
+        JSONObject blockObj = new JSONObject();
+        try {
+            //input your API parameters
+            blockObj.put("userID", currentUserID);
+            blockObj.put("blockedUserAdd", userID);//the other user's id
+            Log.d("viewOtherProfile:block", "userID: "+currentUserID);
+            Log.d("viewOtherProfile:block", "blockedUserAdd: "+userID);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                url, blockObj,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(ViewOtherProfile.this,
+                                "You will no longer receive messages from this user.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ViewOtherProfile.this,
+                        "Error: failed to block", Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+    }
+
 }
