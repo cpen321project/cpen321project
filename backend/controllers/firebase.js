@@ -2,10 +2,10 @@
 
 const { initializeApp } = require('firebase-admin/app');
 
-initializeApp({
-    credential: applicationDefault(),
+const app = initializeApp();
+    // credential: applicationDefault(),
     //databaseURL: 'https://<DATABASE_NAME>.firebaseio.com' dont think we need it at the moment
-});
+
 
 // const { client } = require("./db/dbConnector.js");
 // let dbUser, dbCourse, userCollection
@@ -42,35 +42,14 @@ userCollection = dbUser.collection("userCollection")
 
 module.exports = {
     userAddedNotification: (userID, courseID) => {
-        // const db = admin.firestore();
-        // const userAddedNotification = {
-        //     userID: userID,
-        //     courseID: courseID,
-        //     notificationType: "userAdded"
-        // }
-        // db.collection('notifications').add(userAddedNotification)
-        // get registration number from user database and send notification to that number
-        // const registrationNumber = userDatabase.getRegistrationNumber(userID)
-        // sendMessageToFirebase(registrationNumber, "You have been added to a course", "You have been added to a course")
-        // registrationToken = userCollection.findOne({userID: userID}).registrationToken;
-
-        // get all users from course
-        // remove current user from list,
-        // send notification to all users in list 
 
         try {
-            await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, otherstudents) => {
+             dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, otherstudents) => {
                 if (err) {
                     console.error(err)
                     res.status(500).json({ err: err })
                     return
                 }
-                // resultstudent.forEach(student => {
-                //     if (student.userID != userID) {
-                //         userAddedNotification(student.userID, courseID)
-                //     }
-                // }
-                // )
             })
 
             otherstudents.remove(userID)
