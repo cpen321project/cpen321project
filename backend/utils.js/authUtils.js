@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+const { getMaxListeners } = require('../models/Message');
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
 const USERPOOLID = process.env.USERPOOLID
