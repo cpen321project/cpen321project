@@ -112,6 +112,7 @@ public class privateChatActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 }
+                                // notify adapter dataset changed
                                 chatBoxAdapter = new ChatBoxAdapter(MessageList);
                                 chatBoxAdapter.notifyDataSetChanged();
                                 myRecyclerView.setAdapter(chatBoxAdapter);
@@ -124,6 +125,7 @@ public class privateChatActivity extends AppCompatActivity {
                     }
                 });
 
+        // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
 
         // connect socket client to the server
@@ -137,7 +139,7 @@ public class privateChatActivity extends AppCompatActivity {
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Log.d("privateChatActivity", "Error connecting to socket");
+            Log.d("privateChatActivity", "Error connect to socket");
         }
 
         // send message action

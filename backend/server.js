@@ -13,6 +13,8 @@ const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server)
 
+const firebase  = require("./controllers/firebase.js")
+
 const port = "3010"
 
 const userStore = require('./controllers/userStore.js')
@@ -53,6 +55,9 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupID)
 // app.get('/getPrivateConversationByUserNames/:senderName/:receiverName', chatEngine.getPrivateConversationByUserNames)
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
+
+//route for firebase
+app.post("/newRegistrationToken", firebase.newRegistrationToken)
 
 let usersSockets = {}
 

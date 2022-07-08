@@ -52,6 +52,7 @@ module.exports ={
           userID: req.body.userID,
           coopStatus: req.body.coopStatus,
           yearStanding: req.body.yearStanding,
+          registrationToken: req.body.registrationToken,
           courselist: courselistarr,
           blockedUser: blockeruserarr
         },
