@@ -61,20 +61,22 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine
 app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupID)
-// app.get('/getPrivateConversationByUserNames/:senderName/:receiverName', chatEngine.getPrivateConversationByUserNames)
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
 
-//route for firebase
+// route for firebase
 app.post("/newRegistrationToken", firebase.newRegistrationToken)
 
 let usersSockets = {}
-
 // socketio connection - for real time sending and receiving messages
 io.on('connection', (socket) => {
     console.log('a user connected')
 
-    socket.on('joinGroupChat', function (groupID, displayName) {
-        console.log(displayName + " : joined at groupID : " + groupID)
+    // socket.on('joinGroupChat', function (groupID, displayName) {
+    //     console.log(displayName + " : joined at groupID : " + groupID)
+    //     socket.join(groupID)
+    // })
+    socket.on('joinGroupChat', function (groupID, userID) {
+        console.log(userID + " : joined at groupID : " + groupID)
         socket.join(groupID)
     })
 
@@ -143,7 +145,7 @@ io.on('connection', (socket) => {
             }
             console.log("-----------------End of privateMessage-----------------")
         } else {
-            console.log(receiverName + " has blocked " + senderName + " , can't send message")
+            console.log("Sender has been blocked, message not sent")
         }
     })
 

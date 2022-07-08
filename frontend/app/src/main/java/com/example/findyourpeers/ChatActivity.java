@@ -34,7 +34,7 @@ import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
     private Socket socket;
-    private String Nickname, groupID;
+    private String Nickname, groupID, userID;
 
     public RecyclerView myRecyclerView;
     public List<Message> MessageList;
@@ -49,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
 
         Nickname = getIntent().getExtras().getString("displayname");
         groupID = getIntent().getExtras().getString("coursename");
+        userID = getIntent().getExtras().getString("userID");
 
         //https://medium.com/@mohamedaymen.ourabi11/creating-a-realtime-chat-app-with-android-nodejs-and-socket-io-1050bc20c70
 
@@ -85,27 +86,10 @@ public class ChatActivity extends AppCompatActivity {
 //            });
 //        }
 
-        // actual name to be gotten from users module
-//        Nickname = CreateProfileActivity.strNicknameToSave;
-        // group message:
-        //(String)getIntent().getExtras().getString(CreateProfileActivity.nameField);
-
-        // actual groupID to be gotten from course module
-        // contains all "test msg"
-//        String groupID = "d7dc21aa72ee41c9a8ed247e4c5d915e";
-
-        // contains custom msgs
-//        String groupID = "testGroupID";
-//        String groupID = "newGroupID";
-
-        // wsl ip address
-//        String serverIP = "172.30.179.102";
-        // local ip address
-        String serverIP = "10.0.2.2";// "192.168.1.72";
+        String serverIP = "10.0.2.2";
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "http://172.30.179.102:3010/getConversationByGroupID/" + groupID;
         String url = "http://" + serverIP + ":3010/getConversationByGroupID/" + groupID;
 
         // Request a string response from the provided URL.
@@ -160,7 +144,8 @@ public class ChatActivity extends AppCompatActivity {
 
             socket.connect();
 
-            socket.emit("joinGroupChat", groupID, Nickname);
+//            socket.emit("joinGroupChat", groupID, Nickname);
+            socket.emit("joinGroupChat", groupID, userID);
             Log.d("ChatActivity", "Joining group chat: " + groupID);
 
         } catch (URISyntaxException e) {

@@ -1,4 +1,4 @@
-package com.example.FindYourPeers;
+package com.example.findyourpeers;
 
 import android.util.Log;
 import android.widget.Toast;

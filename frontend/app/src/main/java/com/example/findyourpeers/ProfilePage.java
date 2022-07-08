@@ -146,13 +146,11 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent chatIntent = new Intent(ProfilePage.this, ChatActivity.class);
-//                chatIntent.putExtra("currentUserID", userID);
                 chatIntent.putExtra("coursename", courseNameSingle); //groupid
+                chatIntent.putExtra("userID", userID); //userID
                 chatIntent.putExtra("displayname", displayname); //nickname
                 startActivity(chatIntent);
-//                deleteCoursefromUser(courseNameSingle, userID);
-//                deleteUserfromCourse(courseNameSingle, userID);
-//                removeView(courseButtonView);
+
             }
         });
 
