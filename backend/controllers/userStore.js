@@ -28,7 +28,7 @@ module.exports ={
       try {
           let username = req.body.username;
           let confirmationCode = req.body.confirmationCode;
-          authUtils.signUserUp(username,confirmationCode)
+          authUtils.confrimSignUP(username,confirmationCode)
           return res.status(200).json({ success: true})
       } catch (error) {
           console.log(error)
@@ -39,8 +39,8 @@ module.exports ={
 
    login: async (req, res) => {
       try {
-          let password = req.body.password;
           let username = req.body.username;
+          let password = req.body.password;
           authUtils.login(username, password)
           return res.status(200).json({ success: true})
       } catch (error) {
