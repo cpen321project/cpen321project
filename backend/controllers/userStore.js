@@ -75,8 +75,17 @@ module.exports ={
             }
             res.status(200).json({ ok: true })
         });
-    }
+    }, 
 
-
+    getDisplayNamebyUserID: async (userID) => {
+      try {
+        let retrievedUser = await userCollection.findOne({"userID": userID})
+        return retrievedUser.displayName
+      } catch (error) {
+          console.log(error)
+          return error
+      }
+      
+  }
 
 }

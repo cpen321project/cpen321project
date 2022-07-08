@@ -1,5 +1,6 @@
 const Message = require('../models/Message.js')
 const PrivateMessage = require('../models/PrivateMessage.js')
+const userStore = require('./userStore.js')
 
 module.exports = {
     // joinChat: async (req, res) => {
@@ -52,11 +53,13 @@ module.exports = {
             return res.status(500).json({ success: false, error })
         }
     }, 
-    savePrivateMessageToDB: (senderName, receiverName, messageContent) => {
+    savePrivateMessageToDB: (senderName, senderID, receiverName, receiverID, messageContent) => {
         let messageToSaveToDB = PrivateMessage(
             {
                 senderName: senderName,
+                senderID: senderID,
                 receiverName: receiverName,
+                receiverID: receiverID,
                 messageContent: messageContent
             }
         )
@@ -69,44 +72,49 @@ module.exports = {
             console.log("chatEngine: Private message saved to database")
         })
     }, 
-    getPrivateConversationByUserNames: async (req, res) => {
-        // console.log("trying to get convo")
+    getPrivateConversationByUserIDs: async (req, res) => {
         try {
-            const { senderName, receiverName } = req.params
-            console.log("chatEngine: getPrivateConversationByUserNames: " + senderName + " -> " + receiverName)
+            const { senderID, receiverID } = req.params
+            console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 
+            let senderName, receiverName
+            try {
+                senderName = await userStore.getDisplayNamebyUserID(senderID);
+                receiverName = await userStore.getDisplayNamebyUserID(receiverID);
+                console.log("senderName: " + senderName)
+                console.log("receiverName: " + receiverName)
+            } catch(err) {
+                console.log("err: " + err)
+            }
+            // senderName: u1231, senderID: dc330681-d48f-44aa-aabe-0764747bf27f
+            // receiverName: u853, receiverID: 618f69bb-0e4d-465e-913d-30936633714e
             PrivateMessage
                 .find({
                     $or: [
                         {
-                            'senderName': senderName, 
-                            'receiverName':  receiverName
+                            'senderID': senderID, 
+                            'receiverID':  receiverID
                         }, 
                         {
-                            'senderName': receiverName, 
-                            'receiverName':  senderName
+                            'senderID': receiverID, 
+                            'receiverID':  senderID
                         }
                     ]
                 })
-                // .find({ 
-                //     'senderName': senderName, 
-                //     'receiverName':  receiverName
-                // })
                 .select({ 
                     _id: 0,
-                    senderName: 1,
-                    receiverName: 1,
-                    messageContent: 1                
+                    senderID: 0,
+                    receiverID: 0,
                 }) 
                 .sort({ createdAt: 'asc' }) 
                 .exec((err, retrievedMsgs) => {
                     if (err) {
-                        console.log("chatEngine: Error in getPrivateConversationByUserNames: " + err)
+                        console.log("chatEngine: Error in getPrivateConversationByUserIDs: " + err)
                         return err
                     }
                     // console.log("chatEngine: retrievedConvo: " + retrievedMsgs)
                     return res.status(200).send({retrievedMsgs})
-                })            
+                })           
         } catch (error) {
             console.log(error)
             return res.status(500).json({ success: false, error })

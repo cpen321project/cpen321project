@@ -8,7 +8,9 @@ const privateMessageSchema = new mongoose.Schema(
             default: () => uuidv4().replace(/\-/g, ""),
         },
         senderName: String,
+        senderID: String,
         receiverName: String,
+        receiverID: String,
         messageContent: mongoose.Schema.Types.Mixed,
     },
     {

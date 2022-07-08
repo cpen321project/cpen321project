@@ -116,6 +116,8 @@ public class ViewOtherProfile extends AppCompatActivity {
                     privateChatIntent.putExtra("senderName", currentUserDisplayName);
                     privateChatIntent.putExtra("receiverName", otherdisplayname);
                     privateChatIntent.putExtra("isBlocked", isBlocked);
+                    privateChatIntent.putExtra("currentUserID", currentUserID);
+                    privateChatIntent.putExtra("userID", userID);
 
                     startActivity(privateChatIntent);
                 }

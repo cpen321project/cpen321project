@@ -34,10 +34,7 @@ import io.socket.emitter.Emitter;
 
 public class privateChatActivity extends AppCompatActivity {
     private Socket socket;
-    // enter Nickname = senderr for testing
-    private String senderName;
-
-//    private String receiverName = "receiverr";
+    private String senderName, receiverName, senderID, receiverID;
 
     // 1 = receiver has blocked sender
     private int isBlocked;// = 0;
@@ -58,13 +55,13 @@ public class privateChatActivity extends AppCompatActivity {
         Intent privateChatIntent = getIntent();
         isBlocked = privateChatIntent.getExtras().getInt("isBlocked");
 
-        String receiverName = privateChatIntent.getExtras().getString("receiverName");
-        senderName = getIntent().getExtras().
-                getString("senderName");
+        receiverName = privateChatIntent.getExtras().getString("receiverName");
+        senderName = privateChatIntent.getExtras().getString("senderName");
         Log.d("privateChatActivity", "senderName: " + senderName);
-
         Log.d("privateChatActivity", "receiverName: " + receiverName);
 
+        receiverID = privateChatIntent.getExtras().getString("userID");
+        senderID = privateChatIntent.getExtras().getString("currentUserID");
 
         messageTxt = (EditText) findViewById(R.id.message) ;
         send = (Button)findViewById(R.id.send);
@@ -78,26 +75,17 @@ public class privateChatActivity extends AppCompatActivity {
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
 
-        // actual name to be gotten from users module
-        // sender name, change
-//        senderName = CreateProfileActivity.strNicknameToSave;
-
-
-        String groupID = "newGroupID";
-
-        // wsl ip address
-//        String serverIP = "172.30.179.102";
-        // local ip address
-//        String serverIP = "192.168.1.72";
         String serverIP = "10.0.2.2";
 
-        // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = "http://172.30.179.102:3010/getConversationByGroupID/" + groupID;
-        String url = "http://" + serverIP + ":3010/getPrivateConversationByUserNames/"
-                + senderName + "/" + receiverName;
+        // getPrivateConversationByUserIDs
+//        String url = "http://" + serverIP + ":3010/getPrivateConversationByUserNames/"
+//                + senderName + "/" + receiverName;
 
-        // Request a string response from the provided URL.
+        String url = "http://" + serverIP + ":3010/getPrivateConversationByUserIDs/"
+                + senderID + "/" + receiverID;
+
+        // change to array request for clean up
         JsonObjectRequest jsonObjectRequest =
                 new JsonObjectRequest(Request.Method.GET, url, null,
                         new Response.Listener<JSONObject>() {
@@ -124,7 +112,6 @@ public class privateChatActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 }
-                                // notify adapter dataset changed
                                 chatBoxAdapter = new ChatBoxAdapter(MessageList);
                                 chatBoxAdapter.notifyDataSetChanged();
                                 myRecyclerView.setAdapter(chatBoxAdapter);
@@ -137,7 +124,6 @@ public class privateChatActivity extends AppCompatActivity {
                     }
                 });
 
-        // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
 
         // connect socket client to the server
@@ -151,7 +137,7 @@ public class privateChatActivity extends AppCompatActivity {
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Log.d("privateChatActivity", "Error connect to socket");
+            Log.d("privateChatActivity", "Error connecting to socket");
         }
 
         // send message action
@@ -166,8 +152,8 @@ public class privateChatActivity extends AppCompatActivity {
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
                     socket.emit("privateMessage",
-                            senderName,
-                            receiverName,
+                            senderID,
+                            receiverID,
                             messageTxt.getText().toString(),
                             isBlocked);
 

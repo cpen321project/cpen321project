@@ -51,7 +51,8 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine
 app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupID)
-app.get('/getPrivateConversationByUserNames/:senderName/:receiverName', chatEngine.getPrivateConversationByUserNames)
+// app.get('/getPrivateConversationByUserNames/:senderName/:receiverName', chatEngine.getPrivateConversationByUserNames)
+app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
 
 let usersSockets = {}
 
@@ -88,15 +89,24 @@ io.on('connection', (socket) => {
         // socket.join(groupID)
     })
 
-    socket.on('privateMessage', (senderName, receiverName, messageContent, isBlocked) => {
+    socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
         if (isBlocked == 0) {
-            console.log("Inside privateMessage:")
-            console.log("usersSockets[senderName]: " + usersSockets[senderName])
-            console.log("usersSockets[receiverName]: " + usersSockets[receiverName])
+            console.log("-----------------Inside privateMessage-----------------")
 
-            console.log("PM: " + senderName + " -> " + receiverName + " : " + messageContent)
+            console.log("PM: " + senderID + " -> " + receiverID + " : " + messageContent)
 
-            chatEngine.savePrivateMessageToDB(senderName, receiverName, messageContent)
+            // get names of sender and receiver 
+            let senderName, receiverName
+            try {
+                senderName = await userStore.getDisplayNamebyUserID(senderID);
+                receiverName = await userStore.getDisplayNamebyUserID(receiverID);
+                console.log("senderName: " + senderName)
+                console.log("receiverName: " + receiverName)
+            } catch(err) {
+                console.log("err: " + err)
+            }
+
+            chatEngine.savePrivateMessageToDB(senderName, senderID, receiverName, receiverID, messageContent)
 
             // emit the message to clients connected in the room
             let message = {
@@ -113,10 +123,11 @@ io.on('connection', (socket) => {
                 socket.to(receiverSocketID).emit("privateMessage", message)
             } else {
                 // msg is shown to the user itself on the frontend
-                console.log("Other user is not joined, do nothing on server: ")
+                console.log("Other user is not joined, do not emit message: ")
                 // console.log("Other user is not joined, emit msg to self: ")
                 // socket.emit("privateMessage", message)
             }
+            console.log("-----------------End of privateMessage-----------------")
         } else {
             console.log(receiverName + " has blocked " + senderName + " , can't send message")
         }
