@@ -84,8 +84,10 @@ module.exports = {
             const registrationTokens = theTokens;
 
             const message = {
-                notification: { title: 'New user in' + courseID, 
-                body: 'Say Hi to '+ userID.displayName + ' who just joined the course' + courseID },
+                notification: { 
+                    title: 'New user in' + courseID, 
+                    body: 'Say Hi to '+ userID.displayName + ' who just joined the course' + courseID 
+                },
                 tokens: registrationTokens,
             };
 
