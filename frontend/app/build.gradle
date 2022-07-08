@@ -2,11 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
-<<<<<<< HEAD
-=======
 apply plugin: 'com.google.gms.google-services'
 
->>>>>>> notifications
 android {
     compileSdk 32
 

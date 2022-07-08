@@ -13,6 +13,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.findyourpeers.CreateProfile;
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,12 @@ public class PushNotificationService extends FirebaseMessagingService {
 //        Log.d(TAG, "phad lo token " + token + " " + uuidString);
         postDatausingVolley(uuidString, token);
 
+
+    }
+
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage message) {
+        super.onMessageReceived(message);
 
     }
 

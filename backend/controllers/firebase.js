@@ -1,8 +1,12 @@
 // there needs to be a credential variable saved in the terminal, don't forget to save that in the deployment
 
-const { initializeApp } = require('firebase-admin/app');
+// const { initializeApp } = require('firebase-admin/app');
 
-const app = initializeApp();
+// const admin = initializeApp();
+
+// const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp({ credential: admin.credential.applicationDefault() });
     // credential: applicationDefault(),
     //databaseURL: 'https://<DATABASE_NAME>.firebaseio.com' dont think we need it at the moment
 
@@ -55,22 +59,17 @@ module.exports = {
             otherstudents.remove(userID)
             theTokens = []
             otherstudents.forEach(student => {
-                theTokens.push(userCollection.findOne({ userID: student.userID }).registrationToken)
+                regToken = (userCollection.findOne({ userID: student.userID }).registrationToken)
+                const message = {
+                    notification: { 
+                        title: 'A New User Joined ' + courseID, 
+                        body: 'Say Hi to the new user who just joined the course' + courseID, 
+                    },
+                    token: tokss,
+                
+                };
 
-
-            })
-            // These registration tokens come from the client FCM SDKs.
-            const registrationTokens = theTokens;
-
-            const message = {
-                notification: { 
-                    title: 'New user in' + courseID, 
-                    body: 'Say Hi to '+ userID.displayName + ' who just joined the course' + courseID 
-                },
-                tokens: registrationTokens,
-            };
-
-            app.getMessaging().sendMulticast(message)
+                admin.messaging().send(message)
                 .then((response) => {
                     if (response.failureCount > 0) {
                         const failedTokens = [];
@@ -82,9 +81,46 @@ module.exports = {
                         console.log('List of tokens that caused failures: ' + failedTokens);
                     }
                     else{
-                        console.log('Successfully sent message to all tokens');
+                        console.log('Successfully sent message to a user : ' + student.userID);
                     }
-                });
+                }); 
+            });
+            
+
+
+
+
+
+
+            
+        
+
+            // These registration tokens come from the client FCM SDKs.
+            // const registrationTokens = theTokens;
+
+            // const message = {
+            //     notification: { 
+            //         title: 'New user in' + courseID, 
+            //         body: 'Say Hi to '+ userID.displayName + ' who just joined the course' + courseID 
+            //     },
+            //     tokens: registrationTokens,
+            // };
+
+            // app.getMessaging().sendMulticast(message)
+            //     .then((response) => {
+            //         if (response.failureCount > 0) {
+            //             const failedTokens = [];
+            //             response.responses.forEach((resp, idx) => {
+            //                 if (!resp.success) {
+            //                     failedTokens.push(registrationTokens[idx]);
+            //                 }
+            //             });
+            //             console.log('List of tokens that caused failures: ' + failedTokens);
+            //         }
+            //         else{
+            //             console.log('Successfully sent message to all tokens');
+            //         }
+            //     });
 
         }
 
@@ -120,6 +156,39 @@ module.exports = {
         }
        
     },
+
+    // testMessageSyntax : (thetoken) => {
+        
+    //     thetoken.forEach(tokss => {
+    //     const message = {
+    //         notification: { 
+    //             title: 'notification works', 
+    //             body: 'my bodddyyyyyy big big body' 
+    //         },
+    //         token: tokss,
+        
+    //     };
+    
+
+    //     admin.messaging().send(message)
+    //         .then((response) => {
+    //             if (response.failureCount > 0) {
+    //                 const failedTokens = [];
+    //                 response.responses.forEach((resp, idx) => {
+    //                     if (!resp.success) {
+    //                         failedTokens.push(registrationTokens[idx]);
+    //                     }
+    //                 });
+    //                 console.log('List of tokens that caused failures: ' + failedTokens);
+    //             }
+    //             else{
+    //                 console.log('Successfully sent message to all tokens');
+    //             }
+    //         }); 
+    //     });
+        
+    
+    // },
 
     // sendMessageNotification : (stff,stuff2) = {
     // need to do this for message notifications

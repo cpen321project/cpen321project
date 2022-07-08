@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button signUpButton;
     private TextView testText;
+    final static String TAG = "MainActivity";
+    public String token;
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -53,6 +55,25 @@ public class MainActivity extends AppCompatActivity {
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urltest = "http://10.0.2.2:3010/getuserprofile/test2";
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        token = task.getResult().toString();
+
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, token);
+//                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         // Initialize a new JsonArrayRequest instance
       /*  JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(

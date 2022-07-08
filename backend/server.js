@@ -34,6 +34,14 @@ dbUser = client.db("user")
 dbCourse= client.db("course")
 userCollection = dbUser.collection("userCollection")
 
+
+// testing the firebase messaging syntax
+// tokss = 'dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA'
+// tokss = []
+// tokss.push('dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA')
+// tokss.push('dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA')
+// firebase.testMessageSyntax(tokss);
+
 app.get('/', (req, res) => {
     res.send('Server is running on port: ' + port)
 })
