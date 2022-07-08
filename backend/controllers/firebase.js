@@ -70,7 +70,7 @@ module.exports = {
                 tokens: registrationTokens,
             };
 
-            getMessaging().sendMulticast(message)
+            app.getMessaging().sendMulticast(message)
                 .then((response) => {
                     if (response.failureCount > 0) {
                         const failedTokens = [];
