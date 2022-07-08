@@ -45,93 +45,58 @@ userCollection = dbUser.collection("userCollection")
 
 
 module.exports = {
-    userAddedNotification: (userID, courseID) => {
+    _userAddedNotification: async (userID, courseID) => {
 
+
+        // #TODO: check the await thing here please as well
         try {
-             dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, otherstudents) => {
-                if (err) {
-                    console.error(err)
-                    res.status(500).json({ err: err })
-                    return
-                }
-            })
+            let otherstudents = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
 
-            otherstudents.remove(userID)
-            theTokens = []
+            otherstudents.remove(userID);
+            theTokens = [];
             otherstudents.forEach(student => {
-                regToken = (userCollection.findOne({ userID: student.userID }).registrationToken)
+                regToken = (userCollection.findOne({ userID: student.userID }).registrationToken);
                 const message = {
-                    notification: { 
-                        title: 'A New User Joined ' + courseID, 
-                        body: 'Say Hi to the new user who just joined the course' + courseID, 
+                    notification: {
+                        title: 'A New User Joined ' + courseID,
+                        body: 'Say Hi to the new user who just joined the course' + courseID,
                     },
                     token: tokss,
-                
                 };
 
                 admin.messaging().send(message)
-                .then((response) => {
-                    if (response.failureCount > 0) {
-                        const failedTokens = [];
-                        response.responses.forEach((resp, idx) => {
-                            if (!resp.success) {
-                                failedTokens.push(registrationTokens[idx]);
-                            }
-                        });
-                        console.log('List of tokens that caused failures: ' + failedTokens);
-                    }
-                    else{
-                        console.log('Successfully sent message to a user : ' + student.userID);
-                    }
-                }); 
+                    .then((response) => {
+                        if (response.failureCount > 0) {
+                            const failedTokens = [];
+                            response.responses.forEach((resp, idx) => {
+                                if (!resp.success) {
+                                    failedTokens.push(registrationTokens[idx]);
+                                }
+                            });
+                            console.log('List of tokens that caused failures: ' + failedTokens);
+                        }
+                        else {
+                            console.log('Successfully sent message to a user : ' + student.userID);
+                        }
+                    });
             });
-            
-
-
-
-
-
-
-            
-        
-
-            // These registration tokens come from the client FCM SDKs.
-            // const registrationTokens = theTokens;
-
-            // const message = {
-            //     notification: { 
-            //         title: 'New user in' + courseID, 
-            //         body: 'Say Hi to '+ userID.displayName + ' who just joined the course' + courseID 
-            //     },
-            //     tokens: registrationTokens,
-            // };
-
-            // app.getMessaging().sendMulticast(message)
-            //     .then((response) => {
-            //         if (response.failureCount > 0) {
-            //             const failedTokens = [];
-            //             response.responses.forEach((resp, idx) => {
-            //                 if (!resp.success) {
-            //                     failedTokens.push(registrationTokens[idx]);
-            //                 }
-            //             });
-            //             console.log('List of tokens that caused failures: ' + failedTokens);
-            //         }
-            //         else{
-            //             console.log('Successfully sent message to all tokens');
-            //         }
-            //     });
 
         }
 
         catch (err) {
-            console.log("For sending user added notification, the err:" + err)
+            console.log("For sending user added notification, the err:" + err);
             // res.status(400).send(err)
         }
 
 
 
 
+    },
+    get userAddedNotification() {
+        return this._userAddedNotification;
+    },
+    set userAddedNotification(value) {
+        this._userAddedNotification = value;
     },
 
     newRegistrationToken : async (req,res) => {
@@ -156,6 +121,52 @@ module.exports = {
         }
        
     },
+// displayName:0, userID:1, coopStatus:0, yearStanding:0, registrationToken:1, courselist:0, blockedUser:0
+
+    privateMessageNotification : async (senderName, receiverID) => {
+
+        try {
+
+            // #TODO: clean this await thing
+            let resultstudent = await userCollection.findOne({ userID: receiverID }) 
+        
+
+            // regToken = (userCollection.findOne({ userID: receiverID }).registrationToken)
+            const message = {
+                notification: { 
+                    title: 'Private Message from ' + senderName, 
+                    body: "You've got a private message from " + senderName, 
+                },
+                token: resultstudent.registrationToken,
+            };
+
+
+            admin.messaging().send(message)
+            .then((response) => {
+                if (response.failureCount > 0) {
+                    const failedTokens = [];
+                    response.responses.forEach((resp, idx) => {
+                        if (!resp.success) {
+                            failedTokens.push(registrationTokens[idx]);
+                        }
+                    });
+                    console.log('Private message notification failure, token: ' + failedTokens);
+                }
+                else{
+                    console.log('Successfully sent message notification to a user : ' + resultstudent.userID);
+                }
+            }); 
+       }
+       catch (err) {
+           console.log("Failure to send private message notification, the err: " + err)
+           // res.status(400).send(err)
+       }
+    },
+
+    groupMessageNotification : async (senderName, groupID) => {
+
+    }
+
 
     // testMessageSyntax : (thetoken) => {
         
