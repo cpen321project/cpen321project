@@ -1,4 +1,4 @@
-const firebase  = require("./firebase.js")
+const notifcationManager  = require("./notifcationManager.js")
 
 const {MongoClient} = require("mongodb")
 const uri = "mongodb://localhost:27017"
@@ -37,7 +37,7 @@ module.exports = {
                 userID: req.body.userID,
               })
             res.status(200).send("User added successfully\n")
-            firebase.userAddedNotification(req.body.userID, req.body.coursename)
+            notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
         }
         catch(err){
             console.log(err)

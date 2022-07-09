@@ -13,7 +13,7 @@ const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server)
 
-const firebase  = require("./controllers/firebase.js")
+const notificationManager  = require("./controllers/notifcationManager.js")
 
 const port = "3010"
 
@@ -69,7 +69,7 @@ app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupI
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
 
 // route for firebase
-app.post("/newRegistrationToken", firebase.newRegistrationToken)
+app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
 
 let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
         
         // save message to database 
         chatEngine.saveMessageToDB(groupID, senderName, messageContent)
-        firebase.groupMessageNotification(senderName, groupID);
+        notificationManager.groupMessageNotification(senderName, groupID);
         // emit the message to clients connected in the room
         let message = {
             "message": messageContent,
@@ -146,7 +146,7 @@ io.on('connection', (socket) => {
                 // msg is shown to the user itself on the frontend
                 console.log("Other user is not joined, do not emit message: ")
                 // send notif if other user does not have the private chat open 
-                firebase.privateMessageNotification(senderName, receiverID);
+                notificationManager.privateMessageNotification(senderName, receiverID);
                 // console.log("Other user is not joined, emit msg to self: ")
                 // socket.emit("privateMessage", message)
             }
