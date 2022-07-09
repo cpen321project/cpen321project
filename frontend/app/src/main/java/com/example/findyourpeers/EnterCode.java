@@ -70,17 +70,21 @@ public class EnterCode extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = "http://10.0.2.2:3010/resendConfirmationCode";
+        String url = "http://10.0.2.2:3010/resendconfirmationcode";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, resendData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(EnterCode.this, "Verification code resent, please check your email", Toast.LENGTH_LONG).show();
+                        Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
+                        Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
+                        enterCodeIntent.putExtra("email",emailStr);
+                        enterCodeIntent.putExtra("username", usernameStr);
+                        startActivity(enterCodeIntent);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(EnterCode.this, "unable to resent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EnterCode.this, "Verification code false", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -104,7 +108,7 @@ public class EnterCode extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
-                        Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
+                        Intent enterCodeIntent = new Intent(EnterCode.this, LoginPage.class);
                         enterCodeIntent.putExtra("email",emailStr);
                         enterCodeIntent.putExtra("username", usernameStr);
                         startActivity(enterCodeIntent);

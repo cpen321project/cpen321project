@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button signUpButton;
+    private Button signUpButton, loginBtn;
     private TextView testText;
 
     @Override
@@ -30,54 +30,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loginBtn = findViewById(R.id.login_button);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signUpIntent = new Intent(MainActivity.this, SignUp.class);
+                startActivity(signUpIntent);
+            }
+        });
 
-        //testText = findViewById(R.id.testText);
-        //testText.setText("empty");
-
-        // Initialize a new RequestQueue instance
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/test2";
-
-        // Initialize a new JsonArrayRequest instance
-      /*  JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET, urltest,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // Do something with response
-                        //mTextView.setText(response.toString());
-
-                        // Process the JSON
-                        try{
-                            // Loop through the array elements
-                            for(int i=0;i<response.length();i++){
-                                // Get current json object
-                                JSONObject student = response.getJSONObject(i);
-
-                                // Get the current student (json object) data
-                                String displayname = student.getString("displayName");
-                                String userID = student.getString("userID");
-
-                                // Display the formatted json data in text view
-                                testText.setText(displayname +" userID" + userID);
-                            }
-                        }catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-                        // Do something when error occurred
-                        Toast.makeText(MainActivity.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        // Add JsonArrayRequest to the RequestQueue
-        requestQueue.add(jsonArrayRequest);*/
 
         signUpButton = findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(new View.OnClickListener() {
