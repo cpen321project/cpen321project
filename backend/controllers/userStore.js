@@ -43,42 +43,69 @@ module.exports ={
       return res.status(200).json({ success: true, result: signUpResult})
     },
     confirmSignUp: async (req, res) => {
+      let username = req.body.username;
+      let confirmationCode = req.body.confirmationCode;
+      let confirmResult;
       try {
-          let username = req.body.username;
-          let confirmationCode = req.body.confirmationCode;
-          authUtils.confrimSignUP(username,confirmationCode)
-          return res.status(200).json({ success: true})
+        confirmResult = await authUtils.confrimSignUP(username,confirmationCode)
       } catch (error) {
-          console.log(error)
-          return res.status(400).json({ success: false, error })
+        console.log("-----err:------\n")
+
+        console.log(error.message)
+        console.log("------end of err------\n")
+
+        console.log("confirmSignUp: err: "+error)
+        console.log("confirmResult: "+confirmResult)
+
+        return res.status(200).json({ success: false, result: error.message })
       }
+      console.log("confirmResult: "+confirmResult)
+      return res.status(200).json({ success: true, result: confirmResult})
       
     },
 
    login: async (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    let loginResult;
       try {
-          let username = req.body.username;
-          let password = req.body.password;
-          authUtils.login(username, password)
-          return res.status(200).json({ success: true})
+        loginResult = await authUtils.login(username, password)
       } catch (error) {
-          console.log(error)
-          return res.status(400).json({ success: false, error })
+        console.log("-----err:------\n")
+
+        console.log(error.message)
+        console.log("------end of err------\n")
+
+        console.log("login: err: "+error)
+        console.log("loginResult: "+loginResult)
+
+        return res.status(200).json({ success: false, result: error.message })
       }
+      console.log("loginResult: "+loginResult)
+      return res.status(200).json({ success: true, result: loginResult})
       
     },
 
     resendConfirmationCode: async (req, res) => {
+      let username = req.body.username;
+      let resendResult;
       try {
-          let username = req.body.username;
-          authUtils.resendConfrimationCode(username)
-          return res.status(200).json({ success: true})
+        resendResult = await authUtils.resendConfrimationCode(username)
       } catch (error) {
-          console.log(error)
-          return res.status(400).json({ success: false, error })
+        console.log("-----err:------\n")
+
+        console.log(error.message)
+        console.log("------end of err------\n")
+
+        console.log("resendConfirmationCode: err: "+error)
+        console.log("resendResult: "+resendResult)
+
+        return res.status(200).json({ success: false, result: error.message })
       }
-      
+      console.log("resendResult: "+resendResult)
+      return res.status(200).json({ success: true, result: resendResult})
     },
+    
     getUserProfile: async (req, res) => {
         try {
             userCollection.find({userID: req.params.userID}).toArray((err, userProfileResult) => {

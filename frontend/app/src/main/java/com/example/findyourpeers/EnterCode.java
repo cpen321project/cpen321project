@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -75,7 +76,19 @@ public class EnterCode extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
+                        String success, result;
+                        try{
+                            success = response.getString("success");
+                            Log.d("EnterCode", "success? : "+success);
+                            if(success.equals("false")){
+                                result = response.getString("result");
+                                Toast.makeText(EnterCode.this, result, Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -103,11 +116,23 @@ public class EnterCode extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
-                        Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
-                        enterCodeIntent.putExtra("email",emailStr);
-                        enterCodeIntent.putExtra("username", usernameStr);
-                        startActivity(enterCodeIntent);
+                        String success, result;
+                        try{
+                            success = response.getString("success");
+                            Log.d("EnterCode", "success? : "+success);
+                            if(success.equals("false")){
+                                result = response.getString("result");
+                                Toast.makeText(EnterCode.this, result, Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
+                                Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
+                                enterCodeIntent.putExtra("email",emailStr);
+                                enterCodeIntent.putExtra("username", usernameStr);
+                                startActivity(enterCodeIntent);
+                            }
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override

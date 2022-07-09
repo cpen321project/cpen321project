@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,10 +65,23 @@ public class LoginPage extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(LoginPage.this, "Login success", Toast.LENGTH_SHORT).show();
-                        Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
-                        viewProfileIntent.putExtra("userID", unameStr);
-                        startActivity(viewProfileIntent);
+                        String success, result;
+                        try{
+                            success = response.getString("success");
+                            Log.d("LoginPage", "success? : "+success);
+                            if(success.equals("false")){
+                                result = response.getString("result");
+                                Toast.makeText(LoginPage.this, result, Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(LoginPage.this, "Login success", Toast.LENGTH_SHORT).show();
+                                Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
+                                viewProfileIntent.putExtra("userID", unameStr);
+                                startActivity(viewProfileIntent);
+                            }
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
                     }
                 }, new Response.ErrorListener() {
             @Override

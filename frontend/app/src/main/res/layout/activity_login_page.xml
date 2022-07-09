@@ -24,8 +24,10 @@
         android:layout_height="50dp"
         android:ems="10"
         android:hint="Username"
-        android:inputType="text"
-        android:textColorHint="#78909C" />
+        android:inputType="textFilter"
+        android:textColorHint="#78909C"
+        android:maxLength="15"
+        android:digits="abcdefghijklmnopqrstuvwxyz01234567890"/>
 
     <EditText
         android:id="@+id/password_login"
