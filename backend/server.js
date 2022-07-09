@@ -18,7 +18,7 @@ const port = "3010"
 const userStore = require('./controllers/userStore.js')
 const courseManager = require('./controllers/courseManager.js')
 const chatEngine = require('./controllers/chatEngine.js')
-//const authUtils = require('./utils.js/authUtils.js')
+//const authUtils = require('./utils/authUtils.js')
 
 app.use(express.json())
 
