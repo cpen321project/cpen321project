@@ -41,18 +41,20 @@ module.exports = {
 
         // #TODO: check the await thing here please as well
         try {
-            let otherstudents = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
+            let students = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
 
-            otherstudents.remove(userID);
+            //otherstudents.remove(userID);
+            otherstudents = students.filter(data => data.userID != userID);
             theTokens = [];
             otherstudents.forEach(student => {
+                //debugged up to this line
                 regToken = (userCollection.findOne({ userID: student.userID }).registrationToken);
                 const message = {
                     notification: {
                         title: 'A New User Joined ' + courseID,
                         body: 'Say Hi to the new user who just joined the course' + courseID,
                     },
-                    token: tokss,
+                    token: regToken,
                 };
 
                 admin.messaging().send(message)
