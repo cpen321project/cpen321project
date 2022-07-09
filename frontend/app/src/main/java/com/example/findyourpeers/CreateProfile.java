@@ -30,12 +30,15 @@ public class CreateProfile extends AppCompatActivity {
     private EditText displayName;
     private Spinner coopSpinner, yearSpinner;
     private Button registerButton;
-    public String displayNameStr, coopStatus, yearStanding;
+    public String displayNameStr, coopStatus, yearStanding, usernameStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
+
+        Intent intentCode = getIntent();
+        usernameStr = intentCode.getExtras().getString("username");
 
         displayName = (EditText) findViewById(R.id.display_name_input);
 
@@ -61,10 +64,7 @@ public class CreateProfile extends AppCompatActivity {
                     return;
                 }
                 // calling a method to post the data and passing our name and job.
-                String userID = postDataUsingVolley(displayNameStr, coopStatus, yearStanding);
-                Intent displayProfileIntent = new Intent(CreateProfile.this, ProfilePage.class);
-                displayProfileIntent.putExtra("userID", userID);
-                startActivity(displayProfileIntent);
+                postDataUsingVolley(displayNameStr, coopStatus, yearStanding, usernameStr);
             }
         });
 
@@ -94,17 +94,18 @@ public class CreateProfile extends AppCompatActivity {
         }
     }
 
-    private String postDataUsingVolley(String name, String coop, String yearstand) {
+    private void postDataUsingVolley(String name, String coop, String yearstand, String usernameStr) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        UUID uuid=UUID.randomUUID();
-        String uuidstr = uuid.toString();
+        //UUID uuid=UUID.randomUUID();
+        //String uuidstr = uuid.toString();
         JSONObject newprofile = new JSONObject();
         try {
             //input your API parameters
             newprofile.put("displayName",name);
-            newprofile.put("userID",uuidstr);
+            //newprofile.put("userID",uuidstr);
             newprofile.put("coopStatus", coop);
             newprofile.put("yearStanding", yearstand);
+            newprofile.put("userID", usernameStr);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -115,6 +116,8 @@ public class CreateProfile extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
+                        Intent loginIntent = new Intent(CreateProfile.this, LoginPage.class);
+                        startActivity(loginIntent);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -123,7 +126,6 @@ public class CreateProfile extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonObjectRequest);
-        return uuidstr;
     }
 
 }

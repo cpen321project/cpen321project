@@ -76,10 +76,6 @@ public class EnterCode extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
-                        Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
-                        enterCodeIntent.putExtra("email",emailStr);
-                        enterCodeIntent.putExtra("username", usernameStr);
-                        startActivity(enterCodeIntent);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -108,7 +104,7 @@ public class EnterCode extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
-                        Intent enterCodeIntent = new Intent(EnterCode.this, LoginPage.class);
+                        Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
                         enterCodeIntent.putExtra("email",emailStr);
                         enterCodeIntent.putExtra("username", usernameStr);
                         startActivity(enterCodeIntent);
