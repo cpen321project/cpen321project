@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
         
         // save message to database 
         chatEngine.saveMessageToDB(groupID, senderName, messageContent)
-
+        firebase.groupMessageNotification(senderName, groupID);
         // emit the message to clients connected in the room
         let message = {
             "message": messageContent,

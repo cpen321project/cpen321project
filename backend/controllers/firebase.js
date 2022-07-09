@@ -156,7 +156,7 @@ module.exports = {
                 const message = {
                     notification: { 
                         title: "You've got a group message from " + senderName, 
-                        body: "You've got a private message from " + senderName, 
+                        body: "You've got a group message notification in the course " + groupID, 
                     },
                     token: userToken,
                 };
@@ -173,7 +173,7 @@ module.exports = {
                         console.log('Private message notification failure, token: ' + failedTokens);
                     }
                     else{
-                        console.log('Successfully sent message notification to a user : ' + resultstudents.userID);
+                        console.log('Successfully sent the group message notification to a user : ' + resultstudents.userID);
                     }
                 }); 
 
