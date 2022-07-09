@@ -1,4 +1,4 @@
-const notifcationManager  = require("./notifcationManager.js")
+const notificationManager  = require("./notifcationManager.js")
 
 const {MongoClient} = require("mongodb")
 const uri = "mongodb://localhost:27017"
@@ -41,7 +41,7 @@ module.exports = {
         }
         catch(err){
             console.log(err)
-            res.send(400).send(err)
+            res.status(400).send(err)
         }
     }, 
 
