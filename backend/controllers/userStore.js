@@ -12,17 +12,35 @@ userCollection = dbUser.collection("userCollection")
 
 module.exports ={
     signup: async (req, res) => {
+      // try {
+      //     let email = req.body.email;
+      //     let password = req.body.password;
+      //     let username = req.body.username;
+      //     authUtils.signUserUp(email,password,username)
+      //     return res.status(200).json({ success: true})
+      // } catch (error) {
+      //     return res.status(400).json({ success: false, error })
+      // }
+     
+      let email = req.body.email;
+      let password = req.body.password;
+      let username = req.body.username;
+      let signUpResult;
       try {
-          let email = req.body.email;
-          let password = req.body.password;
-          let username = req.body.username;
-          authUtils.signUserUp(email,password,username)
-          return res.status(200).json({ success: true})
-      } catch (error) {
-          console.log(error)
-          return res.status(400).json({ success: false, error })
+        signUpResult = await authUtils.signUserUp(email,password,username)
+      } catch (err) {
+        console.log("-----err:------\n")
+
+        console.log(err.message)
+        console.log("------end of err------\n")
+
+        console.log("signup: err: "+err)
+        console.log("signUpResult: "+signUpResult)
+
+        return res.status(200).json({ success: false, result: err.message })
       }
-      
+      console.log("signUpResult: "+signUpResult)
+      return res.status(200).json({ success: true, result: signUpResult})
     },
     confirmSignUp: async (req, res) => {
       try {

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,17 +75,36 @@ public class SignUp extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(SignUp.this, "Credentials sent successfully", Toast.LENGTH_SHORT).show();
-                        Intent enterCodeIntent = new Intent(SignUp.this, EnterCode.class);
-                        enterCodeIntent.putExtra("email",emailStr);
-                        enterCodeIntent.putExtra("password",passwordStr);
-                        enterCodeIntent.putExtra("username", usernameStr);
-                        startActivity(enterCodeIntent);
+                        String success, result;
+                        try {
+                            success = response.getString("success");
+                            Log.d("SignUp", "success? : "+success);
+                            if (success.equals("false")) {
+                                result = response.getString("result");
+                                Toast.makeText(SignUp.this, result, Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(SignUp.this, "Credentials sent successfully", Toast.LENGTH_SHORT).show();
+                                Intent enterCodeIntent = new Intent(SignUp.this, EnterCode.class);
+                                enterCodeIntent.putExtra("email",emailStr);
+                                enterCodeIntent.putExtra("password",passwordStr);
+                                enterCodeIntent.putExtra("username", usernameStr);
+                                startActivity(enterCodeIntent);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+//                        Toast.makeText(SignUp.this, "Credentials sent successfully", Toast.LENGTH_SHORT).show();
+//                        Intent enterCodeIntent = new Intent(SignUp.this, EnterCode.class);
+//                        enterCodeIntent.putExtra("email",emailStr);
+//                        enterCodeIntent.putExtra("password",passwordStr);
+//                        enterCodeIntent.putExtra("username", usernameStr);
+//                        startActivity(enterCodeIntent);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(SignUp.this, "Sending credentials failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUp.this, "Sending credentials failed: " + error, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUp.this, "Sending credentials failed", Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonObjectRequest);

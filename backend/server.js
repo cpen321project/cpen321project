@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
             }
 
             chatEngine.savePrivateMessageToDB(senderName, senderID, receiverName, receiverID, messageContent)
-            firebase.privateMessageNotification(senderName, receiverID);
+            // firebase.privateMessageNotification(senderName, receiverID);
 
             // emit the message to clients connected in the room
             let message = {
@@ -145,6 +145,8 @@ io.on('connection', (socket) => {
             } else {
                 // msg is shown to the user itself on the frontend
                 console.log("Other user is not joined, do not emit message: ")
+                // send notif if other user does not have the private chat open 
+                firebase.privateMessageNotification(senderName, receiverID);
                 // console.log("Other user is not joined, emit msg to self: ")
                 // socket.emit("privateMessage", message)
             }
