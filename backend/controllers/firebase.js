@@ -32,7 +32,7 @@ module.exports = {
                     console.log("Take= "+ take.displayName)
                     regToken = take.registrationToken;
                     console.log("regToken: "+ regToken);
-                }catch(error){
+                }catch(err){
                     console.log("For finding user in userCollection : " + err);
                 }
                 
