@@ -2,12 +2,6 @@ const admin = require("firebase-admin");
 const serviceAccount = require("../serviceKey.json");
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
-// const { client } = require("./db/dbConnector.js");
-// let dbUser, dbCourse, userCollection
-// dbUser = client.db("user")
-// dbCourse = client.db("course")
-// userCollection = dbUser.collection("userCollection")
-
 const {MongoClient} = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
@@ -19,37 +13,20 @@ dbUser = client.db("user")
 dbCourse = client.db("course")
 userCollection = dbUser.collection("userCollection")
 
-// await client.connect(); //not needed
-
-// send message to firebase 
-// const sendMessageToFirebase = (senderName, receiverName, messageContent) => {
-//     const db = admin.firestore(); // do we need to store the notifications we send?
-//     const messageToSaveToDB = PrivateMessage(
-//         {
-//             senderName: senderName,
-//             receiverName: receiverName,
-//             messageContent: messageContent
-//         }
-//     )
-//     db.collection('privateMessages').add(messageToSaveToDB)
-// }
-
 
 module.exports = {
+    // function to initiate the notification for when a user is added to a course
     _userAddedNotification: async (userID, courseID) => {
 
-
-        // #TODO: check the await thing here please as well
         try {
+            // trying to get the the users in a course
             let students = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
 
             var take, regToken;
-            //otherstudents.remove(userID);
             let otherstudents = students.filter(data => data.userID != userID);
             theTokens = [];
             otherstudents.forEach( async student => {
                 console.log("Student: "+ student.displayName)
-                //debugged up to this line
                 try{
                     take = await userCollection.findOne({ userID: student.userID });
                     console.log("Take= "+ take.displayName)
@@ -130,11 +107,9 @@ module.exports = {
 
         try {
 
-            // #TODO: clean this await thing
             let resultstudent = await userCollection.findOne({ userID: receiverID }) 
         
 
-            // regToken = (userCollection.findOne({ userID: receiverID }).registrationToken)
             const message = {
                 notification: { 
                     title: 'Private Message from ' + senderName, 
@@ -162,12 +137,54 @@ module.exports = {
        }
        catch (err) {
            console.log("Failure to send private message notification, the err: " + err)
-           // res.status(400).send(err)
        }
     },
 
     groupMessageNotification : async (senderName, groupID) => {
 
+        try {
+
+            let resultstudents = await dbCourse.collection(groupID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray(); 
+            
+            forEach(resultstudents,  async student => {
+                try{
+                userToken = await (userCollection.findOne({ userID: student.userID }).registrationToken)
+                }
+                catch (err) {
+                    console.log("Failure to retrieve registration token from db, err : " + err)
+                }
+                const message = {
+                    notification: { 
+                        title: "You've got a group message from " + senderName, 
+                        body: "You've got a private message from " + senderName, 
+                    },
+                    token: userToken,
+                };
+
+                admin.messaging().send(message)
+                .then((response) => {
+                    if (response.failureCount > 0) {
+                        const failedTokens = [];
+                        response.responses.forEach((resp, idx) => {
+                            if (!resp.success) {
+                                failedTokens.push(registrationTokens[idx]);
+                            }
+                        });
+                        console.log('Private message notification failure, token: ' + failedTokens);
+                    }
+                    else{
+                        console.log('Successfully sent message notification to a user : ' + resultstudents.userID);
+                    }
+                }); 
+
+
+
+            });
+
+       }
+       catch (err) {
+           console.log("Failure to send private message notification, the err: " + err)
+       }        
     }
 
 
@@ -204,7 +221,4 @@ module.exports = {
     
     // },
 
-    // sendMessageNotification : (stff,stuff2) = {
-    // need to do this for message notifications
-    // },
 };
