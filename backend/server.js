@@ -13,6 +13,8 @@ const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server)
 
+const firebase  = require("./controllers/firebase.js")
+
 const port = "3010"
 
 const userStore = require('./controllers/userStore.js')
@@ -32,6 +34,14 @@ server.listen(port, () => {
 dbUser = client.db("user")
 dbCourse= client.db("course")
 userCollection = dbUser.collection("userCollection")
+
+
+// testing the firebase messaging syntax
+// tokss = 'dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA'
+// tokss = []
+// tokss.push('dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA')
+// tokss.push('dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA')
+// firebase.testMessageSyntax(tokss);
 
 app.get('/', (req, res) => {
     res.send('Server is running on port: ' + port)
@@ -56,17 +66,22 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine
 app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupID)
-// app.get('/getPrivateConversationByUserNames/:senderName/:receiverName', chatEngine.getPrivateConversationByUserNames)
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
 
-let usersSockets = {}
+// route for firebase
+app.post("/newRegistrationToken", firebase.newRegistrationToken)
 
+let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
 io.on('connection', (socket) => {
     console.log('a user connected')
 
-    socket.on('joinGroupChat', function (groupID, displayName) {
-        console.log(displayName + " : joined at groupID : " + groupID)
+    // socket.on('joinGroupChat', function (groupID, displayName) {
+    //     console.log(displayName + " : joined at groupID : " + groupID)
+    //     socket.join(groupID)
+    // })
+    socket.on('joinGroupChat', function (groupID, userID) {
+        console.log(userID + " : joined at groupID : " + groupID)
         socket.join(groupID)
     })
 
@@ -112,6 +127,8 @@ io.on('connection', (socket) => {
             }
 
             chatEngine.savePrivateMessageToDB(senderName, senderID, receiverName, receiverID, messageContent)
+            // firebase.testMessageSyntax();
+            firebase.sendPrivateMessageNotification(senderName, receiverID);
 
             // emit the message to clients connected in the room
             let message = {
@@ -134,7 +151,7 @@ io.on('connection', (socket) => {
             }
             console.log("-----------------End of privateMessage-----------------")
         } else {
-            console.log(receiverName + " has blocked " + senderName + " , can't send message")
+            console.log("Sender has been blocked, message not sent")
         }
     })
 

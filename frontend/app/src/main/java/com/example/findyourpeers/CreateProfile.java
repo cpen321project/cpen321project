@@ -1,9 +1,11 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +21,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.findyourpeers.PushNotificationService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,10 +37,17 @@ public class CreateProfile extends AppCompatActivity {
     private Spinner coopSpinner, yearSpinner;
     private Button registerButton;
     public String displayNameStr, coopStatus, yearStanding;
+
     public static String usernameStr;
+
+    public String token;
+    public static UUID uuid;
+    final static String TAG = "CreateProfile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
@@ -69,6 +82,26 @@ public class CreateProfile extends AppCompatActivity {
             }
         });
 
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        token = task.getResult().toString();
+
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, token);
+//                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
     private class CoopSpinnerClass implements AdapterView.OnItemSelectedListener {
@@ -97,8 +130,11 @@ public class CreateProfile extends AppCompatActivity {
 
     private void postDataUsingVolley(String name, String coop, String yearstand, String usernameStr) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        //UUID uuid=UUID.randomUUID();
-        //String uuidstr = uuid.toString();
+
+
+//        PushNotificationService.krleTest("lauda");
+
+
         JSONObject newprofile = new JSONObject();
         try {
             //input your API parameters
@@ -106,7 +142,10 @@ public class CreateProfile extends AppCompatActivity {
             //newprofile.put("userID",uuidstr);
             newprofile.put("coopStatus", coop);
             newprofile.put("yearStanding", yearstand);
+
             newprofile.put("userID", usernameStr);
+            newprofile.put("registrationToken", token);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

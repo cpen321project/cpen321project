@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" tools:node="remove"/>
 
     <application
         android:allowBackup="true"
@@ -40,7 +41,12 @@
             android:exported="false" />
         <activity
             android:name=".CreateProfile"
-            android:exported="false" />
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".privateChatActivity"
             android:exported="false" />
@@ -52,10 +58,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".PushNotificationService" android:exported="false">
+            <intent-filter>
+                <action android:name="come.google.firebase.MESSAGING_EVENT"></action>
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="preloaded_fonts"
