@@ -41,7 +41,7 @@ public class ProfilePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
-        String userID = intentProfile.getExtras().getString("username");
+        String userID = intentProfile.getExtras().getString("userID");
         ArrayList<String> courseListAL = new ArrayList<>();
 
         layoutCourseButton = findViewById(R.id.layout_button_list);

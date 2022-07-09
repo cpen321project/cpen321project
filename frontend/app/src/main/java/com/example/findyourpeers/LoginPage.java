@@ -66,7 +66,7 @@ public class LoginPage extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Toast.makeText(LoginPage.this, "Login success", Toast.LENGTH_SHORT).show();
                         Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
-                        viewProfileIntent.putExtra("username", unameStr);
+                        viewProfileIntent.putExtra("userID", unameStr);
                         startActivity(viewProfileIntent);
                     }
                 }, new Response.ErrorListener() {

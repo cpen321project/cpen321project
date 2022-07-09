@@ -30,7 +30,8 @@ public class CreateProfile extends AppCompatActivity {
     private EditText displayName;
     private Spinner coopSpinner, yearSpinner;
     private Button registerButton;
-    public String displayNameStr, coopStatus, yearStanding, usernameStr;
+    public String displayNameStr, coopStatus, yearStanding;
+    public static String usernameStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
