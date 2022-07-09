@@ -75,7 +75,7 @@ public class privateChatActivity extends AppCompatActivity {
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
 
-        String serverIP = "10.0.2.2";
+        String serverIP = "34.130.14.116";
 
         RequestQueue queue = Volley.newRequestQueue(this);
         // getPrivateConversationByUserIDs
