@@ -13,7 +13,7 @@ const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
 
-let dbUser, userCollection
+let dbUser, userCollection, dbCourse
 
 dbUser = client.db("user")
 dbCourse = client.db("course")
@@ -43,16 +43,26 @@ module.exports = {
         try {
             let students = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
 
+            var take, regToken;
             //otherstudents.remove(userID);
-            otherstudents = students.filter(data => data.userID != userID);
+            let otherstudents = students.filter(data => data.userID != userID);
             theTokens = [];
-            otherstudents.forEach(student => {
+            otherstudents.forEach( async student => {
+                console.log("Student: "+ student.displayName)
                 //debugged up to this line
-                regToken = (userCollection.findOne({ userID: student.userID }).registrationToken);
+                try{
+                    take = await userCollection.findOne({ userID: student.userID });
+                    console.log("Take= "+ take.displayName)
+                    regToken = take.registrationToken;
+                    console.log("regToken: "+ regToken);
+                }catch(error){
+                    console.log("For finding user in userCollection : " + err);
+                }
+                
                 const message = {
                     notification: {
                         title: 'A New User Joined ' + courseID,
-                        body: 'Say Hi to the new user who just joined the course' + courseID,
+                        body: 'Say Hi to the new user who just joined the course ' + courseID,
                     },
                     token: regToken,
                 };

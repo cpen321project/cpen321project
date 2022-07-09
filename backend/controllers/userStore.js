@@ -105,7 +105,7 @@ module.exports ={
       console.log("resendResult: "+resendResult)
       return res.status(200).json({ success: true, result: resendResult})
     },
-    
+
     getUserProfile: async (req, res) => {
         try {
             userCollection.find({userID: req.params.userID}).toArray((err, userProfileResult) => {
