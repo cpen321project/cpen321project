@@ -64,7 +64,7 @@ module.exports = {
         }
 
         catch (err) {
-            console.log("For sending user added notification, the err:" + err);
+            console.log("For sending user added notification, the error:" + err);
             // res.status(400).send(err)
         }
 
@@ -136,7 +136,7 @@ module.exports = {
             }); 
        }
        catch (err) {
-           console.log("Failure to send private message notification, the err: " + err)
+           console.log("Failure to send private message notification, the error: " + err)
        }
     },
 
@@ -146,12 +146,12 @@ module.exports = {
 
             let resultstudents = await dbCourse.collection(groupID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray(); 
             
-            forEach(resultstudents,  async student => {
+             resultstudents.forEach(  async student => {
                 try{
                 userToken = await (userCollection.findOne({ userID: student.userID }).registrationToken)
                 }
                 catch (err) {
-                    console.log("Failure to retrieve registration token from db, err : " + err)
+                    console.log("Failure to retrieve registration token from db, error : " + err)
                 }
                 const message = {
                     notification: { 
@@ -170,7 +170,7 @@ module.exports = {
                                 failedTokens.push(registrationTokens[idx]);
                             }
                         });
-                        console.log('Private message notification failure, token: ' + failedTokens);
+                        console.log('Group message notification failure, token: ' + failedTokens);
                     }
                     else{
                         console.log('Successfully sent the group message notification to a user : ' + resultstudents.userID);
@@ -183,7 +183,7 @@ module.exports = {
 
        }
        catch (err) {
-           console.log("Failure to send private message notification, the err: " + err)
+           console.log("Failure to send private message notification, the error: " + err)
        }        
     }
 
