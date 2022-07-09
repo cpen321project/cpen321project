@@ -105,7 +105,7 @@ module.exports ={
           coopStatus: req.body.coopStatus,
           yearStanding: req.body.yearStanding,
           courselist: courselistarr,
-          blockedUser: blockeruserarr
+          blockedUser: blockeruserarr,
         },
         (err, result) => {
           if (err) {
