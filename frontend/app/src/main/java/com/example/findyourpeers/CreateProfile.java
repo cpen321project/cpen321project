@@ -105,7 +105,7 @@ public class CreateProfile extends AppCompatActivity {
             //newprofile.put("userID",uuidstr);
             newprofile.put("coopStatus", coop);
             newprofile.put("yearStanding", yearstand);
-            newprofile.put("username", usernameStr);
+            newprofile.put("userID", usernameStr);
         } catch (JSONException e) {
             e.printStackTrace();
         }
