@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk')
 var express = require("express")
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
-const USERPOOLID = process.env.USERPOOLID
-const CLIENTID = process.env.CLIENTID
+const AWS_ACCESS_KEY_ID = "AKIATNLYKFHXVBMV5DOO"
+const AWS_SECRET_ACCESS_KEY = "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"
+const USERPOOLID = "us-west-2_LJltK6RSZ"
+const CLIENTID = "7docu6553pf9vi5ipv1ig1huns"
 const userPool = new AmazonCognitoIdentity.CognitoUserPool({
     UserPoolId: USERPOOLID,
     ClientId: CLIENTID

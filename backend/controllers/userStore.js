@@ -3,7 +3,7 @@ const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
 
-const authUtils = require('../utils.js/authUtils.js')
+const authUtils = require('../utils/authUtils.js')
 
 let dbUser, userCollection
 
