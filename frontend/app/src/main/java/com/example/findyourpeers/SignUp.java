@@ -20,7 +20,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
 
 public class SignUp extends AppCompatActivity {
 
@@ -93,12 +92,6 @@ public class SignUp extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-//                        Toast.makeText(SignUp.this, "Credentials sent successfully", Toast.LENGTH_SHORT).show();
-//                        Intent enterCodeIntent = new Intent(SignUp.this, EnterCode.class);
-//                        enterCodeIntent.putExtra("email",emailStr);
-//                        enterCodeIntent.putExtra("password",passwordStr);
-//                        enterCodeIntent.putExtra("username", usernameStr);
-//                        startActivity(enterCodeIntent);
                     }
                 }, new Response.ErrorListener() {
             @Override

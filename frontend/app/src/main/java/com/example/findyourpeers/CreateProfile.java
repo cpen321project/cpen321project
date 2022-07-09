@@ -29,7 +29,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
 
 public class CreateProfile extends AppCompatActivity {
 
@@ -41,7 +40,6 @@ public class CreateProfile extends AppCompatActivity {
     public static String usernameStr;
 
     public String token;
-    public static UUID uuid;
     final static String TAG = "CreateProfile";
 
     @Override
@@ -139,7 +137,6 @@ public class CreateProfile extends AppCompatActivity {
         try {
             //input your API parameters
             newprofile.put("displayName",name);
-            //newprofile.put("userID",uuidstr);
             newprofile.put("coopStatus", coop);
             newprofile.put("yearStanding", yearstand);
 

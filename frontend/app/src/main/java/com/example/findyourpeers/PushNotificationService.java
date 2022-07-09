@@ -18,7 +18,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
 
 
 public class PushNotificationService extends FirebaseMessagingService {
@@ -29,7 +28,7 @@ public class PushNotificationService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         //make the api call to update the token for the user
-        String uuidString = CreateProfile.uuid.toString();
+        String uuidString = CreateProfile.usernameStr.toString();
 //        Log.d(TAG, "phad lo token " + token + " " + uuidString);
         postDatausingVolley(uuidString, token);
 

@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.UUID;
+
 
 public class BrowseCourse extends AppCompatActivity {
 
