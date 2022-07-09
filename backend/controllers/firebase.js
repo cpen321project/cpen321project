@@ -144,11 +144,16 @@ module.exports = {
 
         try {
 
+            var take, regToken
+
             let resultstudents = await dbCourse.collection(groupID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray(); 
             
              resultstudents.forEach(  async student => {
                 try{
-                userToken = await (userCollection.findOne({ userID: student.userID }).registrationToken)
+                    take = await userCollection.findOne({ userID: student.userID });
+                    console.log("Take= "+ take.displayName)
+                    regToken = take.registrationToken;
+                    console.log("regToken: "+ regToken);
                 }
                 catch (err) {
                     console.log("Failure to retrieve registration token from db, error : " + err)
