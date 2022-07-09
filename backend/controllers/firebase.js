@@ -1,15 +1,15 @@
-// there needs to be a credential variable saved in the terminal, don't forget to save that in the deployment
-
 // const { initializeApp } = require('firebase-admin/app');
 
 // const admin = initializeApp();
 
 // const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-admin.initializeApp({ credential: admin.credential.applicationDefault() });
+// const admin = require("firebase-admin");
+// admin.initializeApp({ credential: admin.credential.applicationDefault() });
     // credential: applicationDefault(),
     //databaseURL: 'https://<DATABASE_NAME>.firebaseio.com' dont think we need it at the moment
-
+const admin = require("firebase-admin");
+const serviceAccount = require("../serviceKey.json");
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
 // const { client } = require("./db/dbConnector.js");
 // let dbUser, dbCourse, userCollection
@@ -45,58 +45,93 @@ userCollection = dbUser.collection("userCollection")
 
 
 module.exports = {
-    _userAddedNotification: async (userID, courseID) => {
+    userAddedNotification: (userID, courseID) => {
 
-
-        // #TODO: check the await thing here please as well
         try {
-            let otherstudents = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
+             dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, otherstudents) => {
+                if (err) {
+                    console.error(err)
+                    res.status(500).json({ err: err })
+                    return
+                }
+            })
 
-            otherstudents.remove(userID);
-            theTokens = [];
+            otherstudents.remove(userID)
+            theTokens = []
             otherstudents.forEach(student => {
-                regToken = (userCollection.findOne({ userID: student.userID }).registrationToken);
+                regToken = (userCollection.findOne({ userID: student.userID }).registrationToken)
                 const message = {
-                    notification: {
-                        title: 'A New User Joined ' + courseID,
-                        body: 'Say Hi to the new user who just joined the course' + courseID,
+                    notification: { 
+                        title: 'A New User Joined ' + courseID, 
+                        body: 'Say Hi to the new user who just joined the course' + courseID, 
                     },
-                    token: tokss,
+                    token: tokss, // what is tokss ? @abhishek
+                
                 };
 
                 admin.messaging().send(message)
-                    .then((response) => {
-                        if (response.failureCount > 0) {
-                            const failedTokens = [];
-                            response.responses.forEach((resp, idx) => {
-                                if (!resp.success) {
-                                    failedTokens.push(registrationTokens[idx]);
-                                }
-                            });
-                            console.log('List of tokens that caused failures: ' + failedTokens);
-                        }
-                        else {
-                            console.log('Successfully sent message to a user : ' + student.userID);
-                        }
-                    });
+                .then((response) => {
+                    if (response.failureCount > 0) {
+                        const failedTokens = [];
+                        response.responses.forEach((resp, idx) => {
+                            if (!resp.success) {
+                                failedTokens.push(registrationTokens[idx]);
+                            }
+                        });
+                        console.log('List of tokens that caused failures: ' + failedTokens);
+                    }
+                    else{
+                        console.log('Successfully sent message to a user : ' + student.userID);
+                    }
+                }); 
             });
+            
+
+
+
+
+
+
+            
+        
+
+            // These registration tokens come from the client FCM SDKs.
+            // const registrationTokens = theTokens;
+
+            // const message = {
+            //     notification: { 
+            //         title: 'New user in' + courseID, 
+            //         body: 'Say Hi to '+ userID.displayName + ' who just joined the course' + courseID 
+            //     },
+            //     tokens: registrationTokens,
+            // };
+
+            // app.getMessaging().sendMulticast(message)
+            //     .then((response) => {
+            //         if (response.failureCount > 0) {
+            //             const failedTokens = [];
+            //             response.responses.forEach((resp, idx) => {
+            //                 if (!resp.success) {
+            //                     failedTokens.push(registrationTokens[idx]);
+            //                 }
+            //             });
+            //             console.log('List of tokens that caused failures: ' + failedTokens);
+            //         }
+            //         else{
+            //             console.log('Successfully sent message to all tokens');
+            //         }
+            //     });
 
         }
 
         catch (err) {
-            console.log("For sending user added notification, the err:" + err);
+            console.log("For sending user added notification, the err:" + err)
             // res.status(400).send(err)
         }
 
 
 
 
-    },
-    get userAddedNotification() {
-        return this._userAddedNotification;
-    },
-    set userAddedNotification(value) {
-        this._userAddedNotification = value;
     },
 
     newRegistrationToken : async (req,res) => {
@@ -121,27 +156,21 @@ module.exports = {
         }
        
     },
-// displayName:0, userID:1, coopStatus:0, yearStanding:0, registrationToken:1, courselist:0, blockedUser:0
 
-    privateMessageNotification : async (senderName, receiverID) => {
-
-        try {
-
-            // #TODO: clean this await thing
-            let resultstudent = await userCollection.findOne({ userID: receiverID }) 
+    testMessageSyntax : (thetoken) => {
         
+        thetoken.forEach(tokss => {
+        const message = {
+            notification: { 
+                title: 'notification works', 
+                body: 'my bodddyyyyyy big big body' 
+            },
+            token: tokss,
+        
+        };
+    
 
-            // regToken = (userCollection.findOne({ userID: receiverID }).registrationToken)
-            const message = {
-                notification: { 
-                    title: 'Private Message from ' + senderName, 
-                    body: "You've got a private message from " + senderName, 
-                },
-                token: resultstudent.registrationToken,
-            };
-
-
-            admin.messaging().send(message)
+        admin.messaging().send(message)
             .then((response) => {
                 if (response.failureCount > 0) {
                     const failedTokens = [];
@@ -150,58 +179,55 @@ module.exports = {
                             failedTokens.push(registrationTokens[idx]);
                         }
                     });
-                    console.log('Private message notification failure, token: ' + failedTokens);
+                    console.log('List of tokens that caused failures: ' + failedTokens);
                 }
                 else{
-                    console.log('Successfully sent message notification to a user : ' + resultstudent.userID);
+                    console.log('Successfully sent message to all tokens');
                 }
             }); 
-       }
-       catch (err) {
-           console.log("Failure to send private message notification, the err: " + err)
-           // res.status(400).send(err)
-       }
+        });
+        
+    
     },
-
-    groupMessageNotification : async (senderName, groupID) => {
-
-    }
-
-
-    // testMessageSyntax : (thetoken) => {
-        
-    //     thetoken.forEach(tokss => {
-    //     const message = {
-    //         notification: { 
-    //             title: 'notification works', 
-    //             body: 'my bodddyyyyyy big big body' 
-    //         },
-    //         token: tokss,
-        
-    //     };
-    
-
-    //     admin.messaging().send(message)
-    //         .then((response) => {
-    //             if (response.failureCount > 0) {
-    //                 const failedTokens = [];
-    //                 response.responses.forEach((resp, idx) => {
-    //                     if (!resp.success) {
-    //                         failedTokens.push(registrationTokens[idx]);
-    //                     }
-    //                 });
-    //                 console.log('List of tokens that caused failures: ' + failedTokens);
-    //             }
-    //             else{
-    //                 console.log('Successfully sent message to all tokens');
-    //             }
-    //         }); 
-    //     });
-        
-    
-    // },
 
     // sendMessageNotification : (stff,stuff2) = {
     // need to do this for message notifications
     // },
+    
+    // rn, tokens are not saved for the users, results in error: "Exactly one of topic, token or condition is required"
+    sendPrivateMessageNotification: (senderName, receiverID) => {
+
+        try {
+            let regToken = (userCollection.findOne({ userID: receiverID }).registrationToken)
+                const message = {
+                    notification: { 
+                        title: 'New message from ' + senderName, 
+                        body: 'You have a new message', 
+                    },
+                    token: regToken, // is this correct? @abhishek
+                };
+
+                admin.messaging().send(message)
+                .then((response) => {
+                    if (response.failureCount > 0) {
+                        const failedTokens = [];
+                        response.responses.forEach((resp, idx) => {
+                            if (!resp.success) {
+                                failedTokens.push(registrationTokens[idx]);
+                            }
+                        });
+                        console.log('List of tokens that caused failures: ' + failedTokens);
+                    }
+                    else{
+                        console.log('Successfully sent message to a user : ' + student.userID);
+                    }
+                });
+        }
+
+        catch (err) {
+            console.log("sendPrivateMessageNotification error: " + err)
+            // res.status(400).send(err)
+        }
+
+    },
 };
