@@ -14,6 +14,12 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool({
     ClientId: CLIENTID
 });
 
+//AWS cognito generates two pairs of RSA keys (a public and local key) for each userpool,
+// the public key available at the following URL, and the local key is generated when user logs in
+const url = COGNITO_ISSUER + '/.well-known/jwks.json'
+const publicKey = await Axios.get(url)
+
+
 //Update AWS configuration with the correct credentials and region
 AWS.config.update({
     credentials: {
@@ -107,20 +113,11 @@ exports.resendConfrimationCode = async (username) => {
     })
 }
 
-exports.confirmAccessToken = (accessToken) => {
-    return new Promise((resolve, reject) => {
-
-        cognito.getUser({ "AccessToken": accessToken}, (err, res) => {
-            if (err){
-                reject(err) //Example err code: NotAuthorizedException
-            }
-            resolve(res)
-        })
-    })
-}
-
 exports.validateAccessToken = async (JWT, userID) => {
+    // Decodes and verifies a jwt access token 
     // Referneced from: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html
+    // For future reference: https://github.com/awslabs/aws-jwt-verify is a library maintained by AWS to verify JSON Web Tokens,
+    // we did NOT use this library for the purposes of this course
 
     const invalidTokenError = new Error('Invalid Token')
 
@@ -130,15 +127,6 @@ exports.validateAccessToken = async (JWT, userID) => {
         throw (invalidTokenError)
 
     // Step 2: Validate the JWT signature
-    try {
-        //AWS cognito generates two pairs of RSA keys (a public and local key) for each userpool,
-        // the public key available at the following URL, and the local key is generated when user logs in
-        const url = COGNITO_ISSUER + '/.well-known/jwks.json'
-        publicKey = await Axios.get(url)
-    }
-    catch {
-        throw (new Error('Invalid USERPOOLID'))
-    }
     const keys = publicKey.data.keys
     decodedTokenHeader = JSON.parse(Buffer.from(tokenHeader, 'base64').toString('utf8'))
     // compare the local key ID (kid) to the public kid
@@ -164,5 +152,7 @@ exports.validateAccessToken = async (JWT, userID) => {
     if (decodedtokenPayload.client_id != CLIENTID
         || decodedtokenPayload.token_use != 'access'
         || decodedtokenPayload.iss != COGNITO_ISSUER
-        || decodedtokenPayload.sub != userID);
+        || decodedtokenPayload.sub != userID) {
+            throw (invalidTokenError)
+        }
 }
