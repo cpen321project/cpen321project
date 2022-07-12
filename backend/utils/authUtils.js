@@ -1,10 +1,14 @@
 const AWS = require('aws-sdk')
-var express = require("express")
-const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+const Axios = require('axios')
+const jwkToPem = require('jwk-to-pem')
+const crypto = require('crypto')
+const AmazonCognitoIdentity = require('amazon-cognito-identity-js')
+
 const AWS_ACCESS_KEY_ID = "AKIATNLYKFHXVBMV5DOO"
 const AWS_SECRET_ACCESS_KEY = "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"
 const USERPOOLID = "us-west-2_LJltK6RSZ"
 const CLIENTID = "7docu6553pf9vi5ipv1ig1huns"
+const COGNITO_ISSUER = `https://cognito-idp.us-west-2.amazonaws.com/${USERPOOLID}`
 const userPool = new AmazonCognitoIdentity.CognitoUserPool({
     UserPoolId: USERPOOLID,
     ClientId: CLIENTID
@@ -25,6 +29,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
 
 exports.signUserUp = (email, password, username) => {
     // Signs the user up and sends a confirmation code to the provided email
+    // Returns a user uuid
     return new Promise ((resolve, reject) => {
         const cognitoParams = {
             "ClientId": CLIENTID,
@@ -40,7 +45,7 @@ exports.signUserUp = (email, password, username) => {
         cognito.signUp(cognitoParams, function (err, res) {
             if (err)
                 reject(err)    // Example error codes: InvalidPasswordException, InvalidParameterException (invalid email address)
-            resolve(res)
+            resolve(res.UserSub)
         })
     })
 }
@@ -78,7 +83,8 @@ exports.login = (username, password) => {
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: function (result) {
                 var accessToken = result.getAccessToken().getJwtToken();
-                resolve(accessToken)
+                var userID = result.getAccessToken().payload.sub
+                resolve(accessToken, userID)
             },
             onFailure: (function (err) {
                 reject(err)
@@ -99,21 +105,64 @@ exports.resendConfrimationCode = async (username) => {
             throw (err)
         }
     })
-} 
+}
 
 exports.confirmAccessToken = (accessToken) => {
     return new Promise((resolve, reject) => {
 
         cognito.getUser({ "AccessToken": accessToken}, (err, res) => {
             if (err){
-                console.log(err)
                 reject(err) //Example err code: NotAuthorizedException
             }
-            console.log(res)
-            resolve(res) 
+            resolve(res)
         })
     })
 }
 
+exports.validateAccessToken = async (JWT, userID) => {
+    // Referneced from: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html
 
+    const invalidTokenError = new Error('Invalid Token')
 
+    // Step 1: Confirm the structure of the JWT
+    const JWTSections = [tokenHeader, tokenPayload, tokenSignature] = JWT.split('.')
+    if (JWTSections.length != 3)
+        throw (invalidTokenError)
+
+    // Step 2: Validate the JWT signature
+    try {
+        //AWS cognito generates two pairs of RSA keys (a public and local key) for each userpool,
+        // the public key available at the following URL, and the local key is generated when user logs in
+        const url = COGNITO_ISSUER + '/.well-known/jwks.json'
+        publicKey = await Axios.get(url)
+    }
+    catch {
+        throw (new Error('Invalid USERPOOLID'))
+    }
+    const keys = publicKey.data.keys
+    decodedTokenHeader = JSON.parse(Buffer.from(tokenHeader, 'base64').toString('utf8'))
+    // compare the local key ID (kid) to the public kid
+    if (keys[1].kid != decodedTokenHeader.kid) {
+        throw (invalidTokenError)
+    }
+    decodedtokenPayload = JSON.parse(Buffer.from(tokenPayload, 'base64').toString('utf8'))
+    let currentTimestamp = Math.floor((new Date()).valueOf() / 1000)
+    // verify token is not expired
+    if (currentTimestamp > decodedtokenPayload.exp) {
+        throw (invalidTokenError)
+    }
+    // verify token signature
+    var pem = jwkToPem(keys[1]);
+    validSignature = crypto.createVerify('RSA-SHA256')
+                    .update(`${ tokenHeader }.${ tokenPayload }`)
+                    .verify(crypto.createPublicKey(pem), tokenSignature, 'base64')
+    if(!validSignature) {
+        throw (invalidTokenError)
+    }
+
+   // Step 3: Verify the claims
+    if (decodedtokenPayload.client_id != CLIENTID
+        || decodedtokenPayload.token_use != 'access'
+        || decodedtokenPayload.iss != COGNITO_ISSUER
+        || decodedtokenPayload.sub != userID);
+}
