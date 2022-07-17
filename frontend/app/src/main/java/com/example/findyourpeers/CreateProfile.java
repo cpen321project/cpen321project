@@ -31,7 +31,6 @@ import org.json.JSONObject;
 public class CreateProfile extends AppCompatActivity {
 
     private EditText displayName;
-    private Spinner yearSpinner;
     public String displayNameStr;
     public String coopStatus;
     public String yearStanding;
@@ -59,7 +58,7 @@ public class CreateProfile extends AppCompatActivity {
         coopSpinner.setAdapter(coopAdapter);
         coopSpinner.setOnItemSelectedListener(new CoopSpinnerClass());
 
-        yearSpinner = (Spinner) findViewById(R.id.spinner_yearstanding);
+        Spinner yearSpinner = (Spinner) findViewById(R.id.spinner_yearstanding);
         ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this, R.array.year_standing, android.R.layout.simple_spinner_item);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);

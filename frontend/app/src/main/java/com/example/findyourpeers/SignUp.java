@@ -26,8 +26,6 @@ public class SignUp extends AppCompatActivity {
     private EditText emailSU;
     private EditText usernameSU;
     private EditText passwordSU;
-    private String usernameStr;
-    private String passwordStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +41,8 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String emailStr = emailSU.getText().toString();
-                usernameStr = usernameSU.getText().toString();
-                passwordStr = passwordSU.getText().toString();
+                String usernameStr = usernameSU.getText().toString();
+                String passwordStr = passwordSU.getText().toString();
 
                 if (emailStr.isEmpty() || usernameStr.isEmpty() || passwordStr.isEmpty()) {
                     Toast.makeText(SignUp.this, "Please enter all fields", Toast.LENGTH_SHORT).show();

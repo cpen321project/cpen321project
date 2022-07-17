@@ -24,7 +24,6 @@ public class LoginPage extends AppCompatActivity {
 
     private EditText unameET;
     private EditText passwordET;
-    private String unameStr;
 
 
     @Override
@@ -39,7 +38,7 @@ public class LoginPage extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                unameStr= unameET.getText().toString();
+                String unameStr= unameET.getText().toString();
                 String passwordStr = passwordET.getText().toString();
                 postLoginData(unameStr,passwordStr);
 

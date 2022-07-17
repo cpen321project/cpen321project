@@ -32,7 +32,6 @@ public class ProfilePage extends AppCompatActivity {
     private TextView coopTV;
     private TextView yearTV;
     private String displayname;
-    private String yearstanding;
     public LinearLayout layoutCourseButton;
 
     @Override
@@ -69,7 +68,7 @@ public class ProfilePage extends AppCompatActivity {
                             // Get the current student (json object) data
                             displayname = student.getString("displayName");
                             String coopstatus = student.getString("coopStatus");
-                            yearstanding = student.getString("yearStanding");
+                            String yearstanding = student.getString("yearStanding");
                             JSONArray coursesJSONArray= student.getJSONArray("courselist");
 
                             //ArrayList<Object> courseArrayList = new ArrayList<Object>();

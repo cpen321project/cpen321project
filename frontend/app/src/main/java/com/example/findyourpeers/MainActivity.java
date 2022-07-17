@@ -18,7 +18,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button signUpButton;
     final static String TAG = "MainActivity";
     public String token;
     /*private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
    
 
-        signUpButton = findViewById(R.id.signup_button);
+        Button signUpButton = findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
