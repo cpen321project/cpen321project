@@ -25,18 +25,30 @@ module.exports = {
     },
 
     addUserToCourse :  async (req, res) => {
-        try{
+        try {
             await dbCourse.collection(req.body.coursename).insertOne({
                 displayName: req.body.displayName,
                 userID: req.body.userID,
               })
-            res.status(200).send("User added successfully\n")
-            notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
-        }
-        catch(err){
-            console.log(err)
+        } catch (err) {
+            console.log("Error in addUserToCourse: " + err)
             res.status(400).send(err)
         }
+        console.log("User added successfully")
+        res.status(200).send("User added successfully\n")
+        notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+        // try{
+        //     await dbCourse.collection(req.body.coursename).insertOne({
+        //         displayName: req.body.displayName,
+        //         userID: req.body.userID,
+        //       })
+        //     res.status(200).send("User added successfully\n")
+        //     notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+        // }
+        // catch(err){
+        //     console.log(err)
+        //     res.status(400).send(err)
+        // }
     }, 
 
     addCourseToUser : async (req, res) => {
