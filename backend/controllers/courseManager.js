@@ -13,21 +13,15 @@ userCollection = dbUser.collection("userCollection")
 
 module.exports = {
     getStudentList : async (req, res) => {
-        try {
-            var coursenamespace = req.params.coursename.substring(0,4)+ " "+req.params.coursename.substring(4,req.params.coursename.length)
-            dbCourse.collection(coursenamespace).find({}).project({userID:1, displayName:1, _id:0}).toArray((err, resultstudent) => {
-              if (err) {
-                console.error(err)
-                res.status(500).json({ err: err })
-                return
-              }
-              res.status(200).json(resultstudent)
-            })
-        } catch (error) {
-            console.log(error)
-            return res.status(500).json({ success: false, error })
-        }
-        
+        var coursenamespace = req.params.coursename.substring(0,4)+ " "+req.params.coursename.substring(4,req.params.coursename.length)
+        dbCourse.collection(coursenamespace).find({}).project({userID:1, displayName:1, _id:0}).toArray((err, resultstudent) => {
+            if (err) {
+            console.error(err)
+            res.status(500).json({ err })
+            return
+            }
+            res.status(200).json(resultstudent)
+        })
     },
 
     addUserToCourse :  async (req, res) => {
