@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -69,13 +70,14 @@ public class BrowseCourse extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(BrowseCourse.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
-                String body;
+                //String body;
                 //get status code here
                 //String statusCode = String.valueOf(error.networkResponse.statusCode);
                 //get response body and parse with appropriate encoding
                 if(error.networkResponse.data!=null) {
                     try {
-                        body = new String(error.networkResponse.data,"UTF-8");
+                        String body = new String(error.networkResponse.data,"UTF-8");
+                        Log.d("Browse Course", body);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
