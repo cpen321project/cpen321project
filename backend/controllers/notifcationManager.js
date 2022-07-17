@@ -3,7 +3,6 @@ const serviceAccount = require("../serviceKey.json");
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
 const {MongoClient} = require("mongodb");
-const e = require("express");
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()

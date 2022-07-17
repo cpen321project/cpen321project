@@ -24,17 +24,10 @@ const chatEngine = require('./controllers/chatEngine.js')
 
 app.use(express.json())
 
-let dbUser, dbCourse, userCollection
-
 //---------------------------------------------------------------------------------------
 server.listen(port, () => {
     console.log('Node app is running on port: ' + port)
 })
-
-dbUser = client.db("user")
-dbCourse= client.db("course")
-userCollection = dbUser.collection("userCollection")
-
 
 // testing the firebase messaging syntax
 // tokss = 'dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA'
