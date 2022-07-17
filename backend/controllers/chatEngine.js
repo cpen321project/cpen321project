@@ -33,7 +33,7 @@ module.exports = {
             console.log("chatEngine: trying to get convo at groupID: " + groupID)
 
             Message
-                .find({ groupID: groupID })
+                .find({ groupID })
                 .select({ 
                     _id: 0,
                     senderName: 1,
@@ -92,8 +92,8 @@ module.exports = {
                 .find({
                     $or: [
                         {
-                            'senderID': senderID, 
-                            'receiverID':  receiverID
+                            senderID, 
+                            receiverID
                         }, 
                         {
                             'senderID': receiverID, 
