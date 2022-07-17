@@ -111,8 +111,8 @@ public class ChatActivity extends AppCompatActivity {
                                         JSONObject msg = msgsArray.getJSONObject(i);
 //                                Log.d("ChatActivity", "msg: " + msg);
 
-                                        String nickname = msg.getString("postedByUser");
-                                        String message = msg.getString("message");
+                                        String nickname = msg.getString("senderName");
+                                        String message = msg.getString("messageContent");
 //                                Log.d("ChatActivity", "nickname: " + nickname);
                                         Log.d("ChatActivity", "message: " + message);
 

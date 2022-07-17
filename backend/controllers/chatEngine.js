@@ -11,9 +11,9 @@ module.exports = {
     saveMessageToDB: (groupID, senderName, messageContent) => {
         let messageToSaveToDB = Message(
             {
-                groupID: groupID,
-                postedByUser: senderName,
-                message: messageContent
+                groupID,
+                senderName,
+                messageContent
             }
         )
 
@@ -33,11 +33,11 @@ module.exports = {
             console.log("chatEngine: trying to get convo at groupID: " + groupID)
 
             Message
-                .find({ 'groupID': groupID })
+                .find({ groupID: groupID })
                 .select({ 
                     _id: 0,
-                    postedByUser: 1,
-                    message: 1                
+                    senderName: 1,
+                    messageContent: 1                
                 }) 
                 .sort({ createdAt: 'asc' }) 
                 .exec((err, retrievedMsgs) => {
@@ -56,11 +56,11 @@ module.exports = {
     savePrivateMessageToDB: (senderName, senderID, receiverName, receiverID, messageContent) => {
         let messageToSaveToDB = PrivateMessage(
             {
-                senderName: senderName,
-                senderID: senderID,
-                receiverName: receiverName,
-                receiverID: receiverID,
-                messageContent: messageContent
+                senderName,
+                senderID,
+                receiverName,
+                receiverID,
+                messageContent
             }
         )
 
