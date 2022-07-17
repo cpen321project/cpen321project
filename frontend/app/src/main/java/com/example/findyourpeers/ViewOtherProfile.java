@@ -108,7 +108,7 @@ public class ViewOtherProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent privateChatIntent = new Intent(ViewOtherProfile.this,
-                        privateChatActivity.class);
+                        PrivateChatActivity.class);
                 if (currentUserDisplayName.equals(otherdisplayname)) {
                     Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
                             Toast.LENGTH_SHORT).show();

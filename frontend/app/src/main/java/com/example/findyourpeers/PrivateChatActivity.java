@@ -32,7 +32,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class privateChatActivity extends AppCompatActivity {
+public class PrivateChatActivity extends AppCompatActivity {
     private Socket socket;
     private String senderName;
     private String receiverName;
@@ -60,8 +60,8 @@ public class privateChatActivity extends AppCompatActivity {
 
         receiverName = privateChatIntent.getExtras().getString("receiverName");
         senderName = privateChatIntent.getExtras().getString("senderName");
-        Log.d("privateChatActivity", "senderName: " + senderName);
-        Log.d("privateChatActivity", "receiverName: " + receiverName);
+        Log.d("PrivateChatActivity", "senderName: " + senderName);
+        Log.d("PrivateChatActivity", "receiverName: " + receiverName);
 
         receiverID = privateChatIntent.getExtras().getString("userID");
         senderID = privateChatIntent.getExtras().getString("currentUserID");
@@ -107,7 +107,7 @@ public class privateChatActivity extends AppCompatActivity {
 
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
-                                        Log.d("privateChatActivity", "message: " + message);
+                                        Log.d("PrivateChatActivity", "message: " + message);
 
                                         Message m = new Message(nickname, message);
                                         MessageList.add(m);
@@ -124,7 +124,7 @@ public class privateChatActivity extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("privateChatActivity", "Volley request error");
+                        Log.d("PrivateChatActivity", "Volley request error");
                     }
                 });
 
@@ -138,11 +138,11 @@ public class privateChatActivity extends AppCompatActivity {
             socket.connect();
 
             socket.emit("joinPrivateChat", senderName);
-            Log.d("privateChatActivity", "Joining private chat: " + senderName);
+            Log.d("PrivateChatActivity", "Joining private chat: " + senderName);
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Log.d("privateChatActivity", "Error connect to socket");
+            Log.d("PrivateChatActivity", "Error connect to socket");
         }
 
         // send message action
@@ -150,10 +150,10 @@ public class privateChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(messageTxt.getText().toString().isEmpty()){
-                    Toast.makeText(privateChatActivity.this,
+                    Toast.makeText(PrivateChatActivity.this,
                             "Cannot send empty message", Toast.LENGTH_SHORT).show();
                 } else if (isBlocked == 1){
-                    Toast.makeText(privateChatActivity.this,
+                    Toast.makeText(PrivateChatActivity.this,
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
                     socket.emit("privateMessage",
@@ -174,7 +174,7 @@ public class privateChatActivity extends AppCompatActivity {
 
                     messageTxt.setText("");
 
-                    Log.d("privateChatActivity", "Message emitted to server");
+                    Log.d("PrivateChatActivity", "Message emitted to server");
                 }
             }
         });
