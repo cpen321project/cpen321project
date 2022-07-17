@@ -2,7 +2,8 @@ const admin = require("firebase-admin");
 const serviceAccount = require("../serviceKey.json");
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
-const {MongoClient} = require("mongodb")
+const {MongoClient} = require("mongodb");
+const e = require("express");
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
@@ -25,14 +26,10 @@ module.exports = {
         theTokens = [];
         otherstudents.forEach( async student => {
             console.log("Student: "+ student.displayName)
-            try {
-                take = await userCollection.findOne({ userID: student.userID });
-                console.log("Take= "+ take.displayName)
-                regToken = take.registrationToken;
-                console.log("regToken: "+ regToken);
-            } catch (err) {
-                console.log("For finding user in userCollection : " + err);
-            }
+            take = await userCollection.findOne({ userID: student.userID });
+            console.log("Take= "+ take.displayName)
+            regToken = take.registrationToken;
+            console.log("regToken: "+ regToken);
             
             const message = {
                 notification: {
@@ -119,14 +116,10 @@ module.exports = {
         let resultstudents = await dbCourse.collection(groupID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray(); 
         
         resultstudents.forEach( async (student) => {
-            try {
-                take = await userCollection.findOne({ userID: student.userID });
-                console.log("Take= "+ take.displayName)
-                userToken = take.registrationToken;
-                console.log("userToken: "+ userToken);
-            } catch (err) {
-                console.log("Failure to retrieve registration token from db, error : " + err)
-            }
+            take = await userCollection.findOne({ userID: student.userID });
+            console.log("Take= "+ take.displayName)
+            userToken = take.registrationToken;
+            console.log("userToken: "+ userToken);
 
             const message = {
                 notification: { 
