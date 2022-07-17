@@ -79,9 +79,9 @@ exports.login = (username, password) => {
                 var accessToken = result.getAccessToken().getJwtToken();
                 resolve(accessToken)
             },
-            onFailure: (function (err) {
+            onFailure: function (err) {
                 reject(err)
-            })
+            }
         })
     })
 
