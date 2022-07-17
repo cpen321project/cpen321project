@@ -143,7 +143,7 @@ module.exports = {
             (err, result) => {
                 if (err) {
                     console.error(err)
-                    res.status(500).json({ err: err })
+                    res.status(400).send(err)
                 } else {
                     res.status(200).json({ ok: true })
                 }
@@ -155,7 +155,7 @@ module.exports = {
         userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUser": req.body.blockedUserAdd } }, (err, result) => {
             if (err) {
                 console.error(err)
-                res.status(500).json({ err: err })
+                res.status(400).send(err)
             } else {
                 res.status(200).json({ ok: true })
             }
@@ -163,7 +163,7 @@ module.exports = {
     },
 
     getDisplayNamebyUserID: async (userID) => {
-        let retrievedUser = await userCollection.findOne({ "userID": userID })
+        let retrievedUser = await userCollection.findOne({ userID })
         return retrievedUser.displayName
     }
 
