@@ -23,9 +23,9 @@ import org.json.JSONObject;
 
 public class SignUp extends AppCompatActivity {
 
-    private EditText emailSU, usernameSU, passwordSU;
-    private String emailStr, usernameStr, passwordStr;
-    private Button getCodeBtn;
+    private EditText emailSU;
+    private EditText usernameSU;
+    private EditText passwordSU;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +36,13 @@ public class SignUp extends AppCompatActivity {
         usernameSU = (EditText) findViewById(R.id.username_signup);
         passwordSU = (EditText) findViewById(R.id.password_signup);
 
-        getCodeBtn = findViewById(R.id.verify_email_button);
+        Button getCodeBtn = findViewById(R.id.verify_email_button);
         getCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emailStr = emailSU.getText().toString();
-                usernameStr = usernameSU.getText().toString();
-                passwordStr = passwordSU.getText().toString();
+                String emailStr = emailSU.getText().toString();
+                String usernameStr = usernameSU.getText().toString();
+                String passwordStr = passwordSU.getText().toString();
 
                 if (emailStr.isEmpty() || usernameStr.isEmpty() || passwordStr.isEmpty()) {
                     Toast.makeText(SignUp.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
@@ -74,7 +74,8 @@ public class SignUp extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String success, result;
+                        String success;
+                        String result;
                         try {
                             success = response.getString("success");
                             Log.d("SignUp", "success? : "+success);

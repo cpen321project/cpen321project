@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -17,7 +18,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -30,7 +30,8 @@ import java.util.ArrayList;
 
 public class BrowseCourse extends AppCompatActivity {
 
-    public String userID, displayName;
+    public String userID;
+    public String displayName;
     public ArrayList<String> studentCourseList;
 
     @Override
@@ -69,13 +70,14 @@ public class BrowseCourse extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(BrowseCourse.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
-                String body;
+                //String body;
                 //get status code here
-                String statusCode = String.valueOf(error.networkResponse.statusCode);
+                //String statusCode = String.valueOf(error.networkResponse.statusCode);
                 //get response body and parse with appropriate encoding
                 if(error.networkResponse.data!=null) {
                     try {
-                        body = new String(error.networkResponse.data,"UTF-8");
+                        String body = new String(error.networkResponse.data,"UTF-8");
+                        Log.d("Browse Course", body);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

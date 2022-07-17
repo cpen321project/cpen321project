@@ -48,7 +48,7 @@
 
         </activity>
         <activity
-            android:name=".privateChatActivity"
+            android:name=".PrivateChatActivity"
             android:exported="false" />
         <activity
             android:name=".ChatActivity"

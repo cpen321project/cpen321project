@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,16 +23,15 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
 
-    private TextView displaynameTV, coopTV, yearTV;
-    private Button findCourseBtn;
-    private String displayname, yearstanding, coopstatus;
+    private TextView displaynameTV;
+    private TextView coopTV;
+    private TextView yearTV;
+    private String displayname;
     public LinearLayout layoutCourseButton;
 
     @Override
@@ -69,8 +67,8 @@ public class ProfilePage extends AppCompatActivity {
 
                             // Get the current student (json object) data
                             displayname = student.getString("displayName");
-                            coopstatus = student.getString("coopStatus");
-                            yearstanding = student.getString("yearStanding");
+                            String coopstatus = student.getString("coopStatus");
+                            String yearstanding = student.getString("yearStanding");
                             JSONArray coursesJSONArray= student.getJSONArray("courselist");
 
                             //ArrayList<Object> courseArrayList = new ArrayList<Object>();
@@ -112,7 +110,7 @@ public class ProfilePage extends AppCompatActivity {
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
 
-        findCourseBtn = (Button) findViewById(R.id.find_course_button);
+        Button findCourseBtn = (Button) findViewById(R.id.find_course_button);
         findCourseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

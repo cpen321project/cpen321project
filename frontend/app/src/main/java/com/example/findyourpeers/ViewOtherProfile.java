@@ -24,10 +24,10 @@ import org.json.JSONObject;
 
 public class ViewOtherProfile extends AppCompatActivity {
 
-    private TextView otherDisplayNameTV, otherCoopTV, otherYearTV;
-    private String otherdisplayname, otheryearstanding, othercoopstatus;
-
-    private Button messageButton, blockButton;
+    private TextView otherDisplayNameTV;
+    private TextView otherCoopTV;
+    private TextView otherYearTV;
+    private String otherdisplayname;
 
     private int isBlocked = 0;
     private boolean otherUserIsBlockedAlready = false;
@@ -65,8 +65,8 @@ public class ViewOtherProfile extends AppCompatActivity {
 
                             // Get the current student (json object) data
                             otherdisplayname = student.getString("displayName");
-                            othercoopstatus = student.getString("coopStatus");
-                            otheryearstanding = student.getString("yearStanding");
+                            String othercoopstatus = student.getString("coopStatus");
+                            String otheryearstanding = student.getString("yearStanding");
                             JSONArray blockedUsersJSONArray= student.getJSONArray("blockedUser");
                             // check if this other user has blocked the current user
                             for (int i = 0; i < blockedUsersJSONArray.length(); i++) {
@@ -103,12 +103,12 @@ public class ViewOtherProfile extends AppCompatActivity {
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
 
-        messageButton = findViewById(R.id.button_message);
+        Button messageButton = findViewById(R.id.button_message);
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent privateChatIntent = new Intent(ViewOtherProfile.this,
-                        privateChatActivity.class);
+                        PrivateChatActivity.class);
                 if (currentUserDisplayName.equals(otherdisplayname)) {
                     Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
                             Toast.LENGTH_SHORT).show();
@@ -124,7 +124,7 @@ public class ViewOtherProfile extends AppCompatActivity {
             }
         });
 
-        blockButton = findViewById(R.id.button_block);
+        Button blockButton = findViewById(R.id.button_block);
         blockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

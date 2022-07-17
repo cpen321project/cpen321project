@@ -5,11 +5,11 @@ const messageSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
-      default: () => uuidv4().replace(/\-/g, ""),
+      default: () => uuidv4().replaceAll("-", ""),
     },
     groupID: String,
-    postedByUser: String,
-    message: mongoose.Schema.Types.Mixed,
+    senderName: String,
+    messageContent: mongoose.Schema.Types.Mixed,
   },
   {
     timestamps: true,

@@ -5,7 +5,7 @@ const privateMessageSchema = new mongoose.Schema(
     {
         _id: {
             type: String,
-            default: () => uuidv4().replace(/\-/g, ""),
+            default: () => uuidv4().replaceAll("-", ""),
         },
         senderName: String,
         senderID: String,

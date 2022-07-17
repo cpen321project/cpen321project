@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk')
-var express = require("express")
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 const AWS_ACCESS_KEY_ID = "AKIATNLYKFHXVBMV5DOO"
 const AWS_SECRET_ACCESS_KEY = "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"
@@ -80,9 +79,9 @@ exports.login = (username, password) => {
                 var accessToken = result.getAccessToken().getJwtToken();
                 resolve(accessToken)
             },
-            onFailure: (function (err) {
+            onFailure: function (err) {
                 reject(err)
-            })
+            }
         })
     })
 

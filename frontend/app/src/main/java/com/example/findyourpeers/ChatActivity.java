@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +33,8 @@ import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
     private Socket socket;
-    private String Nickname, groupID, userID;
+    private String Nickname;
+    private String groupID;
 
     public RecyclerView myRecyclerView;
     public List<Message> MessageList;
@@ -49,7 +49,7 @@ public class ChatActivity extends AppCompatActivity {
 
         Nickname = getIntent().getExtras().getString("displayname");
         groupID = getIntent().getExtras().getString("coursename");
-        userID = getIntent().getExtras().getString("userID");
+        String userID = getIntent().getExtras().getString("userID");
 
         //https://medium.com/@mohamedaymen.ourabi11/creating-a-realtime-chat-app-with-android-nodejs-and-socket-io-1050bc20c70
 
@@ -111,8 +111,8 @@ public class ChatActivity extends AppCompatActivity {
                                         JSONObject msg = msgsArray.getJSONObject(i);
 //                                Log.d("ChatActivity", "msg: " + msg);
 
-                                        String nickname = msg.getString("postedByUser");
-                                        String message = msg.getString("message");
+                                        String nickname = msg.getString("senderName");
+                                        String message = msg.getString("messageContent");
 //                                Log.d("ChatActivity", "nickname: " + nickname);
                                         Log.d("ChatActivity", "message: " + message);
 
