@@ -108,7 +108,7 @@ public class CreateProfile extends AppCompatActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-
+            // do nothing
         }
     }
 
@@ -120,7 +120,7 @@ public class CreateProfile extends AppCompatActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-
+            // do nothing
         }
     }
 
