@@ -34,7 +34,10 @@ import io.socket.emitter.Emitter;
 
 public class privateChatActivity extends AppCompatActivity {
     private Socket socket;
-    private String senderName, receiverName, senderID, receiverID;
+    private String senderName;
+    private String receiverName;
+    private String senderID;
+    private String receiverID;
 
     // 1 = receiver has blocked sender
     private int isBlocked;// = 0;

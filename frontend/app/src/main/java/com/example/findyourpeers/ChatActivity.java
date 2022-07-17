@@ -34,7 +34,8 @@ import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
     private Socket socket;
-    private String Nickname, groupID, userID;
+    private String Nickname;
+    private String groupID;
 
     public RecyclerView myRecyclerView;
     public List<Message> MessageList;
@@ -49,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
 
         Nickname = getIntent().getExtras().getString("displayname");
         groupID = getIntent().getExtras().getString("coursename");
-        userID = getIntent().getExtras().getString("userID");
+        String userID = getIntent().getExtras().getString("userID");
 
         //https://medium.com/@mohamedaymen.ourabi11/creating-a-realtime-chat-app-with-android-nodejs-and-socket-io-1050bc20c70
 

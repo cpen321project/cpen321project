@@ -23,8 +23,9 @@ import org.json.JSONObject;
 public class EnterCode extends AppCompatActivity {
 
     private EditText verifCode;
-    private String verifCodeStr, emailStr, usernameStr;
-    private Button verifCodeBtn, resendCodeBtn;
+    private String emailStr;
+    private String usernameStr;
+    private Button verifCodeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class EnterCode extends AppCompatActivity {
         verifCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifCodeStr = verifCode.getText().toString();
+                String verifCodeStr = verifCode.getText().toString();
                 if (verifCodeStr.isEmpty()) {
                     Toast.makeText(EnterCode.this, "Please enter verification code", Toast.LENGTH_SHORT).show();
                     return;
@@ -50,7 +51,7 @@ public class EnterCode extends AppCompatActivity {
             }
         });
 
-        resendCodeBtn = findViewById(R.id.resend_code_button);
+        Button resendCodeBtn = findViewById(R.id.resend_code_button);
         resendCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +77,8 @@ public class EnterCode extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String success, result;
+                        String success;
+                        String result;
                         try{
                             success = response.getString("success");
                             Log.d("EnterCode", "success? : "+success);

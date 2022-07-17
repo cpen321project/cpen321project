@@ -32,9 +32,10 @@ import org.json.JSONObject;
 public class CreateProfile extends AppCompatActivity {
 
     private EditText displayName;
-    private Spinner coopSpinner, yearSpinner;
-    private Button registerButton;
-    public String displayNameStr, coopStatus, yearStanding;
+    private Spinner yearSpinner;
+    public String displayNameStr;
+    public String coopStatus;
+    public String yearStanding;
 
     public static String usernameStr;
 
@@ -53,7 +54,7 @@ public class CreateProfile extends AppCompatActivity {
 
         displayName = (EditText) findViewById(R.id.display_name_input);
 
-        coopSpinner = (Spinner) findViewById(R.id.spinner_coop);
+        Spinner coopSpinner = (Spinner) findViewById(R.id.spinner_coop);
         ArrayAdapter<CharSequence> coopAdapter = ArrayAdapter.createFromResource(this, R.array.coop_status, android.R.layout.simple_spinner_item);
         coopAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coopSpinner.setAdapter(coopAdapter);
@@ -65,7 +66,7 @@ public class CreateProfile extends AppCompatActivity {
         yearSpinner.setAdapter(yearAdapter);
         yearSpinner.setOnItemSelectedListener(new YearSpinnerClass());
 
-        registerButton = findViewById(R.id.register_button);
+        Button registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

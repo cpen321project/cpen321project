@@ -29,7 +29,8 @@ import java.util.ArrayList;
 
 public class BrowseCourse extends AppCompatActivity {
 
-    public String userID, displayName;
+    public String userID;
+    public String displayName;
     public ArrayList<String> studentCourseList;
 
     @Override
@@ -70,7 +71,7 @@ public class BrowseCourse extends AppCompatActivity {
                 //Toast.makeText(BrowseCourse.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
                 String body;
                 //get status code here
-                String statusCode = String.valueOf(error.networkResponse.statusCode);
+                //String statusCode = String.valueOf(error.networkResponse.statusCode);
                 //get response body and parse with appropriate encoding
                 if(error.networkResponse.data!=null) {
                     try {

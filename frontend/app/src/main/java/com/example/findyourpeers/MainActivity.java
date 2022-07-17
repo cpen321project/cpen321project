@@ -23,18 +23,17 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button signUpButton, loginBtn;
-    private TextView testText;
+    private Button signUpButton;
     final static String TAG = "MainActivity";
     public String token;
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
+    /*private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     // FCM SDK (and your app) can post notifications.
                 } else {
                     // TODO: Inform user that that your app will not show notifications.
                 }
-            });
+            });*/
 
 
     @Override
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-        loginBtn = findViewById(R.id.login_button);
+        Button loginBtn = findViewById(R.id.login_button);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

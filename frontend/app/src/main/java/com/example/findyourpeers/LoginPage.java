@@ -22,9 +22,9 @@ import org.json.JSONObject;
 
 public class LoginPage extends AppCompatActivity {
 
-    private EditText unameET, passwordET;
-    private String unameStr, passwordStr;
-    private Button loginBtn;
+    private EditText unameET;
+    private EditText passwordET;
+    private String unameStr;
 
 
     @Override
@@ -35,12 +35,12 @@ public class LoginPage extends AppCompatActivity {
         unameET= findViewById(R.id.username_login);
         passwordET= findViewById(R.id.password_login);
 
-        loginBtn = findViewById(R.id.button_login);
+        Button loginBtn = findViewById(R.id.button_login);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 unameStr= unameET.getText().toString();
-                passwordStr = passwordET.getText().toString();
+                String passwordStr = passwordET.getText().toString();
                 postLoginData(unameStr,passwordStr);
 
             }
@@ -65,7 +65,8 @@ public class LoginPage extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String success, result;
+                        String success;
+                        String result;
                         try{
                             success = response.getString("success");
                             Log.d("LoginPage", "success? : "+success);

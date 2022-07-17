@@ -28,9 +28,11 @@ import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
 
-    private TextView displaynameTV, coopTV, yearTV;
-    private Button findCourseBtn;
-    private String displayname, yearstanding, coopstatus;
+    private TextView displaynameTV;
+    private TextView coopTV;
+    private TextView yearTV;
+    private String displayname;
+    private String yearstanding;
     public LinearLayout layoutCourseButton;
 
     @Override
@@ -66,7 +68,7 @@ public class ProfilePage extends AppCompatActivity {
 
                             // Get the current student (json object) data
                             displayname = student.getString("displayName");
-                            coopstatus = student.getString("coopStatus");
+                            String coopstatus = student.getString("coopStatus");
                             yearstanding = student.getString("yearStanding");
                             JSONArray coursesJSONArray= student.getJSONArray("courselist");
 
@@ -109,7 +111,7 @@ public class ProfilePage extends AppCompatActivity {
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
 
-        findCourseBtn = (Button) findViewById(R.id.find_course_button);
+        Button findCourseBtn = (Button) findViewById(R.id.find_course_button);
         findCourseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

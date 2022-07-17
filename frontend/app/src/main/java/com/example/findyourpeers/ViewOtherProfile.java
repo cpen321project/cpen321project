@@ -24,10 +24,13 @@ import org.json.JSONObject;
 
 public class ViewOtherProfile extends AppCompatActivity {
 
-    private TextView otherDisplayNameTV, otherCoopTV, otherYearTV;
-    private String otherdisplayname, otheryearstanding, othercoopstatus;
+    private TextView otherDisplayNameTV;
+    private TextView otherCoopTV;
+    private TextView otherYearTV;
+    private String otherdisplayname;
+    private String otheryearstanding;
 
-    private Button messageButton, blockButton;
+    private Button messageButton;
 
     private int isBlocked = 0;
     private boolean otherUserIsBlockedAlready = false;
@@ -65,7 +68,7 @@ public class ViewOtherProfile extends AppCompatActivity {
 
                             // Get the current student (json object) data
                             otherdisplayname = student.getString("displayName");
-                            othercoopstatus = student.getString("coopStatus");
+                            String othercoopstatus = student.getString("coopStatus");
                             otheryearstanding = student.getString("yearStanding");
                             JSONArray blockedUsersJSONArray= student.getJSONArray("blockedUser");
                             // check if this other user has blocked the current user
@@ -124,7 +127,7 @@ public class ViewOtherProfile extends AppCompatActivity {
             }
         });
 
-        blockButton = findViewById(R.id.button_block);
+        Button blockButton = findViewById(R.id.button_block);
         blockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

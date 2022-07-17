@@ -23,9 +23,11 @@ import org.json.JSONObject;
 
 public class SignUp extends AppCompatActivity {
 
-    private EditText emailSU, usernameSU, passwordSU;
-    private String emailStr, usernameStr, passwordStr;
-    private Button getCodeBtn;
+    private EditText emailSU;
+    private EditText usernameSU;
+    private EditText passwordSU;
+    private String usernameStr;
+    private String passwordStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +38,11 @@ public class SignUp extends AppCompatActivity {
         usernameSU = (EditText) findViewById(R.id.username_signup);
         passwordSU = (EditText) findViewById(R.id.password_signup);
 
-        getCodeBtn = findViewById(R.id.verify_email_button);
+        Button getCodeBtn = findViewById(R.id.verify_email_button);
         getCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emailStr = emailSU.getText().toString();
+                String emailStr = emailSU.getText().toString();
                 usernameStr = usernameSU.getText().toString();
                 passwordStr = passwordSU.getText().toString();
 
@@ -74,7 +76,8 @@ public class SignUp extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        String success, result;
+                        String success;
+                        String result;
                         try {
                             success = response.getString("success");
                             Log.d("SignUp", "success? : "+success);
