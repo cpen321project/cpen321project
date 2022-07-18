@@ -39,26 +39,48 @@
         android:id="@+id/button_message"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Message"
-        android:textColor="@color/white"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginStart="100dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="100dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/ubc_darkblue"
-        ></Button>
+        android:text="Message"
+        android:textColor="@color/white"></Button>
 
     <Button
         android:id="@+id/button_block"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Block"
-        android:textColor="@color/white"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginStart="100dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="100dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/ubc_darkblue"
-        ></Button>
+        android:text="Block"
+        android:textColor="@color/white"></Button>
+
+    <TextView
+        android:id="@+id/other_courses_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Other courses taken:"
+        android:textColor="@color/ubc_darkblue"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_margin="15dp" />
+
+    <ScrollView
+        android:id="@+id/scroll_view_course_op"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/other_courses_taken_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -33,6 +36,7 @@ public class BrowseCourse extends AppCompatActivity {
     public String userID;
     public String displayName;
     public ArrayList<String> studentCourseList;
+    private String inputCourseFinal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +103,37 @@ public class BrowseCourse extends AppCompatActivity {
             }
         });
 
+        //String inputCourseFinal; //keep track!
+        actvCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                inputCourseFinal = adapterCourse.getItem(position).toString();
+            }
+        });
+/**
+ * Unset the var whenever the user types. Validation will
+ * then fail. This is how we enforce selecting from the list.
+ */
+        actvCourse.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                inputCourseFinal = null;
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         addCourseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inputCourse = actvCourse.getText().toString();
+                //String inputCourse = actvCourse.getText().toString();
+                String inputCourse = inputCourseFinal;
                 if(studentCourseList.contains(inputCourse)){
                     Toast.makeText(BrowseCourse.this, "Course has been added before", Toast.LENGTH_SHORT).show();
+                }else if(inputCourse==null) {
+                    Toast.makeText(BrowseCourse.this, "Course name invalid, please select from the list only", Toast.LENGTH_SHORT).show();
                 }else{
                     addCourseToUser(inputCourse);
                     addUserToCourse(inputCourse,displayName);
