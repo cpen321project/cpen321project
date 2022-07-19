@@ -35,6 +35,7 @@ public class ProfilePage extends AppCompatActivity {
     private TextView coopTV;
     private TextView yearTV;
     private String displayname;
+    private ArrayList<String> courseListAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
-        ArrayList<String> courseListAL = new ArrayList<>();
+        courseListAL = new ArrayList<>();
 
         layoutCourseButton = findViewById(R.id.layout_button_list);
 
@@ -158,8 +159,9 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent viewStudentIntent = new Intent(ProfilePage.this, StudentListPage.class);
                 viewStudentIntent.putExtra("currentUserID", userID);
-                viewStudentIntent.putExtra("coursename", courseNameSingle);
-                viewStudentIntent.putExtra("displayname", displayname);
+                viewStudentIntent.putExtra("courseName", courseNameSingle);
+                viewStudentIntent.putExtra("displayName", displayname);
+                viewStudentIntent.putExtra("courseList", courseListAL);
                 startActivity(viewStudentIntent);
             }
         });

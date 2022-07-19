@@ -16,7 +16,7 @@
         android:layout_marginTop="200dp"
         android:layout_marginBottom="50dp"
         android:gravity="center"
-        android:text="Browse Course"
+        android:text="Browse Courses"
         android:textColor="@color/ubc_darkblue"
         android:textSize="34sp"
         tools:layout_conversion_absoluteHeight="32dp"
@@ -35,9 +35,9 @@
             android:layout_width="320dp"
             android:layout_height="50dp"
             android:layout_marginLeft="30dp"
-            android:completionHint="@string/find_course_here"
+            android:completionHint="The course list is loading..."
             android:completionThreshold="1"
-            android:hint="@string/find_course_here"
+            android:hint="CPEN 321"
             tools:layout_conversion_absoluteHeight="50dp"
             tools:layout_conversion_absoluteWidth="262dp"
             tools:layout_editor_absoluteX="74dp"
@@ -72,7 +72,7 @@
         android:backgroundTint="@color/ubc_darkblue"
         android:text="Get My Profile" />
 
-    <!-- filler -->
+    <!-- filler for BottomNavigationView to stick to bottom of screen-->
     <TextView android:layout_height="0dip"
         android:layout_width="fill_parent"
         android:layout_weight="1" />
