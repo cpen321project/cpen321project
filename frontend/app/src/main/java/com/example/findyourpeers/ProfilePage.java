@@ -1,9 +1,11 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +21,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,11 +30,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
+    public LinearLayout layoutCourseButton;
     private TextView displaynameTV;
     private TextView coopTV;
     private TextView yearTV;
     private String displayname;
-    public LinearLayout layoutCourseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,28 @@ public class ProfilePage extends AppCompatActivity {
         displaynameTV = findViewById(R.id.textView_displayname);
         coopTV = findViewById(R.id.textview_coop);
         yearTV = findViewById(R.id.textView_yearstanding);
+
+        // set up bottom navigation bar
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.my_profile:
+                        return true;
+                    case R.id.browse_courses:
+                        Intent browseCourseIntent =
+                                new Intent(ProfilePage.this, BrowseCourse.class);
+                        browseCourseIntent.putExtra("userID", userID);
+                        browseCourseIntent.putExtra("displayName", displayname);
+                        browseCourseIntent.putExtra("courselist", courseListAL);
+                        startActivity(browseCourseIntent);
+                        return true;
+                }
+                return false;
+            }
+        });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urltest = "http://10.0.2.2:3010/getuserprofile/" + userID;

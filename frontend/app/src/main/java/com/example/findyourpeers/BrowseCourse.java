@@ -1,5 +1,6 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +56,25 @@ public class BrowseCourse extends AppCompatActivity {
         Button getProfileBackBtn = findViewById(R.id.get_back_profile_button);
 
         ArrayList<String> courseList = new ArrayList<>();
+
+        // set up bottom navigation bar
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.my_profile:
+                        Intent displayProfileBackIntent = new Intent(BrowseCourse.this, ProfilePage.class);
+                        displayProfileBackIntent.putExtra("userID", userID);
+                        startActivity(displayProfileBackIntent);
+                        return true;
+                    case R.id.browse_courses:
+                        return true;
+                }
+                return false;
+            }
+        });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlcourse = "https://ubcexplorer.io/getAllCourses";

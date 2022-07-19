@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/my_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_account_circle_24"
+        android:title="My Profile" />
+    <item
+        android:id="@+id/browse_courses"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Browse Courses" />
+<!--    <item-->
+<!--        android:id="@+id/my_courses"-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@drawable/ic_baseline_people_alt_24"-->
+<!--        android:title="My Courses" />-->
+</menu>

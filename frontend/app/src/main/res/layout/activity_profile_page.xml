@@ -67,7 +67,7 @@
     <ScrollView
         android:id="@+id/scroll_view_course_pp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="324dp">
 
         <LinearLayout
             android:id="@+id/layout_button_list"
@@ -76,5 +76,14 @@
             android:layout_margin="10dp"
             android:orientation="vertical"></LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
 </LinearLayout>

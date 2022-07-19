@@ -13,11 +13,12 @@
         android:id="@+id/browse_course_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
         android:layout_marginBottom="50dp"
         android:gravity="center"
         android:text="Browse Course"
         android:textColor="@color/ubc_darkblue"
-        android:textSize="24sp"
+        android:textSize="34sp"
         tools:layout_conversion_absoluteHeight="32dp"
         tools:layout_conversion_absoluteWidth="162dp"
         tools:layout_editor_absoluteX="125dp"
@@ -70,5 +71,30 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/ubc_darkblue"
         android:text="Get My Profile" />
+
+    <!-- filler -->
+    <TextView android:layout_height="0dip"
+        android:layout_width="fill_parent"
+        android:layout_weight="1" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation_menu" />
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+<!--        <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--            android:id="@+id/bottom_navigation"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            app:menu="@menu/bottom_navigation_menu" />-->
+<!--    </RelativeLayout>-->
 
 </LinearLayout>
