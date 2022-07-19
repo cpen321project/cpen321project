@@ -98,8 +98,8 @@ public class ProfilePage extends AppCompatActivity {
 
         requestQueue.add(jsonArrayRequest);
 
-        Button seeBlockedUsersBtn = (Button) findViewById(R.id.blocked_users_button);
-        seeBlockedUsersBtn.setOnClickListener(new View.OnClickListener() {
+        TextView blockedUsersTextView = (TextView) findViewById(R.id.blocked_users_textView);
+        blockedUsersTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent seeBlockedUsersIntent =

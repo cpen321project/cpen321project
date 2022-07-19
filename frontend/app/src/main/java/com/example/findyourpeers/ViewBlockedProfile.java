@@ -3,10 +3,14 @@ package com.example.findyourpeers;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +40,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
     String userID, currentUserID, currentUserDisplayName;
     ArrayList<String> blockedUsers;
     HashMap<String, String> blockedUserNames;
+    public LinearLayout layoutCourseOther;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         otherDisplayNameTV = findViewById(R.id.other_display_name);
         otherCoopTV = findViewById(R.id.other_coop_status);
         otherYearTV = findViewById(R.id.other_year_standing);
+        layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID;
@@ -69,11 +75,19 @@ public class ViewBlockedProfile extends AppCompatActivity {
                             otherDisplayName = student.getString("displayName");
                             String othercoopstatus = student.getString("coopStatus");
                             String otheryearstanding = student.getString("yearStanding");
+                            JSONArray coursesJSONArray= student.getJSONArray("courselist");
                             JSONArray blockedUsersJSONArray = student.getJSONArray("blockedUsers");
                             // check if this other user has blocked the current user
                             for (int i = 0; i < blockedUsersJSONArray.length(); i++) {
                                 if (blockedUsersJSONArray.getString(i).equals(currentUserID)) {
                                     isBlocked = 1; // true
+                                }
+                            }
+
+                            if (coursesJSONArray != null) {
+                                for (int i=0;i<coursesJSONArray.length();i++){
+                                    String courseNameSingle = coursesJSONArray.getString(i);
+                                    viewCourseButton(courseNameSingle, userID);
                                 }
                             }
 
@@ -150,5 +164,19 @@ public class ViewBlockedProfile extends AppCompatActivity {
                 requestQueue.add(unblockRequest);
             }
         });
+    }
+
+    private void viewCourseButton(String courseNameSingle, String userID) {
+        TextView othercoursenameTV = new TextView(ViewBlockedProfile.this);
+        othercoursenameTV.setText(courseNameSingle);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        othercoursenameTV.setLayoutParams(params);
+        othercoursenameTV.setTextColor(Color.parseColor("#002145"));
+        othercoursenameTV.setGravity(Gravity.CENTER);
+        othercoursenameTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
+        layoutCourseOther.addView(othercoursenameTV);
     }
 }

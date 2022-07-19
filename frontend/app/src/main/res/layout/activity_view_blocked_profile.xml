@@ -61,4 +61,28 @@
         android:backgroundTint="@color/ubc_darkblue"
         ></Button>
 
+    <TextView
+        android:id="@+id/other_courses_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Other courses taken:"
+        android:textColor="@color/ubc_darkblue"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_margin="15dp" />
+
+    <ScrollView
+        android:id="@+id/scroll_view_course_op"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/other_courses_taken_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+
+    </ScrollView>
+
 </LinearLayout>

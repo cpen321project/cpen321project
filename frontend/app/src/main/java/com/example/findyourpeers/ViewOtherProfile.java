@@ -78,7 +78,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                             String othercoopstatus = student.getString("coopStatus");
                             String otheryearstanding = student.getString("yearStanding");
                             JSONArray coursesJSONArray= student.getJSONArray("courselist");
-                            JSONArray blockedUsersJSONArray= student.getJSONArray("blockedUser");
+                            JSONArray blockedUsersJSONArray= student.getJSONArray("blockedUsers");
                             // check if this other user has blocked the current user
                             for (int i = 0; i < blockedUsersJSONArray.length(); i++) {
                                 if (blockedUsersJSONArray.getString(i).equals(currentUserID)) {
