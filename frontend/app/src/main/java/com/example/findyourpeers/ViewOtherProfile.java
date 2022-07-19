@@ -59,7 +59,7 @@ public class ViewOtherProfile extends AppCompatActivity {
         layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://34.130.14.116:3010/getuserprofile/"+userID;
+        String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
@@ -69,7 +69,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         // Do something with response
                         // Process the JSON
-                        try{
+                        try {
                             // Get current json object
                             JSONObject student = response.getJSONObject(0);
 
@@ -97,22 +97,22 @@ public class ViewOtherProfile extends AppCompatActivity {
                             // Display the formatted json data in text view
                             otherDisplayNameTV.setText(otherdisplayname);
 
-                            if(othercoopstatus.equals("Yes")){
+                            if (othercoopstatus.equals("Yes")) {
                                 otherCoopTV.setText("I am in Co-op");
-                            }else{
+                            } else {
                                 otherCoopTV.setText("I am not in Co-op, studying only");
                             }
                             otherYearTV.setText("I am in year " + otheryearstanding);
 
 
-                        }catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error){
+                    public void onErrorResponse(VolleyError error) {
                         // Do something when error occurred
                         Toast.makeText(ViewOtherProfile.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
                     }
@@ -128,6 +128,8 @@ public class ViewOtherProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent privateChatIntent = new Intent(ViewOtherProfile.this,
                         PrivateChatActivity.class);
+                Log.d("ViewOtherProfile", "currentUserDisplayName: " + currentUserDisplayName);
+                Log.d("ViewOtherProfile", "otherdisplayname: " + otherdisplayname);
                 if (currentUserDisplayName.equals(otherdisplayname)) {
                     Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
                             Toast.LENGTH_SHORT).show();
@@ -151,18 +153,18 @@ public class ViewOtherProfile extends AppCompatActivity {
                     Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    String urlCurrentUser = "http://34.130.14.116:3010/getuserprofile/"+currentUserID;
+                    String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/" + currentUserID;
 
                     JsonArrayRequest jsonArrayRequest2 =
-                            new JsonArrayRequest(Request.Method.GET, urlCurrentUser,null,
+                            new JsonArrayRequest(Request.Method.GET, urlCurrentUser, null,
                                     new Response.Listener<JSONArray>() {
                                         @Override
                                         public void onResponse(JSONArray response) {
-                                            try{
+                                            try {
                                                 JSONObject student = response.getJSONObject(0);
 
                                                 JSONArray blockedUsers =
-                                                        student.getJSONArray("blockedUser");
+                                                        student.getJSONArray("blockedUsers");
 
                                                 // check current user already blocked the other user
                                                 for (int i = 0; i < blockedUsers.length(); i++) {
@@ -179,14 +181,14 @@ public class ViewOtherProfile extends AppCompatActivity {
                                                 } else {
                                                     makeBlockUserRequest(currentUserID, userID, requestQueue);
                                                 }
-                                            }catch (JSONException e){
+                                            } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
                                         }
                                     },
-                                    new Response.ErrorListener(){
+                                    new Response.ErrorListener() {
                                         @Override
-                                        public void onErrorResponse(VolleyError error){
+                                        public void onErrorResponse(VolleyError error) {
                                             Toast.makeText(ViewOtherProfile.this,
                                                     "Request error: unable to block user", Toast.LENGTH_SHORT).show();
                                         }
@@ -215,14 +217,14 @@ public class ViewOtherProfile extends AppCompatActivity {
     }
 
     private void makeBlockUserRequest(String currentUserID, String userID, RequestQueue requestQueue) {
-        String url = "http://34.130.14.116:3010/block";
+        String url = "http://10.0.2.2:3010/block";
         JSONObject blockObj = new JSONObject();
         try {
             //input your API parameters
             blockObj.put("userID", currentUserID);
             blockObj.put("blockedUserAdd", userID);//the other user's id
-            Log.d("viewOtherProfile:block", "userID: "+currentUserID);
-            Log.d("viewOtherProfile:block", "blockedUserAdd: "+userID);
+            Log.d("viewOtherProfile:block", "userID: " + currentUserID);
+            Log.d("viewOtherProfile:block", "blockedUserAdd: " + userID);
 
         } catch (JSONException e) {
             e.printStackTrace();

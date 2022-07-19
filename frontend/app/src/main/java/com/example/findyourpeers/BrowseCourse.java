@@ -73,11 +73,6 @@ public class BrowseCourse extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(BrowseCourse.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
-                //String body;
-                //get status code here
-                //String statusCode = String.valueOf(error.networkResponse.statusCode);
-                //get response body and parse with appropriate encoding
                 if(error.networkResponse.data!=null) {
                     try {
                         String body = new String(error.networkResponse.data,"UTF-8");
@@ -175,7 +170,7 @@ public class BrowseCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://34.130.14.116:3010/addusertocourse";
+        String urlUserToCourse = "http://10.0.2.2:3010/addusertocourse";
         JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, urlUserToCourse, usertoadd,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -203,7 +198,7 @@ public class BrowseCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlCourseToUser = "http://34.130.14.116:3010/addcoursetouser";
+        String urlCourseToUser = "http://10.0.2.2:3010/addcoursetouser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, urlCourseToUser, coursetoadd,
                 new Response.Listener<JSONObject>() {
                     @Override

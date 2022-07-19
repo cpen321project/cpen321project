@@ -43,8 +43,10 @@ app.get('/', (req, res) => {
 // routes for userStore
 app.get("/getuserprofile/:userID", userStore.getUserProfile)
 app.get("/getcourselist/:userID", userStore.getCourseList)
+app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
 app.post("/createprofile", userStore.createProfile)
 app.post("/block", userStore.block)
+app.delete("/unblock/:userID/:userIDtoDelete", userStore.unblock)
 app.post("/signup", userStore.signup)
 app.post("/confirmsignup", userStore.confirmSignUp)
 app.post("/login",userStore.login)
@@ -111,8 +113,8 @@ io.on('connection', (socket) => {
             // get names of sender and receiver 
             let senderName, receiverName
             try {
-                senderName = await userStore.getDisplayNamebyUserID(senderID);
-                receiverName = await userStore.getDisplayNamebyUserID(receiverID);
+                senderName = await userStore.getDisplayNameByUserIDfromDB(senderID);
+                receiverName = await userStore.getDisplayNameByUserIDfromDB(receiverID);
                 console.log("senderName: " + senderName)
                 console.log("receiverName: " + receiverName)
             } catch(err) {

@@ -138,7 +138,7 @@ module.exports = {
                 yearStanding: req.body.yearStanding,
                 registrationToken: req.body.registrationToken,
                 courselist: courselistarr,
-                blockedUser: blockeruserarr,
+                blockedUsers: blockeruserarr,
             },
             (err, result) => {
                 if (err) {
@@ -152,7 +152,7 @@ module.exports = {
     },
 
     block: (req, res) => {
-        userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUser": req.body.blockedUserAdd } }, (err, result) => {
+        userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)
@@ -162,9 +162,38 @@ module.exports = {
         });
     },
 
-    getDisplayNamebyUserID: async (userID) => {
-        let retrievedUser = await userCollection.findOne({ userID })
-        return retrievedUser.displayName
-    }
+    unblock: async (req, res) => {
+        userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
+            if (err) {
+                console.error(err)
+                res.status(400).send(err)
+            } else {
+                res.status(200).json({ ok: true })
+            }
+        });
+    },
 
+    getDisplayNameByUserIDfromDB: getDisplayNameByUserIDfromDB,
+
+    getDisplayNameByUserID: async function(req, res) {
+        let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
+        console.log("retrievedDisplayName: " + retrievedDisplayName)
+        res.status(200).json({retrievedDisplayName})
+    },
+
+}
+
+async function getDisplayNameByUserIDfromDB(userID) {
+    console.log("----------------getDisplayNameByUserIDfromDB------------------")
+    console.log("userID: " + userID)
+
+    let retrievedUser = await userCollection.findOne({ userID })
+    if (retrievedUser) {
+        console.log("retrievedUser: " + retrievedUser.displayName)
+        console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+        return retrievedUser.displayName  
+    } else {
+        console.log("retrievedUser: not found");
+        console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+    }
 }
