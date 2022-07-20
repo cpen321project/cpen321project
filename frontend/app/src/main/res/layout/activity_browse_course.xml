@@ -84,17 +84,5 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_navigation_menu" />
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-<!--        <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--            android:id="@+id/bottom_navigation"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            app:menu="@menu/bottom_navigation_menu" />-->
-<!--    </RelativeLayout>-->
 
 </LinearLayout>

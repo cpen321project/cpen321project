@@ -1,5 +1,6 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +43,8 @@ public class ViewOtherProfile extends AppCompatActivity {
 
     public LinearLayout layoutCourseOther;
 
+    ArrayList<String> courseList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,7 @@ public class ViewOtherProfile extends AppCompatActivity {
         Intent intentProfileOther = getIntent();
         String userID = intentProfileOther.getExtras().getString("userID");
         String currentUserID = intentProfileOther.getExtras().getString("currentUserID");
+        courseList = (ArrayList<String>) intentProfileOther.getSerializableExtra("courseList");
 
         String currentUserDisplayName = intentProfileOther.getExtras().
                 getString("currentUserDisplayName");
@@ -57,6 +63,30 @@ public class ViewOtherProfile extends AppCompatActivity {
         otherYearTV = findViewById(R.id.other_year_standing);
 
         layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.my_profile:
+                        Intent displayProfileBackIntent = new Intent(ViewOtherProfile.this, ProfilePage.class);
+                        displayProfileBackIntent.putExtra("userID", currentUserID);
+                        startActivity(displayProfileBackIntent);
+                        return true;
+                    case R.id.browse_courses:
+                        Intent browseCourseIntent =
+                                new Intent(ViewOtherProfile.this, BrowseCourse.class);
+                        browseCourseIntent.putExtra("userID", currentUserID);
+                        browseCourseIntent.putExtra("displayName", currentUserDisplayName);
+                        browseCourseIntent.putExtra("courseList", courseList);
+                        startActivity(browseCourseIntent);
+                        return true;
+                }
+                return false;
+            }
+        });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID;

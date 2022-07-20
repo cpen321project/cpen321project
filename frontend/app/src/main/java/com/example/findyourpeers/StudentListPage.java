@@ -131,6 +131,7 @@ public class StudentListPage extends AppCompatActivity {
                 viewStudentIntent.putExtra("currentUserID", currentUserID);
                 viewStudentIntent.putExtra("userID", userID);
                 viewStudentIntent.putExtra("currentUserDisplayName", currentUserDisplayName);
+                viewStudentIntent.putExtra("courseList", courseList);
                 startActivity(viewStudentIntent);
             }
         });
