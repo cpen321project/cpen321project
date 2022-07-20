@@ -54,7 +54,7 @@ public class PushNotificationService extends FirebaseMessagingService {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = "http://10.0.2.2:3010/newRegistrationToken";
+        String url = "http://localhost:3010/newRegistrationToken";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
                 new Response.Listener<JSONObject>() {
                     @Override

@@ -17,7 +17,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool({
 //AWS cognito generates two pairs of RSA keys (a public and local key) for each userpool,
 // the public key available at the following URL, and the local key is generated when user logs in
 const url = COGNITO_ISSUER + '/.well-known/jwks.json'
-const publicKey = await Axios.get(url)
+const publicKey = Axios.get(url)
 
 
 //Update AWS configuration with the correct credentials and region
@@ -90,7 +90,7 @@ exports.login = (username, password) => {
             onSuccess: function (result) {
                 var accessToken = result.getAccessToken().getJwtToken();
                 var userID = result.getAccessToken().payload.sub
-                resolve(accessToken, userID)
+                resolve({ 'accessToken': accessToken, 'userID' : userID })
             },
             onFailure: (function (err) {
                 reject(err)

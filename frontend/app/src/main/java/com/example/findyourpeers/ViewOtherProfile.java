@@ -49,7 +49,7 @@ public class ViewOtherProfile extends AppCompatActivity {
         otherYearTV = findViewById(R.id.other_year_standing);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://10.0.2.2:3010/getuserprofile/"+userID;
+        String urlOther = "http://localhost:3010/getuserprofile/"+userID;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
@@ -132,7 +132,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                     Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID;
+                    String urlCurrentUser = "http://localhost:3010/getuserprofile/"+currentUserID;
 
                     JsonArrayRequest jsonArrayRequest2 =
                             new JsonArrayRequest(Request.Method.GET, urlCurrentUser,null,
@@ -182,7 +182,7 @@ public class ViewOtherProfile extends AppCompatActivity {
     }
 
     private void makeBlockUserRequest(String currentUserID, String userID, RequestQueue requestQueue) {
-        String url = "http://10.0.2.2:3010/block";
+        String url = "http://localhost:3010/block";
         JSONObject blockObj = new JSONObject();
         try {
             //input your API parameters
