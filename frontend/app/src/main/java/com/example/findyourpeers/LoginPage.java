@@ -59,7 +59,7 @@ public class LoginPage extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = "http://10.0.2.2:3010/login";
+        String url = "http://localhost/3010/login";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, loginData,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -73,9 +73,13 @@ public class LoginPage extends AppCompatActivity {
                                 result = response.getString("result");
                                 Toast.makeText(LoginPage.this, result, Toast.LENGTH_SHORT).show();
                             }else{
+                                JSONObject successResult = response.getJSONObject("result");
                                 Toast.makeText(LoginPage.this, "Login success", Toast.LENGTH_SHORT).show();
                                 Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
-                                viewProfileIntent.putExtra("userID", unameStr);
+                                Log.d("accessToken", successResult.getString("accessToken"));
+                                Log.d("UserId", successResult.getString("userID"));
+                                viewProfileIntent.putExtra("userID", successResult.getString("userID"));
+                                viewProfileIntent.putExtra("accessToken", successResult.getString("accessToken"));
                                 startActivity(viewProfileIntent);
                             }
                         }catch(JSONException e){
