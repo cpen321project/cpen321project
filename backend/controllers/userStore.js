@@ -1,3 +1,4 @@
+const { auth } = require("firebase-admin")
 const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
@@ -106,6 +107,10 @@ module.exports = {
     },
 
     getUserProfile: async (req, res) => {
+        securty = await auth.validateAccessToken(req.body.jwt, req.body.userID)
+        if (security.success){
+
+        
         await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
             if (err) {
                 console.error("Error in getUserProfile: " + err)
@@ -114,9 +119,15 @@ module.exports = {
                 res.status(200).json(userProfileResult)
             }
         })
+    }
+    else{
+        res.status(400).send(security.message)
+    }
     },
 
     getCourseList: async (req, res) => {
+        security = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (security.success) {
         await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
             if (err) {
                 console.error("Error in getCourseList: " + err)
@@ -125,6 +136,9 @@ module.exports = {
                 res.status(200).json(resultcourse)
             }
         })
+    } else {
+            res.status(400).send(security.message)
+    }
     },
 
     createProfile: (req, res) => {
@@ -151,7 +165,9 @@ module.exports = {
         )
     },
 
-    block: (req, res) => {
+    block: async (req, res) => {
+        security = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (security.success) {
         userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
             if (err) {
                 console.error(err)
@@ -160,6 +176,9 @@ module.exports = {
                 res.status(200).json({ ok: true })
             }
         });
+        } else {
+            res.status(400).send(security.message)
+        }
     },
 
     unblock: async (req, res) => {
