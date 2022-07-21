@@ -3,18 +3,20 @@ package com.example.findyourpeers;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -38,8 +40,9 @@ public class BrowseCourse extends AppCompatActivity {
 
     public String userID;
     public String displayName;
-    public ArrayList<String> studentCourseList;
+    private ArrayList<String> studentCourseList;
     private String inputCourseFinal;
+    public LinearLayout layoutCourseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +53,12 @@ public class BrowseCourse extends AppCompatActivity {
         displayName = intentCourse.getExtras().getString("displayName");
         studentCourseList = (ArrayList<String>) intentCourse.getSerializableExtra("courselist");
 
-        AutoCompleteTextView actvCourse = (AutoCompleteTextView) findViewById(R.id.autocompletecourse);
-        ImageView dropDownButton = findViewById(R.id.dropdown_button);
-        Button addCourseButton = findViewById(R.id.addcourse_button);
+        //AutoCompleteTextView actvCourse = (AutoCompleteTextView) findViewById(R.id.autocompletecourse);
+        EditText etCourse = (EditText) findViewById(R.id.edit_text_course);
+        ImageView searchButton = findViewById(R.id.dropdown_button);
+        Button browseMoreButton = findViewById(R.id.browsemore_button);
         Button getProfileBackBtn = findViewById(R.id.get_back_profile_button);
+        layoutCourseList = findViewById(R.id.layout_courses_browse);
 
         ArrayList<String> courseList = new ArrayList<>();
 
@@ -76,7 +81,53 @@ public class BrowseCourse extends AppCompatActivity {
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layoutCourseList.removeAllViews();
+                courseList.removeAll(courseList);
+                String userInputCourse = etCourse.getText().toString();
+                String userInputCourseNoSpace = userInputCourse.replaceAll(" ", "%20");
+                RequestQueue requestQueue = Volley.newRequestQueue(BrowseCourse.this);
+                String urlcourse = "https://ubcexplorer.io/searchAny/"+userInputCourseNoSpace;
+                JsonArrayRequest requestCourse = new JsonArrayRequest(Request.Method.GET, urlcourse, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for(int i=0; i< response.length(); i++){
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String coursename = jsonObject.getString("code");
+                                courseList.add(coursename);
+                                addToCourseList(coursename);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if(error.networkResponse.data!=null) {
+                            try {
+                                String body = new String(error.networkResponse.data,"UTF-8");
+                                Log.d("Browse Course", body);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                );
+                //BrowseCourseSingleton.getInstance(BrowseCourse.this).addToRequestQueue(requestCourse);
+                requestQueue.add(requestCourse);
+
+            }
+        });
+
+
+
+        /*RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlcourse = "https://ubcexplorer.io/getAllCourses";
         JsonArrayRequest requestCourse = new JsonArrayRequest(Request.Method.GET, urlcourse, null, new Response.Listener<JSONArray>() {
             @Override
@@ -126,12 +177,12 @@ public class BrowseCourse extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 inputCourseFinal = adapterCourse.getItem(position).toString();
             }
-        });
+        });*/
 /**
  * Unset the var whenever the user types. Validation will
  * then fail. This is how we enforce selecting from the list.
  */
-        actvCourse.addTextChangedListener(new TextWatcher() {
+        /*actvCourse.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
@@ -140,32 +191,16 @@ public class BrowseCourse extends AppCompatActivity {
             }
             @Override
             public void afterTextChanged(Editable s) {}
-        });
+        });*/
 
-        addCourseButton.setOnClickListener(new View.OnClickListener() {
+        browseMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //String inputCourse = actvCourse.getText().toString();
-                String inputCourse = inputCourseFinal;
-                if(studentCourseList.contains(inputCourse)){
-                    Toast.makeText(BrowseCourse.this, "Course has been added before", Toast.LENGTH_SHORT).show();
-                }else if(inputCourse==null) {
-                    Toast.makeText(BrowseCourse.this, "Course name invalid, please select from the list only", Toast.LENGTH_SHORT).show();
-                }else{
-                    addCourseToUser(inputCourse);
-                    addUserToCourse(inputCourse,displayName);
-                    studentCourseList.add(inputCourse);
-                    Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
-                }
-
-//                if(courseList.contains(inputCourse)){
-//
-//                    addCourseToUser(inputCourse);
-//                    addUserToCourse(inputCourse,displayName);
-//
-//                }else{
-//                    Toast.makeText(BrowseCourse.this, "No such course available", Toast.LENGTH_SHORT).show();
-//                }
+                Intent browseMoreIntent = new Intent(BrowseCourse.this, BrowseMoreCourse.class);
+                browseMoreIntent.putExtra("userID", userID);
+                browseMoreIntent.putExtra("displayName", displayName);
+                browseMoreIntent.putExtra("courselist", studentCourseList);
+                startActivity(browseMoreIntent);
             }
         });
 
@@ -178,6 +213,52 @@ public class BrowseCourse extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void addToCourseList(String inputCoursename) {
+        TextView coursenameTV = new TextView(BrowseCourse.this);
+        coursenameTV.setText(inputCoursename);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        coursenameTV.setLayoutParams(params);
+        coursenameTV.setTextColor(Color.parseColor("#002145"));
+        coursenameTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
+        coursenameTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(BrowseCourse.this);
+                builder.setCancelable(true);
+                builder.setTitle("Add Course Confirmation");
+                builder.setMessage("Are you sure to add "+inputCoursename+ " to your course list?");
+                builder.setPositiveButton("Add Course",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                               if(studentCourseList.contains(inputCoursename)){
+                                    Toast.makeText(BrowseCourse.this, "Course has been added before", Toast.LENGTH_SHORT).show();
+                                }else if(inputCoursename==null) {
+                                    Toast.makeText(BrowseCourse.this, "Course name invalid, please select from the list only", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    addCourseToUser(inputCoursename);
+                                    addUserToCourse(inputCoursename,displayName);
+                                    studentCourseList.add(inputCoursename);
+                                    Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        layoutCourseList.addView(coursenameTV);
     }
 
     private void addUserToCourse(String coursename, String displayName) {
