@@ -76,7 +76,7 @@ public class StudentListPage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlStudentList = "http://localhost:3010/getstudentlist/"+coursenameNoSpace;
+        String urlStudentList = "http://10.0.2.2:3010/getstudentlist/"+coursenameNoSpace;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlStudentList,
