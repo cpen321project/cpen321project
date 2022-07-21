@@ -31,6 +31,7 @@ import org.json.JSONObject;
 public class CreateProfile extends AppCompatActivity {
 
     private EditText displayName;
+    private String userID;
     public String displayNameStr;
     public String coopStatus;
     public String yearStanding;
@@ -49,6 +50,7 @@ public class CreateProfile extends AppCompatActivity {
 
         Intent intentCode = getIntent();
         usernameStr = intentCode.getExtras().getString("username");
+        userID = intentCode.getExtras().getString("userID");
 
         displayName = (EditText) findViewById(R.id.display_name_input);
 
@@ -137,8 +139,7 @@ public class CreateProfile extends AppCompatActivity {
             newprofile.put("displayName",name);
             newprofile.put("coopStatus", coop);
             newprofile.put("yearStanding", yearstand);
-
-            newprofile.put("userID", usernameStr);
+            newprofile.put("userID", userID);
             newprofile.put("registrationToken", token);
 
         } catch (JSONException e) {

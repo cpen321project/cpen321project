@@ -107,7 +107,7 @@ module.exports = {
     },
 
     getUserProfile: async (req, res) => {
-        securty = await auth.validateAccessToken(req.body.jwt, req.body.userID)
+        securty = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (security.success){
 
         

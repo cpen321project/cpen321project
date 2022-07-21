@@ -19,7 +19,7 @@
     "firebase-admin": "^11.0.0",
     "jwk-to-pem": "^2.0.5",
     "mongodb": "^4.7.0",
-    "mongoose": "^6.4.3",
+    "mongoose": "^6.4.6",
     "socket.io": "^4.5.1",
     "uuid": "^8.3.2"
   },

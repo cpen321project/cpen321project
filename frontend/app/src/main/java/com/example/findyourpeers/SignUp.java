@@ -78,16 +78,17 @@ public class SignUp extends AppCompatActivity {
                         String result;
                         try {
                             success = response.getString("success");
+                            result = response.getString("result");
                             Log.d("SignUp", "success? : "+success);
                             if (success.equals("false")) {
-                                result = response.getString("result");
                                 Toast.makeText(SignUp.this, result, Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(SignUp.this, "Credentials sent successfully", Toast.LENGTH_SHORT).show();
                                 Intent enterCodeIntent = new Intent(SignUp.this, EnterCode.class);
-                                enterCodeIntent.putExtra("email",emailStr);
-                                enterCodeIntent.putExtra("password",passwordStr);
+                                enterCodeIntent.putExtra("email", emailStr);
+                                enterCodeIntent.putExtra("password", passwordStr);
                                 enterCodeIntent.putExtra("username", usernameStr);
+                                enterCodeIntent.putExtra("userID", result);
                                 startActivity(enterCodeIntent);
                             }
                         } catch (JSONException e) {
