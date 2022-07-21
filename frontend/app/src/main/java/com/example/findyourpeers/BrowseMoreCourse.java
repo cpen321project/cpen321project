@@ -49,6 +49,8 @@ public class BrowseMoreCourse extends AppCompatActivity {
 
         layoutBMC= findViewById(R.id.layout_browse_more_course);
 
+        Toast.makeText(this, "Please wait while the course list is loading...", Toast.LENGTH_LONG).show();
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
@@ -128,7 +130,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(BrowseMoreCourse.this);
                 builder.setCancelable(true);
                 builder.setTitle("Add Course Confirmation");
-                builder.setMessage("Are you sure to add "+coursename+ " to your course list?");
+                builder.setMessage("Are you sure you want to add "+coursename+ " to your course list?");
                 builder.setPositiveButton("Add Course",
                         new DialogInterface.OnClickListener() {
                             @Override

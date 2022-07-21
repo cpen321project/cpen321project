@@ -14,14 +14,14 @@
         android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp"
         android:gravity="center"
+        android:text="List of Courses at UBC"
         android:textColor="@color/ubc_darkblue"
-        android:textSize="34sp"
-        android:text="List of Courses at UBC"/>
+        android:textSize="34sp" />
 
     <ScrollView
         android:id="@+id/scroll_view_bmc"
         android:layout_width="match_parent"
-        android:layout_height="580dp"
+        android:layout_height="560dp"
         android:contentDescription="Loading Courses..">
 
         <LinearLayout
@@ -32,17 +32,18 @@
             android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
-    <!-- filler for BottomNavigationView to stick to bottom of screen-->
-    <TextView android:layout_height="0dip"
+    <TextView
         android:layout_width="fill_parent"
+        android:layout_height="0dip"
         android:layout_weight="1" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_navigation_menu" />
 
 </LinearLayout>
