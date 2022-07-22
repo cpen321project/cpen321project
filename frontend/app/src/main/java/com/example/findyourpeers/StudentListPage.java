@@ -76,7 +76,7 @@ public class StudentListPage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlStudentList = "http://10.0.2.2:3010/getstudentlist/"+coursenameNoSpace;
+        String urlStudentList = "http://10.0.2.2:3010/getstudentlist/"+coursenameNoSpace+"/"+LoginPage.accessToken;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlStudentList,
@@ -109,7 +109,10 @@ public class StudentListPage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
-                        Toast.makeText(StudentListPage.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentListPage.this,
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(StudentListPage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );

@@ -123,7 +123,9 @@ public class ProfilePage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ProfilePage.this,
-                                "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );
@@ -207,7 +209,7 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://10.0.2.2:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace;
+        String urlUserToCourse = "http://10.0.2.2:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
                 new Response.Listener<String>() {
@@ -221,7 +223,10 @@ public class ProfilePage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error.
-                        Toast.makeText(ProfilePage.this, "Unable to delete user from course", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this,
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );
@@ -235,6 +240,7 @@ public class ProfilePage extends AppCompatActivity {
             //input your API parameters
             courseDelete.put("coursename", courseNameSingle);
             courseDelete.put("userID", userID);
+            courseDelete.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -249,7 +255,10 @@ public class ProfilePage extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfilePage.this, "Unable to delete course from user", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfilePage.this,
+                        "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                startActivity((loginIntent));
             }
         });
         requestQueue.add(jsonObjectRequest);

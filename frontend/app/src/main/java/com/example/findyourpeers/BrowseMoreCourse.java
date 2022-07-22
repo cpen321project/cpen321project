@@ -169,6 +169,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
             usertoadd.put("coursename",coursename);
             usertoadd.put("userID",userID);
             usertoadd.put("displayName", displayName);
+            usertoadd.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -196,6 +197,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
             //input your API parameters
             coursetoadd.put("coursename",coursename);
             coursetoadd.put("userID",userID);
+            coursetoadd.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
