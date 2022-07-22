@@ -42,7 +42,6 @@ public class BrowseCourse extends AppCompatActivity {
     public String displayName;
     public LinearLayout layoutCourseList;
     private ArrayList<String> studentCourseList;
-    private String inputCourseFinal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +75,8 @@ public class BrowseCourse extends AppCompatActivity {
                         return true;
                     case R.id.browse_courses:
                         return true;
+                    default: return false;
                 }
-                return false;
             }
         });
 
@@ -254,6 +253,7 @@ public class BrowseCourse extends AppCompatActivity {
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
                     }
                 });
 

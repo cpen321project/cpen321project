@@ -173,7 +173,7 @@ module.exports = {
         });
     },
 
-    getDisplayNameByUserIDfromDB: getDisplayNameByUserIDfromDB,
+    getDisplayNameByUserIDfromDB,
 
     getDisplayNameByUserID: async function(req, res) {
         let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)

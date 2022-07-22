@@ -19,7 +19,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -27,17 +26,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ViewBlockedProfile extends AppCompatActivity {
     final String TAG = "ViewBlockedProfile";
 
-    private TextView otherDisplayNameTV, otherCoopTV, otherYearTV;
+    private TextView otherDisplayNameTV;
+    private TextView otherCoopTV;
+    private TextView otherYearTV;
     private String otherDisplayName;
     private int isBlocked = 0;
-    String userID, currentUserID, currentUserDisplayName;
+    String userID;
+    String currentUserID;
+    String currentUserDisplayName;
     ArrayList<String> blockedUsers;
     HashMap<String, String> blockedUserNames;
     public LinearLayout layoutCourseOther;
@@ -87,7 +89,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
                             if (coursesJSONArray != null) {
                                 for (int i=0;i<coursesJSONArray.length();i++){
                                     String courseNameSingle = coursesJSONArray.getString(i);
-                                    viewCourseButton(courseNameSingle, userID);
+                                    viewCourseButton(courseNameSingle);
                                 }
                             }
 
@@ -166,7 +168,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         });
     }
 
-    private void viewCourseButton(String courseNameSingle, String userID) {
+    private void viewCourseButton(String courseNameSingle) {
         TextView othercoursenameTV = new TextView(ViewBlockedProfile.this);
         othercoursenameTV.setText(courseNameSingle);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
