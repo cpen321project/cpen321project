@@ -62,7 +62,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID;
+        String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID +"/"+LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
                 null,
@@ -110,7 +110,9 @@ public class ViewBlockedProfile extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ViewBlockedProfile.this,
-                                "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(ViewBlockedProfile.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );
@@ -143,7 +145,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         unblockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID;
+                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID +"/"+LoginPage.accessToken;
 
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
@@ -157,7 +159,9 @@ public class ViewBlockedProfile extends AppCompatActivity {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Toast.makeText(ViewBlockedProfile.this,
-                                        "Unable to unblock user", Toast.LENGTH_SHORT).show();
+                                        "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                                Intent loginIntent = new Intent(ViewBlockedProfile.this, LoginPage.class);
+                                startActivity((loginIntent));
                             }
                         }
                 );

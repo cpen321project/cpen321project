@@ -52,7 +52,7 @@ public class BlockedUsersPage extends AppCompatActivity {
         layoutStudentButton = findViewById(R.id.layout_student_list);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/" + currentUserID;
+        String urltest = "http://10.0.2.2:3010/getuserprofile/" + currentUserID +"/"+LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,
@@ -81,7 +81,9 @@ public class BlockedUsersPage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(BlockedUsersPage.this,
-                                "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(BlockedUsersPage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );

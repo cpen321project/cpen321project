@@ -90,7 +90,7 @@ public class ViewOtherProfile extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://10.0.2.2:3010/getuserprofile/"+userID;
+        String urlOther = "http://10.0.2.2:3010/getuserprofile/"+userID+"/"+LoginPage.accessToken;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
@@ -184,7 +184,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                     Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID;
+                    String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID+"/"+LoginPage.accessToken;
 
                     JsonArrayRequest jsonArrayRequest2 =
                             new JsonArrayRequest(Request.Method.GET, urlCurrentUser, null,
@@ -255,6 +255,7 @@ public class ViewOtherProfile extends AppCompatActivity {
             blockObj.put("userID", currentUserID);
             blockObj.put("jwt", LoginPage.accessToken);
             blockObj.put("blockedUserAdd", userID);//the other user's id
+            blockObj.put("jwt", LoginPage.accessToken);
             Log.d("viewOtherProfile:block", "userID: " + currentUserID);
             Log.d("viewOtherProfile:block", "blockedUserAdd: " + userID);
 
