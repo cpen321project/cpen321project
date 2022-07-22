@@ -127,7 +127,12 @@ exports.validateAccessToken = async (JWT, userID) => {
         throw (invalidTokenError)
 
     // Step 2: Validate the JWT signature
-    const keys = publicKey.data.keys
+    // TODO: fix 
+    console.log("---------------------") 
+    console.log("publicKey: " + publicKey) // returns [object Promise]
+    console.log("publicKey.data: " + publicKey.data) // returns undefined
+    console.log("---------------------")
+    const keys = publicKey.data.keys // TypeError: Cannot read properties of undefined (reading 'keys')
     decodedTokenHeader = JSON.parse(Buffer.from(tokenHeader, 'base64').toString('utf8'))
     // compare the local key ID (kid) to the public kid
     if (keys[1].kid != decodedTokenHeader.kid) {

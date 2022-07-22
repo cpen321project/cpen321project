@@ -79,6 +79,7 @@ public class LoginPage extends AppCompatActivity {
                                 Log.d("accessToken", successResult.getString("accessToken"));
                                 Log.d("UserId", successResult.getString("userID"));
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
+                                Log.d("accessToken", successResult.getString("accessToken"));
                                 viewProfileIntent.putExtra("accessToken", successResult.getString("accessToken"));
                                 startActivity(viewProfileIntent);
                             }

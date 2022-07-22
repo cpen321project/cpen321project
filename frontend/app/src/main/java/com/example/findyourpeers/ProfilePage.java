@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,6 +44,9 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
+        String accessToken = intentProfile.getExtras().getString("accessToken");
+        Log.d("accessToken in ProfilePage", accessToken);
+
         courseListAL = new ArrayList<>();
 
         layoutCourseButton = findViewById(R.id.layout_button_list);
@@ -74,7 +78,7 @@ public class ProfilePage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/"+userID;
+        String urltest = "http://10.0.2.2:3010/getuserprofile/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,
@@ -201,7 +205,7 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://10.0.2.2:3010/deleteuserfromcourse"+"/"+userID+"/"+coursenameNoSpace;
+        String urlUserToCourse = "http://10.0.2.2:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
                 new Response.Listener<String>() {

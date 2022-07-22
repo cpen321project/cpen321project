@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 })
 //---------------------------------------------------------------------------------------
 // routes for userStore
-app.get("/getuserprofile/:userID", userStore.getUserProfile)
+app.get("/getuserprofile/:userID/:jwt", userStore.getUserProfile)
 app.get("/getcourselist/:userID", userStore.getCourseList)
 app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
 app.post("/createprofile", userStore.createProfile)

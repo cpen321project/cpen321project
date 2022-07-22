@@ -107,38 +107,39 @@ module.exports = {
     },
 
     getUserProfile: async (req, res) => {
-        securty = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        if (security.success){
-
-        
-        await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
-            if (err) {
-                console.error("Error in getUserProfile: " + err)
-                res.status(400).send(err)
-            } else {
-                res.status(200).json(userProfileResult)
-            }
-        })
-    }
-    else{
-        res.status(400).send(security.message)
-    }
+        console.log("--------inside getUserProfile--------")
+        console.log("req.params.userID: " + req.params.userID);
+        console.log("req.params.jwt: " + req.params.jwt);
+        security = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (security.success) {
+            await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
+                if (err) {
+                    console.error("Error in getUserProfile: " + err)
+                    res.status(400).send(err)
+                } else {
+                    res.status(200).json(userProfileResult)
+                }
+            })
+        }
+        else {
+            res.status(400).send(security.message)
+        }
     },
 
     getCourseList: async (req, res) => {
         security = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (security.success) {
-        await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
-            if (err) {
-                console.error("Error in getCourseList: " + err)
-                res.status(400).send(err)
-            } else {
-                res.status(200).json(resultcourse)
-            }
-        })
-    } else {
+            await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
+                if (err) {
+                    console.error("Error in getCourseList: " + err)
+                    res.status(400).send(err)
+                } else {
+                    res.status(200).json(resultcourse)
+                }
+            })
+        } else {
             res.status(400).send(security.message)
-    }
+        }
     },
 
     createProfile: (req, res) => {
@@ -168,14 +169,14 @@ module.exports = {
     block: async (req, res) => {
         security = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (security.success) {
-        userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
-            if (err) {
-                console.error(err)
-                res.status(400).send(err)
-            } else {
-                res.status(200).json({ ok: true })
-            }
-        });
+            userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
+                if (err) {
+                    console.error(err)
+                    res.status(400).send(err)
+                } else {
+                    res.status(200).json({ ok: true })
+                }
+            });
         } else {
             res.status(400).send(security.message)
         }
@@ -194,10 +195,10 @@ module.exports = {
 
     getDisplayNameByUserIDfromDB: getDisplayNameByUserIDfromDB,
 
-    getDisplayNameByUserID: async function(req, res) {
+    getDisplayNameByUserID: async function (req, res) {
         let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
         console.log("retrievedDisplayName: " + retrievedDisplayName)
-        res.status(200).json({retrievedDisplayName})
+        res.status(200).json({ retrievedDisplayName })
     },
 
 }
@@ -210,7 +211,7 @@ async function getDisplayNameByUserIDfromDB(userID) {
     if (retrievedUser) {
         console.log("retrievedUser: " + retrievedUser.displayName)
         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
-        return retrievedUser.displayName  
+        return retrievedUser.displayName
     } else {
         console.log("retrievedUser: not found");
         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
