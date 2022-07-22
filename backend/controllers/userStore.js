@@ -129,8 +129,13 @@ module.exports = {
     },
 
     getCourseList: async (req, res) => {
-        security = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        if (security.success) {
+        try {
+            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
             await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
                 if (err) {
                     console.error("Error in getCourseList: " + err)
@@ -139,12 +144,17 @@ module.exports = {
                     res.status(200).json(resultcourse)
                 }
             })
-        } else {
-            res.status(400).send(security.message)
-        }
+
     },
 
-    createProfile: (req, res) => {
+    createProfile: async (req, res) => {
+        // try {
+        //     await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        // }
+        // catch {
+        //     res.status(404)
+        //     return
+        // }
         var courselistarr = [];
         var blockeruserarr = [];
         userCollection.insertOne(
@@ -169,8 +179,13 @@ module.exports = {
     },
 
     block: async (req, res) => {
-        security = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        if (security.success) {
+        try {
+            await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        }
+        catch {
+            res.status(404)
+            return
+        } 
             userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
                 if (err) {
                     console.error(err)
@@ -179,12 +194,17 @@ module.exports = {
                     res.status(200).json({ ok: true })
                 }
             });
-        } else {
-            res.status(400).send(security.message)
-        }
+
     },
 
     unblock: async (req, res) => {
+        try {
+            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)

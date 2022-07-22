@@ -42,21 +42,21 @@ app.get('/', (req, res) => {
 //---------------------------------------------------------------------------------------
 // routes for userStore
 app.get("/getuserprofile/:userID/:jwt", userStore.getUserProfile)
-app.get("/getcourselist/:userID", userStore.getCourseList)
+app.get("/getcourselist/:userID/:jwt", userStore.getCourseList)
 app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
 app.post("/createprofile", userStore.createProfile)
 app.post("/block", userStore.block)
-app.delete("/unblock/:userID/:userIDtoDelete", userStore.unblock)
+app.delete("/unblock/:userID/:userIDtoDelete/:jwt", userStore.unblock)
 app.post("/signup", userStore.signup)
 app.post("/confirmsignup", userStore.confirmSignUp)
 app.post("/login",userStore.login)
 app.post("/resendconfirmationcode", userStore.resendConfirmationCode)
 
 // routes for courseManager
-app.get("/getstudentlist/:coursename", courseManager.getStudentList)
+app.get("/getstudentlist/:coursename/:jwt", courseManager.getStudentList)
 app.post("/addusertocourse", courseManager.addUserToCourse)
 app.post("/addcoursetouser", courseManager.addCourseToUser)
-app.delete("/deleteuserfromcourse/:userID/:coursename", courseManager.deleteUserFromCourse)
+app.delete("/deleteuserfromcourse/:userID/:coursename/:jwt", courseManager.deleteUserFromCourse)
 app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine

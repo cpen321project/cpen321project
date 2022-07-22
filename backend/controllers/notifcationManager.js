@@ -1,5 +1,7 @@
 const admin = require("firebase-admin");
 const serviceAccount = require("../serviceKey.json");
+const authUtils = require('../utils/authUtils.js')
+
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
 const {MongoClient} = require("mongodb");
@@ -62,6 +64,13 @@ module.exports = {
     },
 
     newRegistrationToken: async (req,res) => {
+        try {
+            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         await userCollection.updateOne({userID: req.body.userID}, {$set: {registrationToken: req.body.registrationToken}}, 
             (err, result) => {
                 if (err) {

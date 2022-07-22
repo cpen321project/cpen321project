@@ -36,8 +36,10 @@ public class BlockedUsersPage extends AppCompatActivity {
     ArrayList<String> blockedUserIDs;
     HashMap<String, String> blockedUserNames;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocked_users_page);
 
