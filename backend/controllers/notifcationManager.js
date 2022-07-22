@@ -65,7 +65,7 @@ module.exports = {
 
     newRegistrationToken: async (req,res) => {
         try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+            await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         }
         catch {
             res.status(404)
