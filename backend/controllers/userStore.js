@@ -1,4 +1,3 @@
-const { auth } = require("firebase-admin")
 const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
@@ -110,40 +109,32 @@ module.exports = {
         console.log("--------inside getUserProfile--------")
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
-
-        await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
-            if (err) {
-                console.error("Error in getUserProfile: " + err)
-                res.status(400).send(err)
-            } else {
-                res.status(200).json(userProfileResult)
-            }
-        })
+        let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!validate) return
+            await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
+                if (err) {
+                    console.error("Error in getUserProfile: " + err)
+                    res.status(400).send(err)
+                } else {
+                    res.status(200).json(userProfileResult)
+                }
+            })
+ 
     },
 
     getCourseList: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
-            await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
-                if (err) {
-                    console.error("Error in getCourseList: " + err)
-                    res.status(400).send(err)
-                } else {
-                    res.status(200).json(resultcourse)
-                }
-            })
+
+        let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!validate) return
+        await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
+            if (err) {
+                console.error("Error in getCourseList: " + err)
+                res.status(400).send(err)
+            } else {
+                res.status(200).json(resultcourse)
+            }
+        })
+
 
     },
 
@@ -179,13 +170,9 @@ module.exports = {
     },
 
     block: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        }
-        catch {
-            res.status(404)
-            return
-        } 
+       
+        let validate = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!validate) return
             userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
                 if (err) {
                     console.error(err)
@@ -198,13 +185,9 @@ module.exports = {
     },
 
     unblock: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
+   
+        let validate =  await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!validate) return
         userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)
@@ -215,7 +198,7 @@ module.exports = {
         });
     },
 
-    getDisplayNameByUserIDfromDB: getDisplayNameByUserIDfromDB,
+    getDisplayNameByUserIDfromDB: _getDisplayNameByUserIDfromDB,
 
     getDisplayNameByUserID: async function (req, res) {
         let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
@@ -225,7 +208,7 @@ module.exports = {
 
 }
 
-async function getDisplayNameByUserIDfromDB(userID) {
+async function _getDisplayNameByUserIDfromDB(userID) {
     console.log("----------------getDisplayNameByUserIDfromDB------------------")
     console.log("userID: " + userID)
 
