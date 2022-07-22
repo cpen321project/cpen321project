@@ -41,7 +41,6 @@ public class BrowseCourse extends AppCompatActivity {
     public String userID;
     public String displayName;
     private ArrayList<String> studentCourseList;
-    private String inputCourseFinal;
     public LinearLayout layoutCourseList;
 
     @Override
@@ -76,8 +75,8 @@ public class BrowseCourse extends AppCompatActivity {
                         return true;
                     case R.id.browse_courses:
                         return true;
+                    default: return false;
                 }
-                return false;
             }
         });
 
@@ -124,74 +123,6 @@ public class BrowseCourse extends AppCompatActivity {
 
             }
         });
-
-
-
-        /*RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlcourse = "https://ubcexplorer.io/getAllCourses";
-        JsonArrayRequest requestCourse = new JsonArrayRequest(Request.Method.GET, urlcourse, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                try {
-                    for(int i=0; i< response.length(); i++){
-                        JSONObject jsonObject = response.getJSONObject(i);
-                        String coursename = jsonObject.getString("code");
-                        courseList.add(coursename);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if(error.networkResponse.data!=null) {
-                    try {
-                        String body = new String(error.networkResponse.data,"UTF-8");
-                        Log.d("Browse Course", body);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        );
-        //BrowseCourseSingleton.getInstance(BrowseCourse.this).addToRequestQueue(requestCourse);
-        requestQueue.add(requestCourse);
-
-        ArrayAdapter<String> adapterCourse = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, courseList);
-        actvCourse.setAdapter(adapterCourse);
-        actvCourse.setThreshold(1);
-
-        dropDownButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actvCourse.showDropDown();
-            }
-        });
-
-        //String inputCourseFinal; //keep track!
-        actvCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                inputCourseFinal = adapterCourse.getItem(position).toString();
-            }
-        });*/
-/**
- * Unset the var whenever the user types. Validation will
- * then fail. This is how we enforce selecting from the list.
- */
-        /*actvCourse.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                inputCourseFinal = null;
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });*/
 
         browseMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,6 +182,7 @@ public class BrowseCourse extends AppCompatActivity {
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //do nothing
                     }
                 });
 

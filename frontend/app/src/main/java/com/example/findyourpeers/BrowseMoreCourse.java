@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -68,8 +67,8 @@ public class BrowseMoreCourse extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", studentCourseList);
                         startActivity(browseCourseIntent);
                         return true;
+                    default: return false;
                 }
-                return false;
             }
         });
 
@@ -148,6 +147,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //do nothing
                     }
                 });
 

@@ -76,7 +76,7 @@ public class CreateProfile extends AppCompatActivity {
                     return;
                 }
                 // calling a method to post the data and passing our name and job.
-                postDataUsingVolley(displayNameStr, coopStatus, yearStanding, usernameStr);
+                postDataUsingVolley(displayNameStr, coopStatus, yearStanding);
             }
         });
 
@@ -126,7 +126,7 @@ public class CreateProfile extends AppCompatActivity {
         }
     }
 
-    private void postDataUsingVolley(String name, String coop, String yearstand, String usernameStr) {
+    private void postDataUsingVolley(String name, String coop, String yearstand) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
 

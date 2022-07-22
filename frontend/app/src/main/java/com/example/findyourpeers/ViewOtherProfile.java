@@ -84,8 +84,8 @@ public class ViewOtherProfile extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
                         return true;
+                    default: return false;
                 }
-                return false;
             }
         });
 
@@ -121,7 +121,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                                 for (int i=0;i<coursesJSONArray.length();i++){
                                     //courseArrayList.add(coursesJSONArray.getString(i));
                                     String courseNameSingle = coursesJSONArray.getString(i);
-                                    viewCourseButton(courseNameSingle, userID);
+                                    viewCourseButton(courseNameSingle);
                                 }
                             }
 
@@ -233,7 +233,7 @@ public class ViewOtherProfile extends AppCompatActivity {
 
     }
 
-    private void viewCourseButton(String courseNameSingle, String userID) {
+    private void viewCourseButton(String courseNameSingle) {
         TextView othercoursenameTV = new TextView(ViewOtherProfile.this);
         othercoursenameTV.setText(courseNameSingle);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(

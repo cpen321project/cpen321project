@@ -14,10 +14,8 @@ userCollection = dbUser.collection("userCollection")
 
 module.exports = {
     getStudentList: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        }
-        catch {
+        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
             res.status(404)
             return
         }
@@ -34,10 +32,8 @@ module.exports = {
     },
 
     addUserToCourse: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        }
-        catch {
+        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
             res.status(404)
             return
         }
@@ -58,14 +54,11 @@ module.exports = {
     },
 
     addCourseToUser: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        }
-        catch {
+        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
             res.status(404)
             return
         }
-
             await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } }, (err, result) => {
                 if (err) {
                     console.error("Error in addCourseToUser: " + err)
@@ -78,13 +71,18 @@ module.exports = {
     },
 
     deleteUserFromCourse: async (req, res) => {
-        try {
+        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }       try {
             await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         }
         catch {
             res.status(404)
             return
         }
+        
 
             let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
             await dbCourse.collection(coursenamespace).deleteOne({ "userID": req.params.userID }, (err, result) => {
@@ -99,10 +97,8 @@ module.exports = {
     },
 
     deleteCourseFromUser: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        }
-        catch {
+        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
             res.status(404)
             return
         }

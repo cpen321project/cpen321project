@@ -64,10 +64,8 @@ module.exports = {
     },
 
     newRegistrationToken: async (req,res) => {
-        try {
-            await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        }
-        catch {
+        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
             res.status(404)
             return
         }
