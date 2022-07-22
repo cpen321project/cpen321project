@@ -32,7 +32,7 @@ module.exports = {
             res.status(404)
             return
         }
-        const groupID = req.params.groupID
+        const groupID  = req.params.groupID
         // console.log("req.params.groupID: " + req.params.groupID)
         console.log("chatEngine: trying to get convo at groupID: " + groupID)
 
@@ -80,7 +80,6 @@ module.exports = {
             res.status(404)
             return
         }
-    
         const senderID = req.params.senderID
         const receiverID = req.params.receiverID
 

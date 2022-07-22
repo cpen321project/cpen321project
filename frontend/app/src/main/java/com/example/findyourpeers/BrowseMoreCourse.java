@@ -174,7 +174,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://10.0.2.2:3010/addusertocourse";
+        String urlUserToCourse = "http://34.130.14.116:3010/addusertocourse";
         JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, urlUserToCourse, usertoadd,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -202,7 +202,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlCourseToUser = "http://10.0.2.2:3010/addcoursetouser";
+        String urlCourseToUser = "http://34.130.14.116:3010/addcoursetouser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, urlCourseToUser, coursetoadd,
                 new Response.Listener<JSONObject>() {
                     @Override

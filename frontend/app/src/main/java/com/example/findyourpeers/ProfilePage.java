@@ -80,7 +80,7 @@ public class ProfilePage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/" + userID + "/" + accessToken;
+        String urltest = "http://34.130.14.116:3010/getuserprofile/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,
@@ -209,7 +209,7 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://10.0.2.2:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
+        String urlUserToCourse = "http://34.130.14.116:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
                 new Response.Listener<String>() {
@@ -245,7 +245,7 @@ public class ProfilePage extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3010/deletecoursefromuser";
+        String url = "http://34.130.14.116:3010/deletecoursefromuser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, courseDelete,
                 new Response.Listener<JSONObject>() {
                     @Override

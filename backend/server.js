@@ -81,16 +81,23 @@ io.on('connection', (socket) => {
     socket.on('joinGroupChat', async function (groupID, userID, jwt) {
         jwtFromGroup = jwt
         cachedUserID = userID
-        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenValidated) return
+        try {
+            await authUtils.validateAccessToken(jwt, userID)
+        }
+        catch (err) {
+            return
+        }
         console.log(userID + " : joined at groupID : " + groupID)
         socket.join(groupID)
     })
 
     socket.on('groupMessage', async (groupID, senderName, messageContent) => {
-        let tokenValidated = await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
-        if (!tokenValidated) return
-
+        try {
+            await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
+        }
+        catch (err) {
+            return
+        }
         console.log(senderName + " : " + messageContent)
         
         // save message to database 
@@ -109,10 +116,12 @@ io.on('connection', (socket) => {
     socket.on('joinPrivateChat', async function (displayName, userID, jwt) {
         jwtFromPrivate = jwt
         cachedUserID = userID
-
-        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenValidated) return
-
+        try {
+            await authUtils.validateAccessToken(jwt, userID)
+        }
+        catch {
+            return
+        }
         console.log("Inside joinPrivateChat:")
         usersSockets[displayName] = socket.id
         console.log(displayName + " : initiated a private chat")
@@ -121,10 +130,13 @@ io.on('connection', (socket) => {
     })
 
     socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
-        let tokenValidated = await authUtils.validateAccessToken(jwtFromPrivate, cachedUserID)
-        if (!tokenValidated) return
-        
-        if (isBlocked === 0) {
+        try {
+            await authUtils.validateAccessToken(jwtFromPrivate, cachedUserID)
+        }
+        catch {
+            return
+        }
+        if (isBlocked == 0) {
             console.log("-----------------Inside privateMessage-----------------")
 
             console.log("PM: " + senderID + " -> " + receiverID + " : " + messageContent)

@@ -64,7 +64,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID +"/"+LoginPage.accessToken;
+        String urlOther = "http://34.130.14.116:3010/getuserprofile/" + userID +"/"+LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
                 null,
@@ -147,7 +147,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         unblockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
+                String url = "http://34.130.14.116:3010/unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
                             @Override
