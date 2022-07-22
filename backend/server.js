@@ -70,9 +70,9 @@ let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
 io.on('connection', (socket) => {
     console.log('a user connected')
-    let jwtFromGroup;
-    let jwtFromPrivate;
-    let cachedUserID;
+    //let jwtFromGroup;
+    //let jwtFromPrivate;
+    //let cachedUserID;
 
     // socket.on('joinGroupChat', function (groupID, displayName) {
     //     console.log(displayName + " : joined at groupID : " + groupID)
