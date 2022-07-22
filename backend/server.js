@@ -64,7 +64,7 @@ app.get('/getConversationByGroupID/:groupID/:userID/:jwt', chatEngine.getConvers
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID/:jwt', chatEngine.getPrivateConversationByUserIDs)
 
 // route for firebase
-app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
+app.post("/newRegistrationToken/:userID/:jwt", notificationManager.newRegistrationToken)
 
 let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
