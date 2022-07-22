@@ -146,12 +146,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         unblockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-<<<<<<< HEAD
                 String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
-=======
-                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID +"/"+LoginPage.accessToken;
->>>>>>> e3a9aa50153cb132bf43725b295ac33abbb118ed
-
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
                             @Override

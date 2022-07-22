@@ -84,8 +84,7 @@ io.on('connection', (socket) => {
         try {
             await authUtils.validateAccessToken(jwt, userID)
         }
-        catch {
-            res.status(404)
+        catch (err) {
             return
         }
         console.log(userID + " : joined at groupID : " + groupID)
@@ -96,8 +95,7 @@ io.on('connection', (socket) => {
         try {
             await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
         }
-        catch {
-            res.status(404)
+        catch (err) {
             return
         }
         console.log(senderName + " : " + messageContent)
@@ -122,7 +120,6 @@ io.on('connection', (socket) => {
             await authUtils.validateAccessToken(jwt, userID)
         }
         catch {
-            res.status(404)
             return
         }
         console.log("Inside joinPrivateChat:")
@@ -137,7 +134,6 @@ io.on('connection', (socket) => {
             await authUtils.validateAccessToken(jwtFromPrivate, cachedUserID)
         }
         catch {
-            res.status(404)
             return
         }
         if (isBlocked == 0) {
