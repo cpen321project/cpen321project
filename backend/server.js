@@ -53,11 +53,11 @@ app.post("/login",userStore.login)
 app.post("/resendconfirmationcode", userStore.resendConfirmationCode)
 
 // routes for courseManager
-app.get("/getstudentlist/:coursename", courseManager.getStudentList)
+app.get("/getstudentlist/:coursename/:jwt", courseManager.getStudentList)
 app.post("/addusertocourse", courseManager.addUserToCourse)
 app.post("/addcoursetouser", courseManager.addCourseToUser)
-app.delete("/deleteuserfromcourse/:userID/:coursename", courseManager.deleteUserFromCourse)
-app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
+app.delete("/deleteuserfromcourse/:userID/:coursename/:jwt", courseManager.deleteUserFromCourse)
+app.post("/deletecoursefromuser/:jwt", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine
 app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupID)
