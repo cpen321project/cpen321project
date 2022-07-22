@@ -81,25 +81,16 @@ io.on('connection', (socket) => {
     socket.on('joinGroupChat', async function (groupID, userID, jwt) {
         jwtFromGroup = jwt
         cachedUserID = userID
-        try {
-            await authUtils.validateAccessToken(jwt, userID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
+        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
+        if (!tokenValidated) return
         console.log(userID + " : joined at groupID : " + groupID)
         socket.join(groupID)
     })
 
     socket.on('groupMessage', async (groupID, senderName, messageContent) => {
-        try {
-            await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
+        let tokenValidated = await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
+        if (!tokenValidated) return
+
         console.log(senderName + " : " + messageContent)
         
         // save message to database 
@@ -118,13 +109,10 @@ io.on('connection', (socket) => {
     socket.on('joinPrivateChat', async function (displayName, userID, jwt) {
         jwtFromPrivate = jwt
         cachedUserID = userID
-        try {
-            await authUtils.validateAccessToken(jwt, userID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
+
+        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
+        if (!tokenValidated) return
+
         console.log("Inside joinPrivateChat:")
         usersSockets[displayName] = socket.id
         console.log(displayName + " : initiated a private chat")
@@ -133,14 +121,10 @@ io.on('connection', (socket) => {
     })
 
     socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
-        try {
-            await authUtils.validateAccessToken(jwtFromPrivate, cachedUserID)
-        }
-        catch {
-            res.status(404)
-            return
-        }
-        if (isBlocked == 0) {
+        let tokenValidated = await authUtils.validateAccessToken(jwtFromPrivate, cachedUserID)
+        if (!tokenValidated) return
+        
+        if (isBlocked === 0) {
             console.log("-----------------Inside privateMessage-----------------")
 
             console.log("PM: " + senderID + " -> " + receiverID + " : " + messageContent)

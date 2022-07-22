@@ -27,10 +27,8 @@ module.exports = {
         })
     },
     getConversationByGroupID: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        }
-        catch {
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
             res.status(404)
             return
         }
@@ -77,15 +75,14 @@ module.exports = {
         })
     }, 
     getPrivateConversationByUserIDs: async (req, res) => {
-        try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.senderID)
-        }
-        catch {
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.senderID)
+        if (!tokenValidated) {
             res.status(404)
             return
         }
-        const { senderID } = req.params.senderID
-        const { receiverID } = req.params.receiverID
+    
+        const senderID = req.params.senderID
+        const receiverID = req.params.receiverID
 
         console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 
