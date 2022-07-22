@@ -34,7 +34,7 @@ module.exports = {
             res.status(404)
             return
         }
-        const { groupID } = req.params
+        const { groupID } = req.params.groupID
         // console.log("req.params.groupID: " + req.params.groupID)
         console.log("chatEngine: trying to get convo at groupID: " + groupID)
 
@@ -84,7 +84,9 @@ module.exports = {
             res.status(404)
             return
         }
-        const { senderID, receiverID } = req.params
+        const { senderID } = req.params.senderID
+        const { receiverID } = req.params.receiverID
+
         console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 
         let senderName = await userStore.getDisplayNameByUserIDfromDB(senderID);

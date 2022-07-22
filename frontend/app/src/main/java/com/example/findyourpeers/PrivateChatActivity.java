@@ -86,7 +86,7 @@ public class PrivateChatActivity extends AppCompatActivity {
 //                + senderName + "/" + receiverName;
 
         String url = "http://" + serverIP + ":3010/getPrivateConversationByUserIDs/"
-                + senderID + "/" + receiverID;
+                + senderID + "/" + receiverID + "/" + LoginPage.accessToken;
 
         // change to array request for clean up
         JsonObjectRequest jsonObjectRequest =
@@ -137,7 +137,7 @@ public class PrivateChatActivity extends AppCompatActivity {
 
             socket.connect();
 
-            socket.emit("joinPrivateChat", senderName);
+            socket.emit("joinPrivateChat", senderName, senderID, LoginPage.accessToken);
             Log.d("PrivateChatActivity", "Joining private chat: " + senderName);
 
         } catch (URISyntaxException e) {
