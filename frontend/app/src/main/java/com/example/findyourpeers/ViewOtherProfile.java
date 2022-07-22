@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.findyourpeers.LoginPage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -252,9 +253,11 @@ public class ViewOtherProfile extends AppCompatActivity {
         try {
             //input your API parameters
             blockObj.put("userID", currentUserID);
+            blockObj.put("jwt", LoginPage.accessToken);
             blockObj.put("blockedUserAdd", userID);//the other user's id
             Log.d("viewOtherProfile:block", "userID: " + currentUserID);
             Log.d("viewOtherProfile:block", "blockedUserAdd: " + userID);
+
 
         } catch (JSONException e) {
             e.printStackTrace();
