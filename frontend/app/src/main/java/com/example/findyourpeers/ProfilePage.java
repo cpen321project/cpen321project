@@ -44,8 +44,10 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
-        String accessToken = intentProfile.getExtras().getString("accessToken");
+        String accessToken = LoginPage.accessToken;
         Log.d("accessToken in ProfilePage", accessToken);
+
+
 
         courseListAL = new ArrayList<>();
 

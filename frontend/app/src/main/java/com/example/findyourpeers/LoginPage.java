@@ -24,6 +24,7 @@ public class LoginPage extends AppCompatActivity {
 
     private EditText unameET;
     private EditText passwordET;
+    public static String accessToken;
 
 
     @Override
@@ -74,13 +75,13 @@ public class LoginPage extends AppCompatActivity {
                                 Toast.makeText(LoginPage.this, result, Toast.LENGTH_SHORT).show();
                             }else{
                                 JSONObject successResult = response.getJSONObject("result");
+                                accessToken = successResult.getString("accessToken");
                                 Toast.makeText(LoginPage.this, "Login success", Toast.LENGTH_SHORT).show();
                                 Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
                                 Log.d("accessToken", successResult.getString("accessToken"));
                                 Log.d("UserId", successResult.getString("userID"));
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
                                 Log.d("accessToken", successResult.getString("accessToken"));
-                                viewProfileIntent.putExtra("accessToken", successResult.getString("accessToken"));
                                 startActivity(viewProfileIntent);
                             }
                         }catch(JSONException e){
