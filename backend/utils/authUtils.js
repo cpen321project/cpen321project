@@ -127,7 +127,7 @@ exports.validateAccessToken = async (JWT, userID) => {
 
     // Step 1: Confirm the structure of the JWT
     const JWTSections = [tokenHeader, tokenPayload, tokenSignature] = JWT.split('.')
-    if (JWTSections.length != 3)
+    if (JWTSections.length !== 3)
         return false
 
     // Step 2: Validate the JWT signature
@@ -152,7 +152,7 @@ exports.validateAccessToken = async (JWT, userID) => {
     // verify token signature
     var pem = jwkToPem(keys[1]);
     validSignature = crypto.createVerify('RSA-SHA256')
-                    .update(`${ tokenHeader }.${ tokenPayload }`)
+                    .update(`${tokenHeader}.${tokenPayload}`)
                     .verify(crypto.createPublicKey(pem), tokenSignature, 'base64')
     if(!validSignature) {
         return false
