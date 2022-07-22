@@ -110,20 +110,22 @@ module.exports = {
         console.log("--------inside getUserProfile--------")
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
-        security = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (security.success) {
-            await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
-                if (err) {
-                    console.error("Error in getUserProfile: " + err)
-                    res.status(400).send(err)
-                } else {
-                    res.status(200).json(userProfileResult)
-                }
-            })
+        try {
+            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         }
-        else {
-            res.status(400).send(security.message)
+        catch {
+            res.status(404)
+            return
         }
+
+        await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
+            if (err) {
+                console.error("Error in getUserProfile: " + err)
+                res.status(400).send(err)
+            } else {
+                res.status(200).json(userProfileResult)
+            }
+        })
     },
 
     getCourseList: async (req, res) => {
