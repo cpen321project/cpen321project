@@ -77,6 +77,13 @@ module.exports = {
         })
     }, 
     getPrivateConversationByUserIDs: async (req, res) => {
+        try {
+            await authUtils.validateAccessToken(req.params.jwt, req.params.senderID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         const { senderID, receiverID } = req.params
         console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 

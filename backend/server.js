@@ -61,7 +61,7 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine
 app.get('/getConversationByGroupID/:groupID/:userID/:jwt', chatEngine.getConversationByGroupID)
-app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
+app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID/:jwt', chatEngine.getPrivateConversationByUserIDs)
 
 // route for firebase
 app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
