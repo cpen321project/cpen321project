@@ -74,8 +74,8 @@ public class ProfilePage extends AppCompatActivity {
                         browseCourseIntent.putExtra("courselist", courseListAL);
                         startActivity(browseCourseIntent);
                         return true;
+                    default: return false;
                 }
-                return false;
             }
         });
 

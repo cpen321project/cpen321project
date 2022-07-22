@@ -70,8 +70,8 @@ public class StudentListPage extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
                         return true;
+                    default: return false;
                 }
-                return false;
             }
         });
 

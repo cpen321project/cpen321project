@@ -19,26 +19,27 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.findyourpeers.LoginPage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ViewBlockedProfile extends AppCompatActivity {
     final String TAG = "ViewBlockedProfile";
 
-    private TextView otherDisplayNameTV, otherCoopTV, otherYearTV;
+    private TextView otherDisplayNameTV;
+    private TextView otherCoopTV;
+    private TextView otherYearTV;
     private String otherDisplayName;
     private int isBlocked = 0;
-    String userID, currentUserID, currentUserDisplayName;
+    String userID;
+    String currentUserID;
+    String currentUserDisplayName;
     ArrayList<String> blockedUsers;
     HashMap<String, String> blockedUserNames;
     public LinearLayout layoutCourseOther;
@@ -88,7 +89,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
                             if (coursesJSONArray != null) {
                                 for (int i=0;i<coursesJSONArray.length();i++){
                                     String courseNameSingle = coursesJSONArray.getString(i);
-                                    viewCourseButton(courseNameSingle, userID);
+                                    viewCourseButton(courseNameSingle);
                                 }
                             }
 
@@ -146,11 +147,8 @@ public class ViewBlockedProfile extends AppCompatActivity {
         unblockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-<<<<<<< HEAD
                 String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
-=======
-                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID +"/"+LoginPage.accessToken;
->>>>>>> e3a9aa50153cb132bf43725b295ac33abbb118ed
+
 
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
@@ -175,7 +173,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         });
     }
 
-    private void viewCourseButton(String courseNameSingle, String userID) {
+    private void viewCourseButton(String courseNameSingle) {
         TextView othercoursenameTV = new TextView(ViewBlockedProfile.this);
         othercoursenameTV.setText(courseNameSingle);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
