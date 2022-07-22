@@ -121,12 +121,14 @@ exports.validateAccessToken = async (JWT, userID) => {
     // For future reference: https://github.com/awslabs/aws-jwt-verify is a library maintained by AWS to verify JSON Web Tokens,
     // we did NOT use this library for the purposes of this course
 
-    const invalidTokenError = new Error('Invalid Token')
+    if (!JWT) {
+        return false
+    }
 
     // Step 1: Confirm the structure of the JWT
     const JWTSections = [tokenHeader, tokenPayload, tokenSignature] = JWT.split('.')
     if (JWTSections.length != 3)
-        throw (invalidTokenError)
+        return false
 
     // Step 2: Validate the JWT signature
     // TODO: fix 
@@ -139,13 +141,13 @@ exports.validateAccessToken = async (JWT, userID) => {
     decodedTokenHeader = JSON.parse(Buffer.from(tokenHeader, 'base64').toString('utf8'))
     // compare the local key ID (kid) to the public kid
     if (keys[1].kid != decodedTokenHeader.kid) {
-        throw (invalidTokenError)
+        return false
     }
     decodedtokenPayload = JSON.parse(Buffer.from(tokenPayload, 'base64').toString('utf8'))
     let currentTimestamp = Math.floor((new Date()).valueOf() / 1000)
     // verify token is not expired
     if (currentTimestamp > decodedtokenPayload.exp) {
-        throw (invalidTokenError)
+        return false
     }
     // verify token signature
     var pem = jwkToPem(keys[1]);
@@ -153,7 +155,7 @@ exports.validateAccessToken = async (JWT, userID) => {
                     .update(`${ tokenHeader }.${ tokenPayload }`)
                     .verify(crypto.createPublicKey(pem), tokenSignature, 'base64')
     if(!validSignature) {
-        throw (invalidTokenError)
+        return false
     }
 
    // Step 3: Verify the claims
@@ -161,6 +163,6 @@ exports.validateAccessToken = async (JWT, userID) => {
         || decodedtokenPayload.token_use != 'access'
         || decodedtokenPayload.iss != COGNITO_ISSUER
         || decodedtokenPayload.sub != userID) {
-            throw (invalidTokenError)
+        return false
         }
 }
