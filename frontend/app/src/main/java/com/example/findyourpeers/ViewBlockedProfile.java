@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.findyourpeers.LoginPage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -143,7 +144,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
         unblockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID;
+                String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
 
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
