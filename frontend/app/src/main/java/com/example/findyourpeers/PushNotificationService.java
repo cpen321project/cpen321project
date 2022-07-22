@@ -49,6 +49,7 @@ public class PushNotificationService extends FirebaseMessagingService {
             //input your API parameters
             newToken.put("userID", uuidString);
             newToken.put("registrationToken", token);
+            newToken.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }

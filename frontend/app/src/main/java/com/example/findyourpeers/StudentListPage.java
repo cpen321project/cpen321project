@@ -1,9 +1,11 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,10 +17,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class StudentListPage extends AppCompatActivity {
 
@@ -28,6 +33,7 @@ public class StudentListPage extends AppCompatActivity {
     String currentUserID;
     public LinearLayout layoutStudentButton;
     TextView titleCourse;
+    ArrayList<String> courseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +41,42 @@ public class StudentListPage extends AppCompatActivity {
         setContentView(R.layout.activity_student_list_page);
 
         Intent intentStudentList = getIntent();
-        String coursename = intentStudentList.getExtras().getString("coursename");
-        currentUserDisplayName = intentStudentList.getExtras().getString("displayname");
         currentUserID = intentStudentList.getExtras().getString("currentUserID");
+        String courseName = intentStudentList.getExtras().getString("courseName");
+        currentUserDisplayName = intentStudentList.getExtras().getString("displayName");
+        courseList = (ArrayList<String>) intentStudentList.getSerializableExtra("courseList");
 
         layoutStudentButton= findViewById(R.id.layout_student_list);
-        String coursenameNoSpace = coursename.replaceAll(" ", "");
+        String coursenameNoSpace = courseName.replaceAll(" ", "");
         titleCourse = findViewById(R.id.student_list_title);
-        titleCourse.setText(coursename);
+        titleCourse.setText(courseName);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.my_profile:
+                        Intent displayProfileBackIntent = new Intent(StudentListPage.this, ProfilePage.class);
+                        displayProfileBackIntent.putExtra("userID", userID);
+                        startActivity(displayProfileBackIntent);
+                        return true;
+                    case R.id.browse_courses:
+                        Intent browseCourseIntent =
+                                new Intent(StudentListPage.this, BrowseCourse.class);
+                        browseCourseIntent.putExtra("userID", currentUserID);
+                        browseCourseIntent.putExtra("displayName", currentUserDisplayName);
+                        browseCourseIntent.putExtra("courseList", courseList);
+                        startActivity(browseCourseIntent);
+                        return true;
+                    default: return false;
+                }
+            }
+        });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlStudentList = "http://34.130.14.116:3010/getstudentlist/"+coursenameNoSpace;
+        String urlStudentList = "http://34.130.14.116:3010/getstudentlist/"+coursenameNoSpace+"/"+LoginPage.accessToken;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlStudentList,
@@ -78,7 +109,10 @@ public class StudentListPage extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
-                        Toast.makeText(StudentListPage.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentListPage.this,
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(StudentListPage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );
@@ -100,6 +134,7 @@ public class StudentListPage extends AppCompatActivity {
                 viewStudentIntent.putExtra("currentUserID", currentUserID);
                 viewStudentIntent.putExtra("userID", userID);
                 viewStudentIntent.putExtra("currentUserDisplayName", currentUserDisplayName);
+                viewStudentIntent.putExtra("courseList", courseList);
                 startActivity(viewStudentIntent);
             }
         });

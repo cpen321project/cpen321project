@@ -1,6 +1,7 @@
-const notificationManager  = require("./notifcationManager.js")
+const notificationManager = require("./notifcationManager.js")
+const authUtils = require("../utils/authUtils.js")
 
-const {MongoClient} = require("mongodb")
+const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
@@ -8,13 +9,18 @@ client.connect()
 let dbUser, dbCourse, userCollection
 
 dbUser = client.db("user")
-dbCourse= client.db("course")
+dbCourse = client.db("course")
 userCollection = dbUser.collection("userCollection")
 
 module.exports = {
     getStudentList: async (req, res) => {
-        let coursenamespace = req.params.coursename.substring(0,4)+ " "+req.params.coursename.substring(4,req.params.coursename.length)
-        await dbCourse.collection(coursenamespace).find({}).project({userID:1, displayName:1, _id:0}).toArray((err, resultstudent) => {
+        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }
+        let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
+        await dbCourse.collection(coursenamespace).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, resultstudent) => {
             if (err) {
                 console.error("Error in getStudentList: " + err)
                 res.status(400).send(err)
@@ -25,24 +31,35 @@ module.exports = {
         })
     },
 
-    addUserToCourse:  async (req, res) => {
+    addUserToCourse: async (req, res) => {
+        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }
+
         await dbCourse.collection(req.body.coursename).insertOne({
             displayName: req.body.displayName,
             userID: req.body.userID,
-            }, (err, result) => {
-                if (err) {
-                    console.log("Error in addUserToCourse: " + err)
-                    res.status(400).send(err)
-                } else {
-                    console.log("addUserToCourse successfully")
-                    res.status(200).send("User added successfully\n")
-                    notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
-                }
-            })
-    }, 
+        }, (err, result) => {
+            if (err) {
+                console.log("Error in addUserToCourse: " + err)
+                res.status(400).send(err)
+            } else {
+                console.log("addUserToCourse successfully")
+                res.status(200).send("User added successfully\n")
+                notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+            }
+        })
+    },
 
     addCourseToUser: async (req, res) => {
-        await userCollection.updateOne({"userID": req.body.userID}, {$push:{"courselist":req.body.coursename}},(err, result)=>{
+        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }
+        await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } }, (err, result) => {
             if (err) {
                 console.error("Error in addCourseToUser: " + err)
                 res.status(400).send(err)
@@ -54,8 +71,15 @@ module.exports = {
     },
 
     deleteUserFromCourse: async (req, res) => {
-        let coursenamespace = req.params.coursename.substring(0,4)+ " "+req.params.coursename.substring(4,req.params.coursename.length)
-        await dbCourse.collection(coursenamespace).deleteOne({"userID": req.params.userID}, (err, result) => {
+        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }
+
+
+        let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
+        await dbCourse.collection(coursenamespace).deleteOne({ "userID": req.params.userID }, (err, result) => {
             if (err) {
                 console.log("Error in deleteUserFromCourse: " + err)
                 res.status(400).send(err)
@@ -67,7 +91,12 @@ module.exports = {
     },
 
     deleteCourseFromUser: async (req, res) => {
-        await userCollection.updateMany({"userID": req.body.userID},{$pull: {"courselist": req.body.coursename}}, (err, result) => {
+        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }
+        await userCollection.updateMany({ "userID": req.body.userID }, { $pull: { "courselist": req.body.coursename } }, (err, result) => {
             if (err) {
                 console.log("Error in deleteCourseFromUser: " + err)
                 res.status(400).send(err)

@@ -1,6 +1,7 @@
 const Message = require('../models/Message.js')
 const PrivateMessage = require('../models/PrivateMessage.js')
 const userStore = require('./userStore.js')
+const authUtils = require("../utils/authUtils.js")
 
 module.exports = {
     // joinChat: async (req, res) => {
@@ -26,7 +27,12 @@ module.exports = {
         })
     },
     getConversationByGroupID: async (req, res) => {
-        const { groupID } = req.params
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
+            res.status(404)
+            return
+        }
+        const groupID  = req.params.groupID
         // console.log("req.params.groupID: " + req.params.groupID)
         console.log("chatEngine: trying to get convo at groupID: " + groupID)
 
@@ -69,11 +75,18 @@ module.exports = {
         })
     }, 
     getPrivateConversationByUserIDs: async (req, res) => {
-        const { senderID, receiverID } = req.params
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.senderID)
+        if (!tokenValidated) {
+            res.status(404)
+            return
+        }
+        const senderID = req.params.senderID
+        const receiverID = req.params.receiverID
+
         console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 
-        let senderName = await userStore.getDisplayNamebyUserID(senderID);
-        let receiverName = await userStore.getDisplayNamebyUserID(receiverID);
+        let senderName = await userStore.getDisplayNameByUserIDfromDB(senderID);
+        let receiverName = await userStore.getDisplayNameByUserIDfromDB(receiverID);
         console.log("senderName: " + senderName)
         console.log("receiverName: " + receiverName)
 

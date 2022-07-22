@@ -25,6 +25,7 @@ public class EnterCode extends AppCompatActivity {
     private EditText verifCode;
     private String emailStr;
     private String usernameStr;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class EnterCode extends AppCompatActivity {
         Intent intentCode = getIntent();
         usernameStr = intentCode.getExtras().getString("username");
         emailStr = intentCode.getExtras().getString("email");
+        userID = intentCode.getExtras().getString("userID");
 
         verifCode = (EditText) findViewById(R.id.verification_code);
 
@@ -127,10 +129,11 @@ public class EnterCode extends AppCompatActivity {
                                 Toast.makeText(EnterCode.this, result, Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
-                                Intent enterCodeIntent = new Intent(EnterCode.this, CreateProfile.class);
-                                enterCodeIntent.putExtra("email",emailStr);
-                                enterCodeIntent.putExtra("username", usernameStr);
-                                startActivity(enterCodeIntent);
+                                Intent createProfileIntent = new Intent(EnterCode.this, CreateProfile.class);
+                                createProfileIntent.putExtra("email",emailStr);
+                                createProfileIntent.putExtra("username", usernameStr);
+                                createProfileIntent.putExtra("userID", userID);
+                                startActivity(createProfileIntent);
                             }
                         }catch(JSONException e){
                             e.printStackTrace();

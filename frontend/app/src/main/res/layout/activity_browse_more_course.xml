@@ -5,25 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".StudentListPage">
+    tools:context=".BrowseMoreCourse">
 
     <TextView
-        android:id="@+id/student_list_title"
+        android:id="@+id/browse_more_course_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp"
         android:gravity="center"
         android:textColor="@color/ubc_darkblue"
-        android:textSize="34sp" />
+        android:textSize="34sp"
+        android:text="List of Courses at UBC"/>
 
     <ScrollView
-        android:id="@+id/scroll_view_sl"
+        android:id="@+id/scroll_view_bmc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="580dp"
+        android:contentDescription="Loading Courses..">
 
         <LinearLayout
-            android:id="@+id/layout_student_list"
+            android:id="@+id/layout_browse_more_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10sp"

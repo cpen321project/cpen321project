@@ -90,7 +90,8 @@ public class ChatActivity extends AppCompatActivity {
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://" + serverIP + ":3010/getConversationByGroupID/" + groupID;
+        String url = "http://" + serverIP + ":3010/getConversationByGroupID/" + groupID +
+                "/" + userID + "/" + LoginPage.accessToken;
 
         // Request a string response from the provided URL.
         JsonObjectRequest jsonObjectRequest =
@@ -145,7 +146,7 @@ public class ChatActivity extends AppCompatActivity {
             socket.connect();
 
 //            socket.emit("joinGroupChat", groupID, Nickname);
-            socket.emit("joinGroupChat", groupID, userID);
+            socket.emit("joinGroupChat", groupID, userID, LoginPage.accessToken);
             Log.d("ChatActivity", "Joining group chat: " + groupID);
 
         } catch (URISyntaxException e) {

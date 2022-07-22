@@ -1,5 +1,7 @@
 const admin = require("firebase-admin");
 const serviceAccount = require("../serviceKey.json");
+const authUtils = require('../utils/authUtils.js')
+
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
 const {MongoClient} = require("mongodb");
@@ -62,6 +64,11 @@ module.exports = {
     },
 
     newRegistrationToken: async (req,res) => {
+        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
+            res.status(404)
+            return
+        }
         await userCollection.updateOne({userID: req.body.userID}, {$set: {registrationToken: req.body.registrationToken}}, 
             (err, result) => {
                 if (err) {
@@ -80,7 +87,7 @@ module.exports = {
         // }
         // )
     },
-// displayName:0, userID:1, coopStatus:0, yearStanding:0, registrationToken:1, courselist:0, blockedUser:0
+// displayName:0, userID:1, coopStatus:0, yearStanding:0, registrationToken:1, courselist:0, blockedUsers:0
 
     privateMessageNotification: async (senderName, receiverID) => {
         let resultstudent = await userCollection.findOne({ userID: receiverID }) 

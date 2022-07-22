@@ -106,17 +106,26 @@ module.exports = {
     },
 
     getUserProfile: async (req, res) => {
-        await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
-            if (err) {
-                console.error("Error in getUserProfile: " + err)
-                res.status(400).send(err)
-            } else {
-                res.status(200).json(userProfileResult)
-            }
-        })
+        console.log("--------inside getUserProfile--------")
+        console.log("req.params.userID: " + req.params.userID);
+        console.log("req.params.jwt: " + req.params.jwt);
+        let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!validate) return
+            await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
+                if (err) {
+                    console.error("Error in getUserProfile: " + err)
+                    res.status(400).send(err)
+                } else {
+                    res.status(200).json(userProfileResult)
+                }
+            })
+ 
     },
 
     getCourseList: async (req, res) => {
+
+        let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!validate) return
         await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
             if (err) {
                 console.error("Error in getCourseList: " + err)
@@ -125,9 +134,18 @@ module.exports = {
                 res.status(200).json(resultcourse)
             }
         })
+
+
     },
 
-    createProfile: (req, res) => {
+    createProfile: async (req, res) => {
+        // try {
+        //     await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        // }
+        // catch {
+        //     res.status(404)
+        //     return
+        // }
         var courselistarr = [];
         var blockeruserarr = [];
         userCollection.insertOne(
@@ -138,7 +156,7 @@ module.exports = {
                 yearStanding: req.body.yearStanding,
                 registrationToken: req.body.registrationToken,
                 courselist: courselistarr,
-                blockedUser: blockeruserarr,
+                blockedUsers: blockeruserarr,
             },
             (err, result) => {
                 if (err) {
@@ -151,8 +169,26 @@ module.exports = {
         )
     },
 
-    block: (req, res) => {
-        userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUser": req.body.blockedUserAdd } }, (err, result) => {
+    block: async (req, res) => {
+       
+        let validate = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!validate) return
+            userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
+                if (err) {
+                    console.error(err)
+                    res.status(400).send(err)
+                } else {
+                    res.status(200).json({ ok: true })
+                }
+            });
+
+    },
+
+    unblock: async (req, res) => {
+   
+        let validate =  await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!validate) return
+        userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)
@@ -162,9 +198,27 @@ module.exports = {
         });
     },
 
-    getDisplayNamebyUserID: async (userID) => {
-        let retrievedUser = await userCollection.findOne({ userID })
-        return retrievedUser.displayName
-    }
+    getDisplayNameByUserIDfromDB: _getDisplayNameByUserIDfromDB,
 
+    getDisplayNameByUserID: async function (req, res) {
+        let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
+        console.log("retrievedDisplayName: " + retrievedDisplayName)
+        res.status(200).json({ retrievedDisplayName })
+    },
+
+}
+
+async function _getDisplayNameByUserIDfromDB(userID) {
+    console.log("----------------getDisplayNameByUserIDfromDB------------------")
+    console.log("userID: " + userID)
+
+    let retrievedUser = await userCollection.findOne({ userID })
+    if (retrievedUser) {
+        console.log("retrievedUser: " + retrievedUser.displayName)
+        console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+        return retrievedUser.displayName
+    } else {
+        console.log("retrievedUser: not found");
+        console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+    }
 }

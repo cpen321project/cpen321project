@@ -1,9 +1,12 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +22,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,12 +31,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
-
+    public LinearLayout layoutCourseButton;
     private TextView displaynameTV;
     private TextView coopTV;
     private TextView yearTV;
     private String displayname;
-    public LinearLayout layoutCourseButton;
+    private ArrayList<String> courseListAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +44,12 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
-        ArrayList<String> courseListAL = new ArrayList<>();
+        String accessToken = LoginPage.accessToken;
+        Log.d("accessToken in ProfilePage", accessToken);
+
+
+
+        courseListAL = new ArrayList<>();
 
         layoutCourseButton = findViewById(R.id.layout_button_list);
 
@@ -48,33 +57,46 @@ public class ProfilePage extends AppCompatActivity {
         coopTV = findViewById(R.id.textview_coop);
         yearTV = findViewById(R.id.textView_yearstanding);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://34.130.14.116:3010/getuserprofile/"+userID;
+        // set up bottom navigation bar
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        // Initialize a new JsonArrayRequest instance
+                switch (item.getItemId()) {
+                    case R.id.my_profile:
+                        return true;
+                    case R.id.browse_courses:
+                        Intent browseCourseIntent =
+                                new Intent(ProfilePage.this, BrowseCourse.class);
+                        browseCourseIntent.putExtra("userID", userID);
+                        browseCourseIntent.putExtra("displayName", displayname);
+                        browseCourseIntent.putExtra("courselist", courseListAL);
+                        startActivity(browseCourseIntent);
+                        return true;
+                    default: return false;
+                }
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String urltest = "http://34.130.14.116:3010/getuserprofile/" + userID + "/" + accessToken;
+
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        // Do something with response
-                        //mTextView.setText(response.toString());
-
-                        // Process the JSON
-                        try{
-                            // Get current json object
+                        try {
                             JSONObject student = response.getJSONObject(0);
 
-                            // Get the current student (json object) data
                             displayname = student.getString("displayName");
                             String coopstatus = student.getString("coopStatus");
                             String yearstanding = student.getString("yearStanding");
-                            JSONArray coursesJSONArray= student.getJSONArray("courselist");
-
-                            //ArrayList<Object> courseArrayList = new ArrayList<Object>();
+                            JSONArray coursesJSONArray = student.getJSONArray("courselist");
 
                             if (coursesJSONArray != null) {
-                                for (int i=0;i<coursesJSONArray.length();i++){
+                                for (int i = 0; i < coursesJSONArray.length(); i++) {
                                     //courseArrayList.add(coursesJSONArray.getString(i));
                                     String courseNameSingle = coursesJSONArray.getString(i);
                                     addCourseButton(courseNameSingle, userID);
@@ -85,30 +107,42 @@ public class ProfilePage extends AppCompatActivity {
                             // Display the formatted json data in text view
                             displaynameTV.setText("Display name: " + displayname);
 
-                            if(coopstatus.equals("Yes")){
+                            if (coopstatus.equals("Yes")) {
                                 coopTV.setText("I am in Co-op");
-                            }else{
+                            } else {
                                 coopTV.setText("I am not in Co-op, studying only");
                             }
                             yearTV.setText("I am in year " + yearstanding);
 
-
-                        }catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error){
-                        // Do something when error occurred
-                        Toast.makeText(ProfilePage.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ProfilePage.this,
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );
 
-        // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
+
+        TextView blockedUsersTextView = (TextView) findViewById(R.id.blocked_users_textView);
+        blockedUsersTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent seeBlockedUsersIntent =
+                        new Intent(ProfilePage.this, BlockedUsersPage.class);
+                seeBlockedUsersIntent.putExtra("userID", userID);
+                seeBlockedUsersIntent.putExtra("displayName", displayname);
+                startActivity(seeBlockedUsersIntent);
+            }
+        });
 
         Button findCourseBtn = (Button) findViewById(R.id.find_course_button);
         findCourseBtn.setOnClickListener(new View.OnClickListener() {
@@ -124,27 +158,28 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     private void addCourseButton(String courseNameSingle, String userID) {
-        final View courseButtonView = getLayoutInflater().inflate(R.layout.coursename_buttons_layout,null,false);
+        final View courseButtonView = getLayoutInflater().inflate(R.layout.coursename_buttons_layout, null, false);
 
-        Button courseBtn = (Button)courseButtonView.findViewById(R.id.coursename_button);
+        Button courseBtn = (Button) courseButtonView.findViewById(R.id.coursename_button);
         courseBtn.setText(courseNameSingle);
         courseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent viewStudentIntent = new Intent(ProfilePage.this, StudentListPage.class);
                 viewStudentIntent.putExtra("currentUserID", userID);
-                viewStudentIntent.putExtra("coursename", courseNameSingle);
-                viewStudentIntent.putExtra("displayname", displayname);
+                viewStudentIntent.putExtra("courseName", courseNameSingle);
+                viewStudentIntent.putExtra("displayName", displayname);
+                viewStudentIntent.putExtra("courseList", courseListAL);
                 startActivity(viewStudentIntent);
             }
         });
 
-        ImageView chatBtn = (ImageView)courseButtonView.findViewById(R.id.group_chat_button);
+        ImageView chatBtn = (ImageView) courseButtonView.findViewById(R.id.group_chat_button);
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent chatIntent = new Intent(ProfilePage.this, ChatActivity.class);
-                chatIntent.putExtra("coursename", courseNameSingle); //groupid
+                chatIntent.putExtra("coursename", courseNameSingle);
                 chatIntent.putExtra("userID", userID); //userID
                 chatIntent.putExtra("displayname", displayname); //nickname
                 startActivity(chatIntent);
@@ -152,7 +187,7 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
-        ImageView delCourseBtn = (ImageView)courseButtonView.findViewById(R.id.delete_course_button);
+        ImageView delCourseBtn = (ImageView) courseButtonView.findViewById(R.id.delete_course_button);
         delCourseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,23 +209,24 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://34.130.14.116:3010/deleteuserfromcourse"+"/"+userID+"/"+coursenameNoSpace;
+        String urlUserToCourse = "http://34.130.14.116:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
                         Toast.makeText(ProfilePage.this, "user deleted from course", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error.
-                        Toast.makeText(ProfilePage.this, "Unable to delete user from course", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this,
+                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                        startActivity((loginIntent));
                     }
                 }
         );
@@ -202,8 +238,9 @@ public class ProfilePage extends AppCompatActivity {
         JSONObject courseDelete = new JSONObject();
         try {
             //input your API parameters
-            courseDelete.put("coursename",courseNameSingle);
-            courseDelete.put("userID",userID);
+            courseDelete.put("coursename", courseNameSingle);
+            courseDelete.put("userID", userID);
+            courseDelete.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -218,10 +255,12 @@ public class ProfilePage extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfilePage.this, "Unable to delete course from user", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfilePage.this,
+                        "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                startActivity((loginIntent));
             }
         });
         requestQueue.add(jsonObjectRequest);
-
     }
 }
