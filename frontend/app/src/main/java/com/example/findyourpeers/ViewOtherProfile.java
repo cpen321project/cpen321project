@@ -157,22 +157,7 @@ public class ViewOtherProfile extends AppCompatActivity {
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent privateChatIntent = new Intent(ViewOtherProfile.this,
-                        PrivateChatActivity.class);
-                Log.d("ViewOtherProfile", "currentUserDisplayName: " + currentUserDisplayName);
-                Log.d("ViewOtherProfile", "otherdisplayname: " + otherdisplayname);
-                if (currentUserDisplayName.equals(otherdisplayname)) {
-                    Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    privateChatIntent.putExtra("senderName", currentUserDisplayName);
-                    privateChatIntent.putExtra("receiverName", otherdisplayname);
-                    privateChatIntent.putExtra("isBlocked", isBlocked);
-                    privateChatIntent.putExtra("currentUserID", currentUserID);
-                    privateChatIntent.putExtra("userID", userID);
-
-                    startActivity(privateChatIntent);
-                }
+                messageButtonFcn(currentUserDisplayName, otherdisplayname, isBlocked, currentUserID, userID);
             }
         });
 
@@ -180,57 +165,81 @@ public class ViewOtherProfile extends AppCompatActivity {
         blockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentUserID.equals(userID)) {
-                    Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID+"/"+LoginPage.accessToken;
-
-                    JsonArrayRequest jsonArrayRequest2 =
-                            new JsonArrayRequest(Request.Method.GET, urlCurrentUser, null,
-                                    new Response.Listener<JSONArray>() {
-                                        @Override
-                                        public void onResponse(JSONArray response) {
-                                            try {
-                                                JSONObject student = response.getJSONObject(0);
-
-                                                JSONArray blockedUsers =
-                                                        student.getJSONArray("blockedUsers");
-
-                                                // check current user already blocked the other user
-                                                for (int i = 0; i < blockedUsers.length(); i++) {
-                                                    if (blockedUsers.getString(i).equals(userID)) {
-                                                        otherUserIsBlockedAlready = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (otherUserIsBlockedAlready) {
-                                                    Toast.makeText(ViewOtherProfile.this,
-                                                            "You have already blocked this user.",
-                                                            Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    makeBlockUserRequest(currentUserID, userID, requestQueue);
-                                                }
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    },
-                                    new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            Toast.makeText(ViewOtherProfile.this,
-                                                    "Request error: unable to block user", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                            );
-                    requestQueue.add(jsonArrayRequest2);
-
-                }
+                blockButtonfcn(currentUserID, userID, requestQueue);
             }
         });
 
+    }
+
+    private void blockButtonfcn(String currentUserID, String userID, RequestQueue requestQueue1) {
+        if (currentUserID.equals(userID)) {
+            Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID+"/"+LoginPage.accessToken;
+
+            JsonArrayRequest jsonArrayRequest2 =
+                    new JsonArrayRequest(Request.Method.GET, urlCurrentUser, null,
+                            new Response.Listener<JSONArray>() {
+                                @Override
+                                public void onResponse(JSONArray response) {
+                                    try {
+                                        JSONObject student = response.getJSONObject(0);
+
+                                        JSONArray blockedUsers =
+                                                student.getJSONArray("blockedUsers");
+
+                                        // check current user already blocked the other user
+                                        for (int i = 0; i < blockedUsers.length(); i++) {
+                                            if (blockedUsers.getString(i).equals(userID)) {
+                                                otherUserIsBlockedAlready = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (otherUserIsBlockedAlready) {
+                                            Toast.makeText(ViewOtherProfile.this,
+                                                    "You have already blocked this user.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            makeBlockUserRequest(currentUserID, userID, requestQueue1);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(ViewOtherProfile.this,
+                                            "Request error: unable to block user", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    );
+            requestQueue1.add(jsonArrayRequest2);
+
+        }
+
+    }
+
+    private void messageButtonFcn(String currentUserDisplayName1, String otherdisplayname1, int isBlocked, String currentUserID, String userID) {
+        Intent privateChatIntent = new Intent(ViewOtherProfile.this,
+                PrivateChatActivity.class);
+        Log.d("ViewOtherProfile", "currentUserDisplayName: " + currentUserDisplayName1);
+        Log.d("ViewOtherProfile", "otherdisplayname: " + otherdisplayname1);
+        if (currentUserDisplayName1.equals(otherdisplayname1)) {
+            Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            privateChatIntent.putExtra("senderName", currentUserDisplayName1);
+            privateChatIntent.putExtra("receiverName", otherdisplayname1);
+            privateChatIntent.putExtra("isBlocked", isBlocked);
+            privateChatIntent.putExtra("currentUserID", currentUserID);
+            privateChatIntent.putExtra("userID", userID);
+
+            startActivity(privateChatIntent);
+        }
     }
 
     private void viewCourseButton(String courseNameSingle) {
