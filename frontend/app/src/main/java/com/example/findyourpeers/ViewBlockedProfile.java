@@ -148,8 +148,6 @@ public class ViewBlockedProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String url = "http://10.0.2.2:3010/unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
-
-
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
                             @Override
