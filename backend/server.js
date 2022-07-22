@@ -1,6 +1,6 @@
 require("./config/mongo.js")
 
-const {MongoClient} = require("mongodb")
+const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
@@ -20,6 +20,7 @@ const port = "3010"
 const userStore = require('./controllers/userStore.js')
 const courseManager = require('./controllers/courseManager.js')
 const chatEngine = require('./controllers/chatEngine.js')
+const forumEngine = require('./controllers/forumEngine.js')
 const authUtils = require('./utils/authUtils.js')
 
 app.use(express.json())
@@ -63,6 +64,13 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 app.get('/getConversationByGroupID/:groupID/:userID/:jwt', chatEngine.getConversationByGroupID)
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID/:jwt', chatEngine.getPrivateConversationByUserIDs)
 
+// routes for forumEngine
+// TODO: test with postman 
+app.get('/getAllQuestions/:userID/:jwt', forumEngine.getAllQuestions)
+app.get('/getAllQuestionsForATopic/:topic/:userID/:jwt', forumEngine.getAllQuestionsForATopic)
+app.get('/getAllQuestionsFromAUser/:userID/:jwt', forumEngine.getAllQuestionsFromAUser)
+app.get('/getAllAnswersForAQuestion/:questionID/:userID/:jwt', forumEngine.getAllAnswersForAQuestion)
+
 // route for firebase
 app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
 
@@ -74,10 +82,6 @@ io.on('connection', (socket) => {
     //let jwtFromPrivate;
     //let cachedUserID;
 
-    // socket.on('joinGroupChat', function (groupID, displayName) {
-    //     console.log(displayName + " : joined at groupID : " + groupID)
-    //     socket.join(groupID)
-    // })
     socket.on('joinGroupChat', async function (groupID, userID, jwt) {
         jwtFromGroup = jwt
         cachedUserID = userID
@@ -164,6 +168,64 @@ io.on('connection', (socket) => {
         } else {
             console.log("Sender has been blocked, message not sent")
         }
+    })
+
+    // TODO: test with postman and check is saved to db etc
+    socket.on('postQuestion', async (topic, askerID, askerName, questionContent, isAskedAnonymously, jwt) => {
+        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
+        // if (!tokenValidated) return
+        console.log("-------Socket event received: postQuestion-------")
+        console.log(askerName + " : " + questionContent)
+
+        let isAskedAnonymouslyBool = (isAskedAnonymously === 'true');
+        forumEngine.saveQuestionToDB(topic, askerID, askerName, questionContent, isAskedAnonymouslyBool)
+
+        let nameToDisplay
+        if (isAskedAnonymously) {
+            nameToDisplay = "Anonymous"
+        } else {
+            nameToDisplay = askerName
+        }
+
+        let question = {
+            "topic": topic,
+            "questionContent": questionContent,
+            "askerName": nameToDisplay
+        }
+
+        // TODO
+        // check this does what we expect: user can see their q posted after pressing post question button
+        // other people also on the forum page can also see? or they can see after refresh? 
+        // only the forum page is receiving event 'postQuestion' so should be ok ^^
+        // also need make sure frontend receives the question correctly (extracts correct fields)
+        //      -> make new question class? 
+        io.sockets.emit('postQuestion', question)
+    })
+
+    socket.on('postAnswer', async (questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymously, jwt) => {
+        // let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
+        // if (!tokenValidated) return
+        console.log("-------Socket event received: postAnswer-------")
+        console.log(answererName + " : " + answerContent)
+        
+        let isAnsweredAnonymouslyBool = (isAnsweredAnonymously === 'true');
+        forumEngine.saveAnswerToDB(questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymouslyBool)
+
+        let nameToDisplay
+        if (isAnsweredAnonymously) {
+            nameToDisplay = "Anonymous"
+        } else {
+            nameToDisplay = answererName
+        }
+
+        let answer = {
+            "topic": topic,
+            "answerContent": answerContent,
+            "answererName": nameToDisplay
+        }
+
+        // check this
+        io.sockets.emit('postAnswer', answer)
     })
 
     socket.on('disconnect', function () {

@@ -1,7 +1,4 @@
-// import mongoose from 'mongoose'
 var mongoose = require('mongoose')
-// import config from './index.js'
-// var config = require('./index.js')
 
 const config = {
     db: {
