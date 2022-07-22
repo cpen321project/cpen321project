@@ -1,5 +1,5 @@
 const notificationManager = require("./notifcationManager.js")
-const auth = require("../utils/authUtils.js")
+const authUtils = require("../utils/authUtils.js")
 
 const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"

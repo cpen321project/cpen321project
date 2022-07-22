@@ -20,7 +20,7 @@ const port = "3010"
 const userStore = require('./controllers/userStore.js')
 const courseManager = require('./controllers/courseManager.js')
 const chatEngine = require('./controllers/chatEngine.js')
-//const authUtils = require('./utils/authUtils.js')
+const authUtils = require('./utils/authUtils.js')
 
 app.use(express.json())
 
@@ -60,7 +60,7 @@ app.delete("/deleteuserfromcourse/:userID/:coursename/:jwt", courseManager.delet
 app.post("/deletecoursefromuser/:jwt", courseManager.deleteCourseFromUser)
 
 // routes for chatEngine
-app.get('/getConversationByGroupID/:groupID', chatEngine.getConversationByGroupID)
+app.get('/getConversationByGroupID/:groupID/:userID/:jwt', chatEngine.getConversationByGroupID)
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID', chatEngine.getPrivateConversationByUserIDs)
 
 // route for firebase
@@ -70,17 +70,36 @@ let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
 io.on('connection', (socket) => {
     console.log('a user connected')
+    let jwtFromGroup;
+    let jwtFromPrivate;
+    let cachedUserID;
 
     // socket.on('joinGroupChat', function (groupID, displayName) {
     //     console.log(displayName + " : joined at groupID : " + groupID)
     //     socket.join(groupID)
     // })
-    socket.on('joinGroupChat', function (groupID, userID) {
+    socket.on('joinGroupChat', async function (groupID, userID, jwt) {
+        jwtFromGroup = jwt
+        cachedUserID = userID
+        try {
+            await authUtils.validateAccessToken(jwt, userID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         console.log(userID + " : joined at groupID : " + groupID)
         socket.join(groupID)
     })
 
-    socket.on('groupMessage', (groupID, senderName, messageContent) => {
+    socket.on('groupMessage', async (groupID, senderName, messageContent) => {
+        try {
+            await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         console.log(senderName + " : " + messageContent)
         
         // save message to database 
@@ -96,7 +115,16 @@ io.on('connection', (socket) => {
         io.sockets.in(groupID).emit('groupMessage', message)
     })
 
-    socket.on('joinPrivateChat', function (displayName) {
+    socket.on('joinPrivateChat', async function (displayName, userID, jwt) {
+        jwtFromPrivate = jwt
+        cachedUserID = userID
+        try {
+            await authUtils.validateAccessToken(jwt, userID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         console.log("Inside joinPrivateChat:")
         usersSockets[displayName] = socket.id
         console.log(displayName + " : initiated a private chat")
@@ -105,6 +133,13 @@ io.on('connection', (socket) => {
     })
 
     socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
+        try {
+            await authUtils.validateAccessToken(jwtFromPrivate, cachedUserID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         if (isBlocked == 0) {
             console.log("-----------------Inside privateMessage-----------------")
 

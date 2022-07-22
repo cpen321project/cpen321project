@@ -1,6 +1,7 @@
 const Message = require('../models/Message.js')
 const PrivateMessage = require('../models/PrivateMessage.js')
 const userStore = require('./userStore.js')
+const authUtils = require("../utils/authUtils.js")
 
 module.exports = {
     // joinChat: async (req, res) => {
@@ -26,6 +27,13 @@ module.exports = {
         })
     },
     getConversationByGroupID: async (req, res) => {
+        try {
+            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        }
+        catch {
+            res.status(404)
+            return
+        }
         const { groupID } = req.params
         // console.log("req.params.groupID: " + req.params.groupID)
         console.log("chatEngine: trying to get convo at groupID: " + groupID)
