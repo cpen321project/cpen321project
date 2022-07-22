@@ -92,7 +92,7 @@ exports.login = (username, password) => {
             onSuccess: function (result) {
                 var accessToken = result.getAccessToken().getJwtToken();
                 var userID = result.getAccessToken().payload.sub
-                resolve({ 'accessToken': accessToken, 'userID' : userID })
+                resolve({ accessToken, userID })
             },
             onFailure: function (err) {
                 reject(err)
