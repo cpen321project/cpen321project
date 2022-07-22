@@ -38,19 +38,19 @@ module.exports = {
             return
         }
 
-            await dbCourse.collection(req.body.coursename).insertOne({
-                displayName: req.body.displayName,
-                userID: req.body.userID,
-            }, (err, result) => {
-                if (err) {
-                    console.log("Error in addUserToCourse: " + err)
-                    res.status(400).send(err)
-                } else {
-                    console.log("addUserToCourse successfully")
-                    res.status(200).send("User added successfully\n")
-                    notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
-                }
-            })
+        await dbCourse.collection(req.body.coursename).insertOne({
+            displayName: req.body.displayName,
+            userID: req.body.userID,
+        }, (err, result) => {
+            if (err) {
+                console.log("Error in addUserToCourse: " + err)
+                res.status(400).send(err)
+            } else {
+                console.log("addUserToCourse successfully")
+                res.status(200).send("User added successfully\n")
+                notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+            }
+        })
     },
 
     addCourseToUser: async (req, res) => {
@@ -59,15 +59,15 @@ module.exports = {
             res.status(404)
             return
         }
-            await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } }, (err, result) => {
-                if (err) {
-                    console.error("Error in addCourseToUser: " + err)
-                    res.status(400).send(err)
-                } else {
-                    console.log("addCourseToUser successfully")
-                    res.status(200).json({ ok: true })
-                }
-            })
+        await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } }, (err, result) => {
+            if (err) {
+                console.error("Error in addCourseToUser: " + err)
+                res.status(400).send(err)
+            } else {
+                console.log("addCourseToUser successfully")
+                res.status(200).json({ ok: true })
+            }
+        })
     },
 
     deleteUserFromCourse: async (req, res) => {
@@ -75,25 +75,19 @@ module.exports = {
         if (!tokenIsValid) {
             res.status(404)
             return
-        }       try {
-            await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         }
-        catch {
-            res.status(404)
-            return
-        }
-        
 
-            let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
-            await dbCourse.collection(coursenamespace).deleteOne({ "userID": req.params.userID }, (err, result) => {
-                if (err) {
-                    console.log("Error in deleteUserFromCourse: " + err)
-                    res.status(400).send(err)
-                } else {
-                    console.log("deleteUserFromCourse successfully")
-                    res.status(200).send("User deleted successfully\n")
-                }
-            })
+
+        let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
+        await dbCourse.collection(coursenamespace).deleteOne({ "userID": req.params.userID }, (err, result) => {
+            if (err) {
+                console.log("Error in deleteUserFromCourse: " + err)
+                res.status(400).send(err)
+            } else {
+                console.log("deleteUserFromCourse successfully")
+                res.status(200).send("User deleted successfully\n")
+            }
+        })
     },
 
     deleteCourseFromUser: async (req, res) => {
