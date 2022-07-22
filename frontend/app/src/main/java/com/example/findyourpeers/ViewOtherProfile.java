@@ -229,7 +229,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                 }
             }
         });
-''
+
     }
 
     private void viewCourseButton(String courseNameSingle) {
