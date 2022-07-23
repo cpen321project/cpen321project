@@ -60,6 +60,7 @@ module.exports = {
         // }
         console.log("----------------inside getAllQuestions----------------")
 
+        // select createdAt: 0, updatedAt: 0, __v: 0
         Question
             .find()
             .select({
@@ -72,7 +73,8 @@ module.exports = {
                     return res.status(400).send(err)
                 } else {
                     console.log("retrievedQs.length: " + retrievedQs.length)
-                    return res.status(200).send({retrievedQs})
+                    console.log("retrievedQs: " + retrievedQs)
+                    return res.status(200).send(retrievedQs)
                 }
             })  
     }, 
@@ -99,7 +101,7 @@ module.exports = {
                     return res.status(400).send(err)
                 } else {
                     console.log("retrievedQs: " + retrievedQs)
-                    return res.status(200).send({retrievedQs})
+                    return res.status(200).send(retrievedQs)
                 }
             })  
     }, 
@@ -127,7 +129,7 @@ module.exports = {
                     return res.status(400).send(err)
                 } else {
                     console.log("retrievedQs: " + retrievedQs)
-                    return res.status(200).send({retrievedQs})
+                    return res.status(200).send(retrievedQs)
                 }
             })  
     }, 
@@ -155,7 +157,7 @@ module.exports = {
                     return res.status(400).send(err)
                 } else {
                     console.log("retrievedAnswers: " + retrievedAnswers)
-                    return res.status(200).send({retrievedAnswers})
+                    return res.status(200).send(retrievedAnswers)
                 }
             })  
     }, 

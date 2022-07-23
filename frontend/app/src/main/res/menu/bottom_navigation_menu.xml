@@ -10,9 +10,9 @@
         android:enabled="true"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Browse Courses" />
-<!--    <item-->
-<!--        android:id="@+id/my_courses"-->
-<!--        android:enabled="true"-->
-<!--        android:icon="@drawable/ic_baseline_people_alt_24"-->
-<!--        android:title="My Courses" />-->
+    <item
+        android:id="@+id/qa_forum"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_forum_24"
+        android:title="Q&amp;A Forum" />
 </menu>

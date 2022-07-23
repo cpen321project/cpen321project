@@ -170,14 +170,13 @@ io.on('connection', (socket) => {
         }
     })
 
-    // TODO: test with postman and check is saved to db etc
     socket.on('postQuestion', async (topic, askerID, askerName, questionContent, isAskedAnonymously, jwt) => {
         // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
         // if (!tokenValidated) return
         console.log("-------Socket event received: postQuestion-------")
         console.log(askerName + " : " + questionContent)
 
-        let isAskedAnonymouslyBool = (isAskedAnonymously === 'true');
+        let isAskedAnonymouslyBool = (isAskedAnonymously === 'true' || isAskedAnonymously === 'True');
         forumEngine.saveQuestionToDB(topic, askerID, askerName, questionContent, isAskedAnonymouslyBool)
 
         let nameToDisplay
