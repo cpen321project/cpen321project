@@ -25,7 +25,7 @@ module.exports = {
         questionToSaveToDB.save(function (err) {
             if (err) {
                 console.log("saveQuestionToDB: Error saving question to database: " + err)
-                return err
+                throw err
             }
             console.log("saveQuestionToDB: Question saved to database")
         })
@@ -58,7 +58,7 @@ module.exports = {
         //     res.status(404)
         //     return
         // }
-        console.log("----------------inside getAllQuestions----------------")
+        console.log("----------------getAllQuestions----------------")
 
         // select createdAt: 0, updatedAt: 0, __v: 0
         Question
@@ -66,7 +66,7 @@ module.exports = {
             .select({
                 askerID: 0
             })
-            .sort({ createdAt: 'asc' }) 
+            .sort({ createdAt: -1 }) 
             .exec((err, retrievedQs) => {
                 if (err) {
                     console.log("Error fetching from database: " + err)
@@ -85,7 +85,7 @@ module.exports = {
         //     res.status(404)
         //     return
         // }
-        console.log("----------------inside getAllQuestionsForATopic----------------")
+        console.log("----------------getAllQuestionsForATopic----------------")
 
         let topic = req.params.topic
 
@@ -94,7 +94,7 @@ module.exports = {
             .select({
                 askerID: 0
             })
-            .sort({ createdAt: 'asc' }) 
+            .sort({ createdAt: -1 }) // sort by descending (new on top)
             .exec((err, retrievedQs) => {
                 if (err) {
                     console.log("Error fetching from database: " + err)
@@ -112,7 +112,7 @@ module.exports = {
         //     res.status(404)
         //     return
         // }
-        console.log("----------------inside getAllQuestionsFromAUser----------------")
+        console.log("----------------getAllQuestionsFromAUser----------------")
 
         let userID = req.params.userID
         console.log("Getting all Q's from userID: " + userID)
@@ -122,7 +122,7 @@ module.exports = {
             .select({
                 askerID: 0
             })
-            .sort({ createdAt: 'asc' }) 
+            .sort({ createdAt: -1 }) 
             .exec((err, retrievedQs) => {
                 if (err) {
                     console.log("Error fetching from database: " + err)
@@ -140,7 +140,7 @@ module.exports = {
         //     res.status(404)
         //     return
         // }
-        console.log("----------------inside getAllAnswersForAQuestion----------------")
+        console.log("----------------getAllAnswersForAQuestion----------------")
 
         let questionID = req.params.questionID
         console.log("questionID: " + questionID)
@@ -161,4 +161,66 @@ module.exports = {
                 }
             })  
     }, 
+
+    //socket.on('postQuestion', async (topic, askerID, askerName, questionContent, isAskedAnonymously, jwt) => {
+    postQuestion: async (req, res) => {
+        console.log("--------------postQuestion--------------")
+        let topic = req.body.topic
+        let askerID = req.body.askerID
+        let askerName = req.body.askerName
+        let questionContent = req.body.questionContent
+        let isAskedAnonymously = req.body.isAskedAnonymously
+        let jwt = req.body.jwt
+
+        // check for null, undefined, 0, NaN, false, or empty string, and check boolean is boolean
+        if (!topic || !askerID || !askerName || !questionContent || typeof isAskedAnonymously !== "boolean" || !jwt ) {
+            console.log("Invalid body parameter(s).")
+            res.status(400).send({ response: "Invalid body parameter(s)." })
+            return;
+        }
+
+        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
+        // if (!tokenValidated) return
+
+        console.log(askerName + " : " + questionContent)
+        console.log("isAskedAnonymously: " + isAskedAnonymously) 
+
+        try {
+            module.exports.saveQuestionToDB(topic, askerID, askerName, questionContent, isAskedAnonymously)
+            res.status(200).send({ response: "Question posted successfuly" })
+            return;
+        } catch (err) {
+            console.log("err: " + err)
+        }
+    }, 
+
+    postAnswer: async (req, res) => {
+        console.log("--------------postAnswer--------------")
+        let questionID = req.body.questionID
+        let topic = req.body.topic
+        let answererID = req.body.answererID
+        let answererName = req.body.answererName
+        let answerContent = req.body.answerContent
+        let isAnsweredAnonymously = req.body.isAnsweredAnonymously
+        let jwt = req.body.jwt
+
+        // check for null, undefined, 0, NaN, false, or empty string, and check boolean is boolean
+        if (!questionID || !topic || !answererID || !answererName || !answerContent || typeof isAnsweredAnonymously !== "boolean" || !jwt ) {
+            console.log("Invalid body parameter(s).")
+            res.status(400).send({ response:"Invalid body parameter(s)." })
+            return;
+        }
+
+        // let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
+        // if (!tokenValidated) return
+
+        console.log(answererName + " : " + answerContent)
+        
+        try {
+            module.exports.saveAnswerToDB(questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymously)
+            res.status(200).send({ response: "Question posted successfuly" })
+        } catch (err) {
+            res.status(400).send(err)
+        }
+    }
 }

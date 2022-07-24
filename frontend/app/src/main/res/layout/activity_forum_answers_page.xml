@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -30,25 +30,32 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5sp"
             android:text="#TOPIC"
+            android:textAllCaps="true"
             android:textColor="@color/ubc_darkblue"
             android:textSize="18sp"
             android:textStyle="bold"></TextView>
 
-        <!--        convert file to constraint layout , not safe when long q-->
         <TextView
             android:id="@+id/questionContent_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5sp"
-            android:text="Is this a question?"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="Is this a question?Is this a question?Is this a question?"
             android:textColor="@color/ubc_darkblue"
             android:textSize="18sp"></TextView>
+
 
         <TextView
             android:id="@+id/askerName_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
             android:text="askerName"
             android:textColor="@color/ubc_darkblue"
             android:textSize="13sp"
@@ -73,34 +80,44 @@
             android:gravity="center"
             android:text="post an answer" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/help_button"
             android:layout_width="25dp"
+            android:background="@null"
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_baseline_help_outline_24"></ImageView>
+            android:src="@drawable/ic_baseline_help_outline_24"></ImageButton>
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/qa_forum_text"
         android:layout_width="wrap_content"
+        android:paddingTop="10dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:text="ANSWERS:"
         android:textColor="@color/ubc_darkblue"
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/no_answers_label_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="No answers for this question yet."
+        android:textColor="@color/ubc_darkblue"
+        android:textSize="18sp"></TextView>
+
     <ScrollView
         android:id="@+id/scroll_view_course_pp"
         android:layout_width="match_parent"
-        android:layout_height="420dp">
+        android:layout_height="410dp">
 
         <LinearLayout
-            android:id="@+id/layout_button_list"
+            android:id="@+id/answer_list_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
