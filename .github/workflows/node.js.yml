@@ -10,6 +10,13 @@ on:
     branches: [ "**" ]
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: aws secret
+      env: 
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   test:
     runs-on: ubuntu-latest
 
