@@ -468,6 +468,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 viewAnswersIntent.putExtra("questionContent", questionContent);
                 viewAnswersIntent.putExtra("askerName", askerName);
                 viewAnswersIntent.putExtra("questionID", questionID);
+                viewAnswersIntent.putExtra("isAskedAnonymously", isAskedAnonymously);
                 startActivity(viewAnswersIntent);
             }
         });

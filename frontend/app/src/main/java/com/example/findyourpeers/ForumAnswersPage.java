@@ -57,13 +57,21 @@ public class ForumAnswersPage extends AppCompatActivity {
         String questionContent = getIntent().getExtras().getString("questionContent");
         String askerName = getIntent().getExtras().getString("askerName");
         String questionID = getIntent().getExtras().getString("questionID");
+        Boolean isAskedAnonymously = getIntent().getExtras().getBoolean("isAskedAnonymously");
 
         TextView topicTV = (TextView) findViewById(R.id.topic_textView);
         TextView questionContentTV = (TextView) findViewById(R.id.questionContent_textView);
         TextView askerNameTV = (TextView) findViewById(R.id.askerName_textView);
 
         topicTV.setText("#" + topic);
-        askerNameTV.setText(askerName);
+
+        if (isAskedAnonymously) {
+            askerNameTV.setText("anonymous");
+        } else {
+            askerNameTV.setText(askerName);
+        }
+
+        //askerNameTV.setText(askerName);
         questionContentTV.setText(questionContent);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
