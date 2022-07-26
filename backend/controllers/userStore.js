@@ -110,15 +110,20 @@ module.exports = {
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
         let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!validate) return
-            await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
-                if (err) {
-                    console.error("Error in getUserProfile: " + err)
-                    res.status(400).send(err)
-                } else {
-                    res.status(200).json(userProfileResult)
-                }
-            })
+        if (!validate) {
+            console.log("token not validated")
+            return
+        }
+        await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
+            if (err) {
+                console.log("err: " + err)
+                console.error("Error in getUserProfile: " + err)
+                res.status(400).send(err)
+            } else {
+                console.log("userProfileResult: " + userProfileResult)
+                res.status(200).json(userProfileResult)
+            }
+        })
  
     },
 

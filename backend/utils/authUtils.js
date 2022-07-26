@@ -120,33 +120,39 @@ exports.validateAccessToken = async (JWT, userID) => {
     // Referneced from: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html
     // For future reference: https://github.com/awslabs/aws-jwt-verify is a library maintained by AWS to verify JSON Web Tokens,
     // we did NOT use this library for the purposes of this course
+    console.log("--------------------validateAccessToken--------------------")
 
     if (!JWT) {
+        console.log("No JWT provided")
         return false
     }
 
     // Step 1: Confirm the structure of the JWT
     const JWTSections = [tokenHeader, tokenPayload, tokenSignature] = JWT.split('.')
-    if (JWTSections.length !== 3)
+    if (JWTSections.length !== 3) {
+        console.log("Invalid JWT structure")
         return false
+    }
 
     // Step 2: Validate the JWT signature
     // TODO: fix 
     publicKey = await getPublicKey()
     console.log("---------------------") 
     console.log("publicKey: " + publicKey) // returns [object Promise]
-    console.log("publicKey.data: " + publicKey.data) // returns undefined
+    console.log("publicKey.data: " + publicKey.data) 
     console.log("---------------------")
-    const keys = publicKey.data.keys // TypeError: Cannot read properties of undefined (reading 'keys')
+    const keys = publicKey.data.keys 
     decodedTokenHeader = JSON.parse(Buffer.from(tokenHeader, 'base64').toString('utf8'))
     // compare the local key ID (kid) to the public kid
     if (keys[1].kid != decodedTokenHeader.kid) {
+        console.log("JWT local key ID not same as public key ID")
         return false
     }
     decodedtokenPayload = JSON.parse(Buffer.from(tokenPayload, 'base64').toString('utf8'))
     let currentTimestamp = Math.floor((new Date()).valueOf() / 1000)
     // verify token is not expired
     if (currentTimestamp > decodedtokenPayload.exp) {
+        console.log("Token expired")
         return false
     }
     // verify token signature
@@ -155,14 +161,17 @@ exports.validateAccessToken = async (JWT, userID) => {
                     .update(`${tokenHeader}.${tokenPayload}`)
                     .verify(crypto.createPublicKey(pem), tokenSignature, 'base64')
     if(!validSignature) {
+        console.log("Invalid token signature")
         return false
     }
 
-   // Step 3: Verify the claims
+    // Step 3: Verify the claims
     if (decodedtokenPayload.client_id != CLIENTID
         || decodedtokenPayload.token_use != 'access'
         || decodedtokenPayload.iss != COGNITO_ISSUER
         || decodedtokenPayload.sub != userID) {
         return false
-        }
+    }
+
+    return true;
 }
