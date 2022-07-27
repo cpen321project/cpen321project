@@ -21,27 +21,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginPage extends AppCompatActivity {
-
+    public static String accessToken;
+    private String TAG = "LoginPage";
     private EditText unameET;
     private EditText passwordET;
-    public static String accessToken;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        unameET= findViewById(R.id.username_login);
-        passwordET= findViewById(R.id.password_login);
+        unameET = findViewById(R.id.username_login);
+        passwordET = findViewById(R.id.password_login);
 
         Button loginBtn = findViewById(R.id.button_login);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String unameStr= unameET.getText().toString();
+                String unameStr = unameET.getText().toString();
                 String passwordStr = passwordET.getText().toString();
-                postLoginData(unameStr,passwordStr);
+                postLoginData(unameStr, passwordStr);
 
             }
         });
@@ -54,8 +53,8 @@ public class LoginPage extends AppCompatActivity {
         JSONObject loginData = new JSONObject();
         try {
             //input your API parameters
-            loginData.put("username",unameStr);
-            loginData.put("password",passwordStr);
+            loginData.put("username", unameStr);
+            loginData.put("password", passwordStr);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -67,24 +66,24 @@ public class LoginPage extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         String success;
                         String result;
-                        try{
+                        try {
                             success = response.getString("success");
-                            Log.d("LoginPage", "success? : "+success);
-                            if(success.equals("false")){
+                            Log.d(TAG, "success? : " + success);
+                            if (success.equals("false")) {
                                 result = response.getString("result");
                                 Toast.makeText(LoginPage.this, result, Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 JSONObject successResult = response.getJSONObject("result");
                                 accessToken = successResult.getString("accessToken");
                                 Toast.makeText(LoginPage.this, "Login success", Toast.LENGTH_SHORT).show();
                                 Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
-                                Log.d("accessToken", successResult.getString("accessToken"));
-                                Log.d("UserId", successResult.getString("userID"));
+                                Log.d(TAG, "accessToken: " + successResult.getString("accessToken"));
+                                Log.d(TAG, "UserId" + successResult.getString("userID"));
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
-                                Log.d("accessToken", successResult.getString("accessToken"));
+                                Log.d(TAG, "accessToken" + successResult.getString("accessToken"));
                                 startActivity(viewProfileIntent);
                             }
-                        }catch(JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
 

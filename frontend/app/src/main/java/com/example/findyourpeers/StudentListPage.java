@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,12 +27,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class StudentListPage extends AppCompatActivity {
-
+    final private String TAG = "StudentListPage";
+    public LinearLayout layoutStudentButton;
     String displayName;
     String userID;
     String currentUserDisplayName;
     String currentUserID;
-    public LinearLayout layoutStudentButton;
     TextView titleCourse;
     ArrayList<String> courseList;
 
@@ -46,7 +47,7 @@ public class StudentListPage extends AppCompatActivity {
         currentUserDisplayName = intentStudentList.getExtras().getString("displayName");
         courseList = (ArrayList<String>) intentStudentList.getSerializableExtra("courseList");
 
-        layoutStudentButton= findViewById(R.id.layout_student_list);
+        layoutStudentButton = findViewById(R.id.layout_student_list);
         String coursenameNoSpace = courseName.replaceAll(" ", "");
         titleCourse = findViewById(R.id.student_list_title);
         titleCourse.setText(courseName);
@@ -70,13 +71,15 @@ public class StudentListPage extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlStudentList = "http://10.0.2.2:3010/getstudentlist/"+coursenameNoSpace+"/"+LoginPage.accessToken;
+        String urlStudentList = "http://10.0.2.2:3010/getstudentlist/"
+                + coursenameNoSpace + "/" + LoginPage.accessToken + "/" + currentUserID;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlStudentList,
@@ -88,7 +91,7 @@ public class StudentListPage extends AppCompatActivity {
                         //mTextView.setText(response.toString());
 
                         // Process the JSON
-                        try{
+                        try {
                             // Get current json object
 
                             for (int i = 0; i < response.length(); i++) {
@@ -100,15 +103,16 @@ public class StudentListPage extends AppCompatActivity {
                                 addStudentButton(displayName, userID);
                             }
 
-                        }catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error){
+                    public void onErrorResponse(VolleyError error) {
                         // Do something when error occurred
+                        Log.d(TAG, "error: " + error.getMessage());
                         Toast.makeText(StudentListPage.this,
                                 "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
                         Intent loginIntent = new Intent(StudentListPage.this, LoginPage.class);
@@ -123,7 +127,7 @@ public class StudentListPage extends AppCompatActivity {
     }
 
     private void addStudentButton(String displayName, String userID) {
-        final View studentButtonView = getLayoutInflater().inflate(R.layout.studentname_button_layout,null,false);
+        final View studentButtonView = getLayoutInflater().inflate(R.layout.studentname_button_layout, null, false);
 
         TextView studentName = (TextView) studentButtonView.findViewById(R.id.text_username);
         studentName.setText(displayName);

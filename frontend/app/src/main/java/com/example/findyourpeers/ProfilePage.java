@@ -37,6 +37,7 @@ public class ProfilePage extends AppCompatActivity {
     private TextView yearTV;
     private String displayname;
     private ArrayList<String> courseListAL;
+    private String TAG = "ProfilePage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +46,7 @@ public class ProfilePage extends AppCompatActivity {
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
         String accessToken = LoginPage.accessToken;
-        Log.d("accessToken in ProfilePage", accessToken);
-
-
+        Log.d(TAG, "accessToken in ProfilePage: " +  accessToken);
 
         courseListAL = new ArrayList<>();
 
@@ -80,7 +79,8 @@ public class ProfilePage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/" + userID + "/" + accessToken;
+        String urltest = "http://10.0.2.2:3010/getuserprofile/"
+                + "0" + "/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,

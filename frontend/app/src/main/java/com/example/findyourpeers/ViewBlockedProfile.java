@@ -31,18 +31,17 @@ import java.util.HashMap;
 
 public class ViewBlockedProfile extends AppCompatActivity {
     final String TAG = "ViewBlockedProfile";
-
-    private TextView otherDisplayNameTV;
-    private TextView otherCoopTV;
-    private TextView otherYearTV;
-    private String otherDisplayName;
-    private int isBlocked = 0;
+    public LinearLayout layoutCourseOther;
     String userID;
     String currentUserID;
     String currentUserDisplayName;
     ArrayList<String> blockedUsers;
     HashMap<String, String> blockedUserNames;
-    public LinearLayout layoutCourseOther;
+    private TextView otherDisplayNameTV;
+    private TextView otherCoopTV;
+    private TextView otherYearTV;
+    private String otherDisplayName;
+    private int isBlocked = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,8 @@ public class ViewBlockedProfile extends AppCompatActivity {
         layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://10.0.2.2:3010/getuserprofile/" + userID +"/"+LoginPage.accessToken;
+        String urlOther = "http://10.0.2.2:3010/getuserprofile/"
+                + "0" + "/" + userID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
                 null,
@@ -77,7 +77,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
                             otherDisplayName = student.getString("displayName");
                             String othercoopstatus = student.getString("coopStatus");
                             String otheryearstanding = student.getString("yearStanding");
-                            JSONArray coursesJSONArray= student.getJSONArray("courselist");
+                            JSONArray coursesJSONArray = student.getJSONArray("courselist");
                             JSONArray blockedUsersJSONArray = student.getJSONArray("blockedUsers");
                             // check if this other user has blocked the current user
                             for (int i = 0; i < blockedUsersJSONArray.length(); i++) {
@@ -87,7 +87,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
                             }
 
                             if (coursesJSONArray != null) {
-                                for (int i=0;i<coursesJSONArray.length();i++){
+                                for (int i = 0; i < coursesJSONArray.length(); i++) {
                                     String courseNameSingle = coursesJSONArray.getString(i);
                                     viewCourseButton(courseNameSingle);
                                 }

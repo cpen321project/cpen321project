@@ -120,7 +120,7 @@ exports.validateAccessToken = async (JWT, userID) => {
     // Referneced from: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html
     // For future reference: https://github.com/awslabs/aws-jwt-verify is a library maintained by AWS to verify JSON Web Tokens,
     // we did NOT use this library for the purposes of this course
-    console.log("--------------------validateAccessToken--------------------")
+    console.log("---------validateAccessToken---------")
 
     if (!JWT) {
         console.log("No JWT provided")
@@ -160,7 +160,7 @@ exports.validateAccessToken = async (JWT, userID) => {
     validSignature = crypto.createVerify('RSA-SHA256')
                     .update(`${tokenHeader}.${tokenPayload}`)
                     .verify(crypto.createPublicKey(pem), tokenSignature, 'base64')
-    if(!validSignature) {
+    if (!validSignature) {
         console.log("Invalid token signature")
         return false
     }
@@ -170,6 +170,20 @@ exports.validateAccessToken = async (JWT, userID) => {
         || decodedtokenPayload.token_use != 'access'
         || decodedtokenPayload.iss != COGNITO_ISSUER
         || decodedtokenPayload.sub != userID) {
+        
+        console.log("Token bad match")
+
+        console.log("Gotten:")
+        console.log("decodedtokenPayload.client_id: " + decodedtokenPayload.client_id)
+        console.log("decodedtokenPayload.token_use: " + decodedtokenPayload.token_use)
+        console.log("decodedtokenPayload.iss: " + decodedtokenPayload.iss)
+        console.log("decodedtokenPayload.sub: " + decodedtokenPayload.sub)
+        console.log("Expected:")
+        console.log("decodedtokenPayload.client_id: " + CLIENTID)
+        console.log("decodedtokenPayload.token_use: 'access'")
+        console.log("decodedtokenPayload.iss: " + COGNITO_ISSUER)
+        console.log("decodedtokenPayload.sub: " + userID)
+
         return false
     }
 

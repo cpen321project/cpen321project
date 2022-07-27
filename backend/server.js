@@ -41,9 +41,8 @@ app.get('/', (req, res) => {
 })
 //---------------------------------------------------------------------------------------
 // routes for userStore
-app.get("/getuserprofile/:userID/:jwt", userStore.getUserProfile)
+app.get("/getuserprofile/:otherUserID/:userID/:jwt", userStore.getUserProfile)
 app.get("/getcourselist/:userID/:jwt", userStore.getCourseList)
-app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
 app.post("/createprofile", userStore.createProfile)
 app.post("/block", userStore.block)
 app.delete("/unblock/:userID/:userIDtoDelete/:jwt", userStore.unblock)
@@ -51,9 +50,10 @@ app.post("/signup", userStore.signup)
 app.post("/confirmsignup", userStore.confirmSignUp)
 app.post("/login",userStore.login)
 app.post("/resendconfirmationcode", userStore.resendConfirmationCode)
+app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
 
 // routes for courseManager
-app.get("/getstudentlist/:coursename/:jwt", courseManager.getStudentList)
+app.get("/getstudentlist/:coursename/:jwt/:userID", courseManager.getStudentList)
 app.post("/addusertocourse", courseManager.addUserToCourse)
 app.post("/addcoursetouser", courseManager.addCourseToUser)
 app.delete("/deleteuserfromcourse/:userID/:coursename/:jwt", courseManager.deleteUserFromCourse)
@@ -70,9 +70,9 @@ let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
 io.on('connection', (socket) => {
     console.log('a user connected')
-    //let jwtFromGroup;
-    //let jwtFromPrivate;
-    //let cachedUserID;
+    let jwtFromGroup;
+    let jwtFromPrivate;
+    let cachedUserID;
 
     // socket.on('joinGroupChat', function (groupID, displayName) {
     //     console.log(displayName + " : joined at groupID : " + groupID)
@@ -81,15 +81,21 @@ io.on('connection', (socket) => {
     socket.on('joinGroupChat', async function (groupID, userID, jwt) {
         jwtFromGroup = jwt
         cachedUserID = userID
-        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenValidated) return
+        let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
+        if (!tokenIsValid) { 
+            console.log("Token not validated")
+            return
+        }
         console.log(userID + " : joined at groupID : " + groupID)
         socket.join(groupID)
     })
 
     socket.on('groupMessage', async (groupID, senderName, messageContent) => {
-        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenValidated) return
+        let tokenIsValid = await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
+        if (!tokenIsValid) { 
+            console.log("Token not validated")
+            return
+        }
         console.log(senderName + " : " + messageContent)
         
         // save message to database 
@@ -108,8 +114,11 @@ io.on('connection', (socket) => {
     socket.on('joinPrivateChat', async function (displayName, userID, jwt) {
         jwtFromPrivate = jwt
         cachedUserID = userID
-        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenValidated) return
+        let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
+        if (!tokenIsValid) { 
+            console.log("Token not validated")
+            return
+        }
         console.log("Inside joinPrivateChat:")
         usersSockets[displayName] = socket.id
         console.log(displayName + " : initiated a private chat")
@@ -118,8 +127,11 @@ io.on('connection', (socket) => {
     })
 
     socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
-        let tokenValidated = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenValidated) return
+        let tokenIsValid = await authUtils.validateAccessToken(jwtFromPrivate, senderID)
+        if (!tokenIsValid) { 
+            console.log("Token not validated")
+            return
+        }
         if (isBlocked == 0) {
             console.log("-----------------Inside privateMessage-----------------")
 

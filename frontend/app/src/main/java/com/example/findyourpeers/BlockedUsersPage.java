@@ -51,7 +51,8 @@ public class BlockedUsersPage extends AppCompatActivity {
         layoutStudentButton = findViewById(R.id.layout_student_list);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/" + currentUserID +"/"+LoginPage.accessToken;
+        String urltest = "http://10.0.2.2:3010/getuserprofile/"
+                +"0" + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,

@@ -34,17 +34,14 @@ import java.util.ArrayList;
 
 public class ViewOtherProfile extends AppCompatActivity {
 
+    public LinearLayout layoutCourseOther;
+    ArrayList<String> courseList;
     private TextView otherDisplayNameTV;
     private TextView otherCoopTV;
     private TextView otherYearTV;
     private String otherdisplayname;
-
     private int isBlocked = 0;
     private boolean otherUserIsBlockedAlready = false;
-
-    public LinearLayout layoutCourseOther;
-
-    ArrayList<String> courseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +81,15 @@ public class ViewOtherProfile extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://10.0.2.2:3010/getuserprofile/"+userID+"/"+LoginPage.accessToken;
+        String urlOther = "http://10.0.2.2:3010/getuserprofile/"
+                + userID + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
@@ -108,8 +107,8 @@ public class ViewOtherProfile extends AppCompatActivity {
                             otherdisplayname = student.getString("displayName");
                             String othercoopstatus = student.getString("coopStatus");
                             String otheryearstanding = student.getString("yearStanding");
-                            JSONArray coursesJSONArray= student.getJSONArray("courselist");
-                            JSONArray blockedUsersJSONArray= student.getJSONArray("blockedUsers");
+                            JSONArray coursesJSONArray = student.getJSONArray("courselist");
+                            JSONArray blockedUsersJSONArray = student.getJSONArray("blockedUsers");
                             // check if this other user has blocked the current user
                             for (int i = 0; i < blockedUsersJSONArray.length(); i++) {
                                 if (blockedUsersJSONArray.getString(i).equals(currentUserID)) {
@@ -118,7 +117,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                             }
 
                             if (coursesJSONArray != null) {
-                                for (int i=0;i<coursesJSONArray.length();i++){
+                                for (int i = 0; i < coursesJSONArray.length(); i++) {
                                     //courseArrayList.add(coursesJSONArray.getString(i));
                                     String courseNameSingle = coursesJSONArray.getString(i);
                                     viewCourseButton(courseNameSingle);
@@ -176,7 +175,8 @@ public class ViewOtherProfile extends AppCompatActivity {
             Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
                     Toast.LENGTH_SHORT).show();
         } else {
-            String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"+currentUserID+"/"+LoginPage.accessToken;
+            String urlCurrentUser = "http://10.0.2.2:3010/getuserprofile/"
+                    + "0" + "/" + currentUserID + "/" + LoginPage.accessToken;
 
             JsonArrayRequest jsonArrayRequest2 =
                     new JsonArrayRequest(Request.Method.GET, urlCurrentUser, null,

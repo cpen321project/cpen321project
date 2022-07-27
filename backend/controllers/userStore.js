@@ -109,12 +109,20 @@ module.exports = {
         console.log("--------inside getUserProfile--------")
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
-        let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!validate) {
-            console.log("token not validated")
+        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) { 
+            console.log("Token not validated")
             return
         }
-        await userCollection.find({ userID: req.params.userID }).toArray((err, userProfileResult) => {
+
+        // check if we want to get another user's profile (ie. in student list page)
+        let userIDOfProfileToGet = req.params.userID
+        console.log("req.params.otherUserID: " + req.params.otherUserID);
+        if (req.params.otherUserID != "0") {
+            userIDOfProfileToGet = req.params.otherUserID
+        }
+
+        await userCollection.find({ userID: userIDOfProfileToGet }).toArray((err, userProfileResult) => {
             if (err) {
                 console.log("err: " + err)
                 console.error("Error in getUserProfile: " + err)
@@ -128,9 +136,11 @@ module.exports = {
     },
 
     getCourseList: async (req, res) => {
-
-        let validate = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!validate) return
+        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) { 
+            console.log("Token not validated")
+            return
+        }
         await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
             if (err) {
                 console.error("Error in getCourseList: " + err)
@@ -175,25 +185,28 @@ module.exports = {
     },
 
     block: async (req, res) => {
-       
-        let validate = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        if (!validate) return
-            userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
-                if (err) {
-                    console.error(err)
-                    res.status(400).send(err)
-                } else {
-                    res.status(200).json({ ok: true })
-                }
-            });
+        let tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        if (!tokenIsValid) {
+            console.log("Token not validated")
+            return
+        }
+        userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
+            if (err) {
+                console.error(err)
+                res.status(400).send(err)
+            } else {
+                res.status(200).json({ ok: true })
+            }
+        });
 
     },
 
     unblock: async (req, res) => {
-   
-        let validate =  await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!validate) return
-        userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
+        let tokenIsValid =  await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) {
+            console.log("Token not validated")
+            return
+        }        userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)

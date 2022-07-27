@@ -14,9 +14,11 @@ userCollection = dbUser.collection("userCollection")
 
 module.exports = {
     getStudentList: async (req, res) => {
-        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        console.log("-------------getStudentList-------------")
+        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
-            res.status(404)
+            console.log("Token not validated")
+            res.status(404).send({ err: "Token not validated" })
             return
         }
         let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
@@ -34,6 +36,7 @@ module.exports = {
     addUserToCourse: async (req, res) => {
         tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (!tokenIsValid) {
+            console.log("Token not validated")
             res.status(404)
             return
         }
@@ -56,6 +59,7 @@ module.exports = {
     addCourseToUser: async (req, res) => {
         tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (!tokenIsValid) {
+            console.log("Token not validated")
             res.status(404)
             return
         }
@@ -73,6 +77,7 @@ module.exports = {
     deleteUserFromCourse: async (req, res) => {
         tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
+            console.log("Token not validated")
             res.status(404)
             return
         }
@@ -93,6 +98,7 @@ module.exports = {
     deleteCourseFromUser: async (req, res) => {
         tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
+            console.log("Token not validated")
             res.status(404)
             return
         }
