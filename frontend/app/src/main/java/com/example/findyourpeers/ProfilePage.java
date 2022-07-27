@@ -69,7 +69,8 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent editProfileIntent = new Intent(ProfilePage.this, EditProfile.class);
                 editProfileIntent.putExtra("userID", userID);
-                editProfileIntent.putExtra("username", username);
+                //editProfileIntent.putExtra("username", username);
+                editProfileIntent.putExtra("courselist", courseListAL);
                 startActivity(editProfileIntent);
             }
         });

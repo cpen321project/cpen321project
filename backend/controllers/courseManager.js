@@ -111,5 +111,31 @@ module.exports = {
                 res.status(200).send("Course deleted successfully\n")
             }
         })
+    },
+
+    editDisplayNameInCourse: async (req, res) => {
+        let displayName= req.body.displayName
+        let userID = req.body.userID
+        let coursename = req.body.coursename;
+        let jwt = req.body.jwt
+
+        if (!displayName || !userID || !coursename || !jwt ) {
+            console.log("Invalid body parameter(s).")
+            res.status(400).send({ response: "Invalid body parameter(s)." })
+            return;
+        }
+
+        let filter = { userID: userID }
+        let update = { displayName: displayName, coopStatus: coopStatus, yearStanding: yearStanding};
+        userCollection.findOneAndUpdate(filter, {$set : update}, function(err, resultProfileUpdated){
+            if (err) {
+                console.log("err: " + err)
+                res.status(400).send({ response: "Failed to findOneAndUpdate profile" })
+            } else {
+                console.log("resultProfileUpdated: " + resultProfileUpdated)
+                res.status(200).send({ response: "Profile updated successfully" })
+            }
+        }
+        )
     }
 }

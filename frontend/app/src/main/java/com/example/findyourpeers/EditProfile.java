@@ -22,14 +22,17 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class EditProfile extends AppCompatActivity {
 
     private EditText displayName;
     public String userID;
-    public String username;
     public String displayNameStr;
     public String coopStatus;
     public String yearStanding;
+    private ArrayList<String> studentCourseList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +40,7 @@ public class EditProfile extends AppCompatActivity {
 
         Intent intentEditProfile = getIntent();
         userID = intentEditProfile.getExtras().getString("userID");
-        username = intentEditProfile.getExtras().getString("username");
+        studentCourseList = (ArrayList<String>) intentEditProfile.getSerializableExtra("courselist");
 
         displayName = (EditText) findViewById(R.id.display_name_input_edit);
 
@@ -65,10 +68,49 @@ public class EditProfile extends AppCompatActivity {
                     return;
                 }
                 // calling a method to post the data and passing our name and job.
+                for(int i=0; i<studentCourseList.size(); i++){
+                    replaceNameInCourses(displayNameStr, studentCourseList.get(i));
+                }
                 putDataUsingVolley(displayNameStr, coopStatus, yearStanding);
             }
         });
 
+
+    }
+
+    private void replaceNameInCourses(String name, String coursename) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+
+//        PushNotificationService.krleTest("lauda");
+
+
+        JSONObject updatedprofile = new JSONObject();
+        try {
+            //input your API parameters
+            updatedprofile.put("displayName",name);
+            updatedprofile.put("userID", userID);
+            updatedprofile.put("jwt", LoginPage.accessToken);
+            updatedprofile.put("coursename", coursename);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Enter the correct url for your api service site
+        String url = "http://10.0.2.2:3010/editdisplaynameincourse";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedprofile,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(EditProfile.this, "Profile edited in courses", Toast.LENGTH_SHORT).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(EditProfile.this, "Unable to edit display name in courses", Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
 
     }
 
@@ -101,7 +143,7 @@ public class EditProfile extends AppCompatActivity {
                         Toast.makeText(EditProfile.this, "Profile edited", Toast.LENGTH_SHORT).show();
                         Intent profileIntent = new Intent(EditProfile.this, ProfilePage.class);
                         profileIntent.putExtra("userID", userID);
-                        profileIntent.putExtra("username", username);
+                        //profileIntent.putExtra("username", username);
                         startActivity(profileIntent);
                     }
                 }, new Response.ErrorListener() {
