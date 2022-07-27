@@ -55,7 +55,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
         setContentView(R.layout.activity_forum_questions_page);
 
         questionList = findViewById(R.id.question_list_linearLayout);
-
         userID = getIntent().getExtras().getString("userID");
         displayName = getIntent().getExtras().getString("displayName");
         displayName = getIntent().getExtras().getString("displayName");
@@ -81,7 +80,8 @@ public class ForumQuestionsPage extends AppCompatActivity {
                         return true;
                     case R.id.qa_forum:
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
@@ -182,7 +182,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 builder.setCancelable(true);
                 builder.setTitle("Post a question");
                 if (postQuestionDialogView.getParent() != null) {
-                    ((ViewGroup)postQuestionDialogView.getParent()).removeView(postQuestionDialogView);
+                    ((ViewGroup) postQuestionDialogView.getParent()).removeView(postQuestionDialogView);
                 }
                 builder.setView(postQuestionDialogView);
                 builder.setPositiveButton("Post question",
@@ -225,6 +225,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                             return;
                                         }
                                     }
+
                                     @Override
                                     public void onNothingSelected(AdapterView<?> parent) {
                                         // do nothing
@@ -338,6 +339,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
                                 String questionID = nextQuestion.getString("_id");
                                 String topic = nextQuestion.getString("topic");
+                                String askerID = nextQuestion.getString("askerID");
                                 String askerName = nextQuestion.getString("askerName");
                                 String questionContent = nextQuestion.getString("questionContent");
                                 Boolean isAskedAnonymously = nextQuestion.getBoolean("isAskedAnonymously");
@@ -345,7 +347,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 Log.d(TAG, "questionID: " + questionID);
                                 Log.d(TAG, "isAskedAnonymously: " + isAskedAnonymously);
 
-                                addQuestionToView(questionID, topic, askerName, questionContent, isAskedAnonymously);
+                                addQuestionToView(questionID, topic, askerID, askerName, questionContent, isAskedAnonymously);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -384,6 +386,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
                                 String questionID = nextQuestion.getString("_id");
                                 String topic = nextQuestion.getString("topic");
+                                String askerID = nextQuestion.getString("askerID");
                                 String askerName = nextQuestion.getString("askerName");
                                 String questionContent = nextQuestion.getString("questionContent");
                                 Boolean isAskedAnonymously = nextQuestion.getBoolean("isAskedAnonymously");
@@ -391,7 +394,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 Log.d(TAG, "questionID: " + questionID);
                                 Log.d(TAG, "isAskedAnonymously: " + isAskedAnonymously);
 
-                                addQuestionToView(questionID, topic, askerName, questionContent, isAskedAnonymously);
+                                addQuestionToView(questionID, topic, askerID, askerName, questionContent, isAskedAnonymously);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -431,6 +434,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
                                 String questionID = nextQuestion.getString("_id");
                                 String topic = nextQuestion.getString("topic");
+                                String askerID = nextQuestion.getString("askerID");
                                 String askerName = nextQuestion.getString("askerName");
                                 String questionContent = nextQuestion.getString("questionContent");
                                 Boolean isAskedAnonymously = nextQuestion.getBoolean("isAskedAnonymously");
@@ -438,7 +442,8 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 Log.d(TAG, "questionID: " + questionID);
                                 Log.d(TAG, "isAskedAnonymously: " + isAskedAnonymously);
 
-                                addQuestionToView(questionID, topic, askerName, questionContent, isAskedAnonymously);
+                                addQuestionToView(questionID, topic, askerID, askerName,
+                                        questionContent, isAskedAnonymously);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -458,7 +463,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void addQuestionToView(String questionID, String topic, String askerName,
+    private void addQuestionToView(String questionID, String topic, String askerID, String askerName,
                                    String questionContent, Boolean isAskedAnonymously) {
         final View questionView = getLayoutInflater()
                 .inflate(R.layout.question_layout, null, false);
@@ -480,6 +485,62 @@ public class ForumQuestionsPage extends AppCompatActivity {
             }
         });
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View editQuestionDialogView =
+                inflater.inflate(R.layout.edit_question_dialog_layout, null, false);
+        final EditText questionContentET =
+                (EditText) editQuestionDialogView.findViewById(R.id.questionContent_editText);
+        TextView editLabel = (TextView) questionView.findViewById(R.id.edit_textView);
+        if (askerID.equals(userID)) {
+            editLabel.setVisibility(View.VISIBLE);
+            questionContentET.setText(questionContent);
+        } else {
+            editLabel.setVisibility(View.INVISIBLE);
+        }
+
+        editLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Trying to edit question");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ForumQuestionsPage.this);
+                builder.setCancelable(true);
+                builder.setTitle("Edit question");
+                if (editQuestionDialogView.getParent() != null) {
+                    ((ViewGroup) editQuestionDialogView.getParent()).removeView(editQuestionDialogView);
+                }
+                builder.setView(editQuestionDialogView);
+                builder.setPositiveButton("Edit question",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // get questionContent
+                                String questionContent = questionContentET.getText().toString();
+                                Log.d(TAG, "edited questionContent: " + questionContent);
+
+                                if (questionContent.equals("")) {
+                                    Log.d(TAG, "questionContent is empty");
+                                    Toast.makeText(ForumQuestionsPage.this,
+                                            "Cannot post empty question.", Toast.LENGTH_SHORT).show();
+
+                                    // make the fields the default again
+                                    questionContentET.setText("");
+                                    return;
+                                }
+
+                                questionContentET.setText("");
+
+                                makeEditQuestionRequest(questionID, askerID, askerName,
+                                        questionContent, accessToken);
+                            }
+                        });
+                builder.setNegativeButton("Cancel", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+
         TextView topicTV = (TextView) questionView.findViewById(R.id.topic_textView);
         topicTV.setText("#" + topic);
 
@@ -497,6 +558,54 @@ public class ForumQuestionsPage extends AppCompatActivity {
         questionContentTV.setText(questionContent);
 
         questionList.addView(questionView);
+    }
+
+    private void makeEditQuestionRequest(String questionID, String askerID, String askerName,
+                                         String questionContent, String accessToken) {
+        JSONObject questionToEdit = new JSONObject();
+        try {
+            questionToEdit.put("questionID", questionID);
+            questionToEdit.put("askerID", askerID);
+            questionToEdit.put("askerName", askerName);
+            questionToEdit.put("questionContent", questionContent);
+            questionToEdit.put("jwt", accessToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "-----------------------");
+        Log.d(TAG, questionID);
+        Log.d(TAG, askerID);
+        Log.d(TAG, askerName);
+        Log.d(TAG, questionContent);
+        Log.d(TAG, accessToken);
+        Log.d(TAG, "-----------------------");
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url = "http://10.0.2.2:3010/editQuestion/";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, questionToEdit,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // JSONException: Value Question of type java.lang.String cannot be converted to JSONObject
+                        // TODO: fix: make sure the backend endpoint returns json not string
+                        // see postQuestion on backend for fix
+                        Log.d(TAG, "editQuestion successfully");
+                        Toast.makeText(ForumQuestionsPage.this, "Question edited",
+                                Toast.LENGTH_SHORT).show();
+
+                        questionList.removeAllViews();
+                        makeGetAllQuestionsRequest(accessToken);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "editQuestion error: " + error.getMessage());
+                Toast.makeText(ForumQuestionsPage.this, "Failed to edit question",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
 
 }

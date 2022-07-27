@@ -61,9 +61,6 @@ module.exports = {
         // select createdAt: 0, updatedAt: 0, __v: 0
         Question
             .find()
-            .select({
-                askerID: 0
-            })
             .sort({ createdAt: -1 }) 
             .exec((err, retrievedQs) => {
                 if (err) {
@@ -89,9 +86,6 @@ module.exports = {
 
         Question
             .find({ topic })
-            .select({
-                askerID: 0
-            })
             .sort({ createdAt: -1 }) // sort by descending (new on top)
             .exec((err, retrievedQs) => {
                 if (err) {
@@ -117,9 +111,6 @@ module.exports = {
 
         Question
             .find({ askerID: userID })
-            .select({
-                askerID: 0
-            })
             .sort({ createdAt: -1 }) 
             .exec((err, retrievedQs) => {
                 if (err) {
@@ -145,9 +136,6 @@ module.exports = {
 
         Answer
             .find({ questionID })
-            .select({
-                answererID: 0
-            })
             .sort({ createdAt: 'asc' }) 
             .exec((err, retrievedAnswers) => {
                 if (err) {
