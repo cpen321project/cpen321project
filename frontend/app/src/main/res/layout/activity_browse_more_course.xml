@@ -21,7 +21,7 @@
     <ScrollView
         android:id="@+id/scroll_view_bmc"
         android:layout_width="match_parent"
-        android:layout_height="580dp"
+        android:layout_height="560dp"
         android:contentDescription="Loading Courses..">
 
         <LinearLayout

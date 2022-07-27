@@ -36,6 +36,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
     private ArrayList<String> studentCourseList;
     //ArrayList<String> courseList;
     public LinearLayout layoutBMC;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
         String displayName = intentBrowseMore.getExtras().getString("displayName");
         studentCourseList = (ArrayList<String>) intentBrowseMore.getSerializableExtra("courselist");
 
-        layoutBMC= findViewById(R.id.layout_browse_more_course);
+        layoutBMC = findViewById(R.id.layout_browse_more_course);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
@@ -67,10 +68,22 @@ public class BrowseMoreCourse extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", studentCourseList);
                         startActivity(browseCourseIntent);
                         return true;
-                    default: return false;
+                    case R.id.qa_forum:
+                        Intent forumQuestionPageIntent =
+                                new Intent(BrowseMoreCourse.this, ForumQuestionsPage.class);
+                        forumQuestionPageIntent.putExtra("userID", userID);
+                        forumQuestionPageIntent.putExtra("displayName", displayName);
+                        forumQuestionPageIntent.putExtra("courseList", studentCourseList);
+                        startActivity(forumQuestionPageIntent);
+                        return true;
+                    default:
+                        return false;
                 }
             }
         });
+
+        Toast.makeText(BrowseMoreCourse.this,
+                "Loading courses...", Toast.LENGTH_LONG).show();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlcourse = "https://ubcexplorer.io/getAllCourses";
@@ -86,7 +99,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
 
                         // Process the JSON
                         try {
-                            for(int i=0; i< response.length(); i++){
+                            for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 String coursename = jsonObject.getString("code");
                                 allCourseButton(coursename, userID, displayName);
@@ -97,9 +110,9 @@ public class BrowseMoreCourse extends AppCompatActivity {
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error){
+                    public void onErrorResponse(VolleyError error) {
                         // Do something when error occurred
                         Toast.makeText(BrowseMoreCourse.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
                     }
@@ -127,18 +140,18 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(BrowseMoreCourse.this);
                 builder.setCancelable(true);
                 builder.setTitle("Add Course Confirmation");
-                builder.setMessage("Are you sure to add "+coursename+ " to your course list?");
+                builder.setMessage("Are you sure to add " + coursename + " to your course list?");
                 builder.setPositiveButton("Add Course",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if(studentCourseList.contains(coursename)){
+                                if (studentCourseList.contains(coursename)) {
                                     Toast.makeText(BrowseMoreCourse.this, "Course has been added before", Toast.LENGTH_SHORT).show();
-                                }else if(coursename==null) {
+                                } else if (coursename == null) {
                                     Toast.makeText(BrowseMoreCourse.this, "Course name invalid, please select from the list only", Toast.LENGTH_SHORT).show();
-                                }else{
+                                } else {
                                     addCourseToUserBMC(coursename, userID);
-                                    addUserToCourseBMC(coursename,displayName, userID);
+                                    addUserToCourseBMC(coursename, displayName, userID);
                                     studentCourseList.add(coursename);
                                     Toast.makeText(BrowseMoreCourse.this, "Course added", Toast.LENGTH_SHORT).show();
                                 }
@@ -166,8 +179,8 @@ public class BrowseMoreCourse extends AppCompatActivity {
         JSONObject usertoadd = new JSONObject();
         try {
             //input your API parameters
-            usertoadd.put("coursename",coursename);
-            usertoadd.put("userID",userID);
+            usertoadd.put("coursename", coursename);
+            usertoadd.put("userID", userID);
             usertoadd.put("displayName", displayName);
             usertoadd.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
@@ -195,8 +208,8 @@ public class BrowseMoreCourse extends AppCompatActivity {
         JSONObject coursetoadd = new JSONObject();
         try {
             //input your API parameters
-            coursetoadd.put("coursename",coursename);
-            coursetoadd.put("userID",userID);
+            coursetoadd.put("coursename", coursename);
+            coursetoadd.put("userID", userID);
             coursetoadd.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();

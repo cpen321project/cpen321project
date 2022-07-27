@@ -81,6 +81,14 @@ public class ViewOtherProfile extends AppCompatActivity {
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
                         return true;
+                    case R.id.qa_forum:
+                        Intent forumQuestionPageIntent =
+                                new Intent(ViewOtherProfile.this, ForumQuestionsPage.class);
+                        forumQuestionPageIntent.putExtra("userID", currentUserID);
+                        forumQuestionPageIntent.putExtra("displayName", currentUserDisplayName);
+                        forumQuestionPageIntent.putExtra("courseList", courseList);
+                        startActivity(forumQuestionPageIntent);
+                        return true;
                     default:
                         return false;
                 }

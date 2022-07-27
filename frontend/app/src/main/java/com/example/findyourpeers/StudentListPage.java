@@ -60,7 +60,7 @@ public class StudentListPage extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.my_profile:
                         Intent displayProfileBackIntent = new Intent(StudentListPage.this, ProfilePage.class);
-                        displayProfileBackIntent.putExtra("userID", userID);
+                        displayProfileBackIntent.putExtra("userID", currentUserID);
                         startActivity(displayProfileBackIntent);
                         return true;
                     case R.id.browse_courses:
@@ -70,6 +70,14 @@ public class StudentListPage extends AppCompatActivity {
                         browseCourseIntent.putExtra("displayName", currentUserDisplayName);
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
+                        return true;
+                    case R.id.qa_forum:
+                        Intent forumQuestionPageIntent =
+                                new Intent(StudentListPage.this, ForumQuestionsPage.class);
+                        forumQuestionPageIntent.putExtra("userID", currentUserID);
+                        forumQuestionPageIntent.putExtra("displayName", currentUserDisplayName);
+                        forumQuestionPageIntent.putExtra("courseList", courseList);
+                        startActivity(forumQuestionPageIntent);
                         return true;
                     default:
                         return false;
