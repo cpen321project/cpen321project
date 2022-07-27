@@ -160,7 +160,6 @@ module.exports = {
             })  
     }, 
 
-    //socket.on('postQuestion', async (topic, askerID, askerName, questionContent, isAskedAnonymously, jwt) => {
     postQuestion: async (req, res) => {
         console.log("--------------postQuestion--------------")
         let topic = req.body.topic
@@ -220,5 +219,75 @@ module.exports = {
         } catch (err) {
             res.status(400).send(err)
         }
-    }
+    }, 
+
+    editQuestion: async (req, res) => {
+        console.log("--------------editQuestion--------------")
+        let questionID = req.body.questionID
+        let askerID = req.body.askerID
+        let askerName = req.body.askerName
+        let questionContent = req.body.questionContent
+        let jwt = req.body.jwt
+
+        // check for null, undefined, 0, NaN, false, or empty string
+        if (!askerID || !askerName || !questionContent || !jwt ) {
+            console.log("Invalid body parameter(s).")
+            res.status(400).send({ response: "Invalid body parameter(s)." })
+            return;
+        }
+
+        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
+        // if (!tokenValidated) return
+
+        console.log("questionID: " + questionID) 
+        console.log(askerName + " : " + questionContent)
+
+        let filter = { _id: questionID }
+        let update = { questionContent: questionContent }
+
+        Question.findOneAndUpdate(filter, update, function(err, resultAfterUpdate) {
+            if (err) {
+                console.log("err: " + err)
+                res.status(400).send({ response: "Failed to findOneAndUpdate question" })
+            } else {
+                console.log("resultAfterUpdate: " + resultAfterUpdate)
+                res.status(200).send({ response: "Question updated successfully" })
+            }
+        })
+    }, 
+
+    editAnswer: async (req, res) => {
+        console.log("--------------editAnswer--------------")
+        let answerID = req.body.answerID
+        let answererID = req.body.answererID
+        let answererName = req.body.answererName
+        let answerContent = req.body.answerContent
+        let jwt = req.body.jwt
+
+        // check for null, undefined, 0, NaN, false, or empty string
+        if (!answererID || !answererName || !answerContent || !jwt ) {
+            console.log("Invalid body parameter(s).")
+            res.status(400).send({ response: "Invalid body parameter(s)." })
+            return;
+        }
+
+        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
+        // if (!tokenValidated) return
+
+        console.log("answerID: " + answerID) 
+        console.log(answererName + " : " + answerContent)
+
+        let filter = { _id: answerID }
+        let update = { answerContent: answerContent }
+
+        Answer.findOneAndUpdate(filter, update, function(err, resultAfterUpdate) {
+            if (err) {
+                console.log("err: " + err)
+                res.status(400).send({ response: "Failed to findOneAndUpdate answer" })
+            } else {
+                console.log("resultAfterUpdate: " + resultAfterUpdate)
+                res.status(200).send({ response: "Answer updated successfully" })
+            }
+        })
+    }, 
 }
