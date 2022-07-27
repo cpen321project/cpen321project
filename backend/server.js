@@ -71,6 +71,8 @@ app.get('/getAllQuestionsFromAUser/:userID/:jwt', forumEngine.getAllQuestionsFro
 app.get('/getAllAnswersForAQuestion/:questionID/:userID/:jwt', forumEngine.getAllAnswersForAQuestion)
 app.post("/postQuestion", forumEngine.postQuestion)
 app.post("/postAnswer", forumEngine.postAnswer)
+app.put("/editQuestion", forumEngine.editQuestion)
+app.put("/editAnswer", forumEngine.editAnswer)
 
 // route for firebase
 app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
