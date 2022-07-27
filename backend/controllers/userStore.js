@@ -109,11 +109,11 @@ module.exports = {
         console.log("--------inside getUserProfile--------")
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
-        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!tokenIsValid) { 
-            console.log("Token not validated")
-            return
-        }
+        //let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        //if (!tokenIsValid) { 
+       //     console.log("Token not validated")
+        //    return
+        //}
 
         // check if we want to get another user's profile (ie. in student list page)
         let userIDOfProfileToGet = req.params.userID
@@ -223,6 +223,34 @@ module.exports = {
         console.log("retrievedDisplayName: " + retrievedDisplayName)
         res.status(200).json({ retrievedDisplayName })
     },
+
+    editProfile: async (req, res) => {
+        let displayName= req.body.displayName
+        let userID = req.body.userID
+        let coopStatus= req.body.coopStatus
+        let yearStanding= req.body.yearStanding
+        let jwt = req.body.jwt
+
+        if (!displayName || !userID || !coopStatus || !yearStanding || !jwt ) {
+            console.log("Invalid body parameter(s).")
+            res.status(400).send({ response: "Invalid body parameter(s)." })
+            return;
+        }
+
+        let filter = { userID: userID }
+        let update = { displayName: displayName, coopStatus: coopStatus, yearStanding: yearStanding};
+        userCollection.findOneAndUpdate(filter, {$set : update}, function(err, resultProfileUpdated){
+            if (err) {
+                console.log("err: " + err)
+                res.status(400).send({ response: "Failed to findOneAndUpdate profile" })
+            } else {
+                console.log("resultProfileUpdated: " + resultProfileUpdated)
+                res.status(200).send({ response: "Profile updated successfully" })
+            }
+        }
+        )
+    }
+
 
 }
 

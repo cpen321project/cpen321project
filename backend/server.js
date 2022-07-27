@@ -52,6 +52,7 @@ app.post("/confirmsignup", userStore.confirmSignUp)
 app.post("/login",userStore.login)
 app.post("/resendconfirmationcode", userStore.resendConfirmationCode)
 app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
+app.put("/editprofile", userStore.editProfile)
 
 // routes for courseManager
 app.get("/getstudentlist/:coursename/:jwt/:userID", courseManager.getStudentList)
