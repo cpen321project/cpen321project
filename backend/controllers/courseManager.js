@@ -125,6 +125,17 @@ module.exports = {
             return;
         }
 
+        await dbCourse.collection(coursename).findOneAndUpdate({}, (err, result) => {
+            if (err) {
+                console.log("Error in addUserToCourse: " + err)
+                res.status(400).send(err)
+            } else {
+                console.log("addUserToCourse successfully")
+                res.status(200).send("User added successfully\n")
+                notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+            }
+        })
+
         let filter = { userID: userID }
         let update = { displayName: displayName, coopStatus: coopStatus, yearStanding: yearStanding};
         userCollection.findOneAndUpdate(filter, {$set : update}, function(err, resultProfileUpdated){

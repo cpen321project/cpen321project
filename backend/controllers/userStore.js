@@ -4,11 +4,28 @@ const client = new MongoClient(uri)
 client.connect()
 
 const authUtils = require('../utils/authUtils.js')
+const chatEngine = require('../controllers/chatEngine.js')
 
 let dbUser, userCollection
 
 dbUser = client.db("user")
 userCollection = dbUser.collection("userCollection")
+
+// interface not exposed to frontend
+async function getDisplayNameByUserIDfromDB(userID) {
+    console.log("----------------getDisplayNameByUserIDfromDB------------------")
+    console.log("userID: " + userID)
+
+    let retrievedUser = await userCollection.findOne({ userID })
+    if (retrievedUser) {
+        console.log("retrievedUser: " + retrievedUser.displayName)
+        return retrievedUser.displayName
+    } else {
+        console.log("retrievedUser: not found");
+    }
+}
+module.exports.getDisplayNameByUserIDfromDB = getDisplayNameByUserIDfromDB
+
 
 module.exports = {
     signup: async (req, res) => {
@@ -42,6 +59,7 @@ module.exports = {
         console.log("signUpResult: " + signUpResult)
         return res.status(200).json({ success: true, result: signUpResult })
     },
+
     confirmSignUp: async (req, res) => {
         let username = req.body.username;
         let confirmationCode = req.body.confirmationCode;
@@ -111,7 +129,7 @@ module.exports = {
         console.log("req.params.jwt: " + req.params.jwt);
         //let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         //if (!tokenIsValid) { 
-       //     console.log("Token not validated")
+        //     console.log("Token not validated")
         //    return
         //}
 
@@ -132,12 +150,12 @@ module.exports = {
                 res.status(200).json(userProfileResult)
             }
         })
- 
+
     },
 
     getCourseList: async (req, res) => {
         let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!tokenIsValid) { 
+        if (!tokenIsValid) {
             console.log("Token not validated")
             return
         }
@@ -202,11 +220,11 @@ module.exports = {
     },
 
     unblock: async (req, res) => {
-        let tokenIsValid =  await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
             return
-        }        userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
+        } userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)
@@ -216,30 +234,54 @@ module.exports = {
         });
     },
 
-    getDisplayNameByUserIDfromDB: _getDisplayNameByUserIDfromDB,
+    // getDisplayNameByUserIDfromDB: async (userID) => {
+    //     console.log("----------------getDisplayNameByUserIDfromDB------------------")
+    //     console.log("userID: " + userID)
+
+    //     let retrievedUser = await userCollection.findOne({ userID })
+    //     if (retrievedUser) {
+    //         console.log("retrievedUser: " + retrievedUser.displayName)
+    //         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+    //         return retrievedUser.displayName
+    //     } else {
+    //         console.log("retrievedUser: not found");
+    //         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+    //     }
+    // },
 
     getDisplayNameByUserID: async function (req, res) {
-        let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
+        let retrievedDisplayName = await module.exports.getDisplayNameByUserIDfromDB(req.params.userID)
         console.log("retrievedDisplayName: " + retrievedDisplayName)
         res.status(200).json({ retrievedDisplayName })
     },
 
     editProfile: async (req, res) => {
-        let displayName= req.body.displayName
+        let displayName = req.body.displayName
         let userID = req.body.userID
-        let coopStatus= req.body.coopStatus
-        let yearStanding= req.body.yearStanding
+        let coopStatus = req.body.coopStatus
+        let yearStanding = req.body.yearStanding
         let jwt = req.body.jwt
 
-        if (!displayName || !userID || !coopStatus || !yearStanding || !jwt ) {
+        if (!displayName || !userID || !coopStatus || !yearStanding || !jwt) {
             console.log("Invalid body parameter(s).")
             res.status(400).send({ response: "Invalid body parameter(s)." })
             return;
         }
 
-        let filter = { userID: userID }
-        let update = { displayName: displayName, coopStatus: coopStatus, yearStanding: yearStanding};
-        userCollection.findOneAndUpdate(filter, {$set : update}, function(err, resultProfileUpdated){
+        // update all group & private msgs in chatDB with new displayName
+        let updateGroupChatsResult = await chatEngine.updateUserDisplayNameInGroupChats(userID, displayName)
+        if (!updateGroupChatsResult) {
+            console.log("bad updateGroupChatsResult")
+        }
+        let updatePrivateChatsResult = await chatEngine.updateUserDisplayNameInPrivateChats(userID, displayName)
+        if (!updatePrivateChatsResult) {
+            console.log("bad updatePrivateChatsResult")
+        }
+
+        // update userDB
+        let filter = { userID }
+        let update = { displayName, coopStatus, yearStanding };
+        userCollection.findOneAndUpdate(filter, { $set: update }, function (err, resultProfileUpdated) {
             if (err) {
                 console.log("err: " + err)
                 res.status(400).send({ response: "Failed to findOneAndUpdate profile" })
@@ -247,24 +289,21 @@ module.exports = {
                 console.log("resultProfileUpdated: " + resultProfileUpdated)
                 res.status(200).send({ response: "Profile updated successfully" })
             }
-        }
-        )
-    }
-
-
-}
-
-async function _getDisplayNameByUserIDfromDB(userID) {
-    console.log("----------------getDisplayNameByUserIDfromDB------------------")
-    console.log("userID: " + userID)
-
-    let retrievedUser = await userCollection.findOne({ userID })
-    if (retrievedUser) {
-        console.log("retrievedUser: " + retrievedUser.displayName)
-        console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
-        return retrievedUser.displayName
-    } else {
-        console.log("retrievedUser: not found");
-        console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+        })
     }
 }
+
+// async function _getDisplayNameByUserIDfromDB(userID) {
+//     console.log("----------------getDisplayNameByUserIDfromDB------------------")
+//     console.log("userID: " + userID)
+
+//     let retrievedUser = await userCollection.findOne({ userID })
+//     if (retrievedUser) {
+//         console.log("retrievedUser: " + retrievedUser.displayName)
+//         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+//         return retrievedUser.displayName
+//     } else {
+//         console.log("retrievedUser: not found");
+//         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
+//     }
+// }

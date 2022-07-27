@@ -8,6 +8,7 @@ const messageSchema = new mongoose.Schema(
             default: () => uuidv4().replaceAll("-", ""),
         },
         groupID: String,
+        senderID: String,
         senderName: String,
         messageContent: mongoose.Schema.Types.Mixed,
     },

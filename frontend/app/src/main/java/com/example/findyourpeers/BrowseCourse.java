@@ -40,8 +40,8 @@ public class BrowseCourse extends AppCompatActivity {
 
     public String userID;
     public String displayName;
-    private ArrayList<String> studentCourseList;
     public LinearLayout layoutCourseList;
+    private ArrayList<String> studentCourseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,8 @@ public class BrowseCourse extends AppCompatActivity {
                         forumQuestionPageIntent.putExtra("courseList", studentCourseList);
                         startActivity(forumQuestionPageIntent);
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
@@ -96,12 +97,12 @@ public class BrowseCourse extends AppCompatActivity {
                 String userInputCourse = etCourse.getText().toString();
                 String userInputCourseNoSpace = userInputCourse.replaceAll(" ", "%20");
                 RequestQueue requestQueue = Volley.newRequestQueue(BrowseCourse.this);
-                String urlcourse = "https://ubcexplorer.io/searchAny/"+userInputCourseNoSpace;
+                String urlcourse = "https://ubcexplorer.io/searchAny/" + userInputCourseNoSpace;
                 JsonArrayRequest requestCourse = new JsonArrayRequest(Request.Method.GET, urlcourse, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            for(int i=0; i< response.length(); i++){
+                            for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 String coursename = jsonObject.getString("code");
                                 courseList.add(coursename);
@@ -115,10 +116,12 @@ public class BrowseCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(error.networkResponse.data!=null) {
+                        if (error.networkResponse != null) {
                             try {
-                                String body = new String(error.networkResponse.data,"UTF-8");
-                                Log.d("Browse Course", body);
+                                Toast.makeText(BrowseCourse.this,
+                                        "Error searching for courses", Toast.LENGTH_SHORT).show();
+                                String body = new String(error.networkResponse.data, "UTF-8");
+                                Log.d("Browse Course", "error: " + body);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -170,18 +173,18 @@ public class BrowseCourse extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(BrowseCourse.this);
                 builder.setCancelable(true);
                 builder.setTitle("Add Course Confirmation");
-                builder.setMessage("Are you sure to add "+inputCoursename+ " to your course list?");
+                builder.setMessage("Are you sure to add " + inputCoursename + " to your course list?");
                 builder.setPositiveButton("Add Course",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                               if(studentCourseList.contains(inputCoursename)){
+                                if (studentCourseList.contains(inputCoursename)) {
                                     Toast.makeText(BrowseCourse.this, "Course has been added before", Toast.LENGTH_SHORT).show();
-                                }else if(inputCoursename==null) {
+                                } else if (inputCoursename == null) {
                                     Toast.makeText(BrowseCourse.this, "Course name invalid, please select from the list only", Toast.LENGTH_SHORT).show();
-                                }else{
+                                } else {
                                     addCourseToUser(inputCoursename);
-                                    addUserToCourse(inputCoursename,displayName);
+                                    addUserToCourse(inputCoursename, displayName);
                                     studentCourseList.add(inputCoursename);
                                     Toast.makeText(BrowseCourse.this, "Course added", Toast.LENGTH_SHORT).show();
                                 }
@@ -206,8 +209,8 @@ public class BrowseCourse extends AppCompatActivity {
         JSONObject usertoadd = new JSONObject();
         try {
             //input your API parameters
-            usertoadd.put("coursename",coursename);
-            usertoadd.put("userID",userID);
+            usertoadd.put("coursename", coursename);
+            usertoadd.put("userID", userID);
             usertoadd.put("displayName", displayName);
             usertoadd.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
@@ -236,8 +239,8 @@ public class BrowseCourse extends AppCompatActivity {
         JSONObject coursetoadd = new JSONObject();
         try {
             //input your API parameters
-            coursetoadd.put("coursename",coursename);
-            coursetoadd.put("userID",userID);
+            coursetoadd.put("coursename", coursename);
+            coursetoadd.put("userID", userID);
             coursetoadd.put("jwt", LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
