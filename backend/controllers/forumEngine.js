@@ -231,7 +231,7 @@ module.exports = {
         console.log(askerName + " : " + questionContent)
 
         let filter = { _id: questionID }
-        let update = { questionContent: questionContent }
+        let update = { questionContent }
 
         Question.findOneAndUpdate(filter, update, function(err, resultAfterUpdate) {
             if (err) {
@@ -266,7 +266,7 @@ module.exports = {
         console.log(answererName + " : " + answerContent)
 
         let filter = { _id: answerID }
-        let update = { answerContent: answerContent }
+        let update = { answerContent }
 
         Answer.findOneAndUpdate(filter, update, function(err, resultAfterUpdate) {
             if (err) {

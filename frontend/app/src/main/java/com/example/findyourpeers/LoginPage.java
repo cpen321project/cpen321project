@@ -87,7 +87,7 @@ public class LoginPage extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = urls.URL + "login";
+        String url = Urls.URL + "login";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, loginData,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -141,7 +141,7 @@ public class LoginPage extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = urls.URL +  "newRegistrationToken";
+        String url = Urls.URL +  "newRegistrationToken";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
                 new Response.Listener<JSONObject>() {
                     @Override
