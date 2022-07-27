@@ -21,6 +21,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ForumAnswersPage"
+            android:exported="false" />
+        <activity
             android:name=".BrowseMoreCourse"
             android:exported="false" />
         <activity
@@ -46,6 +49,9 @@
             android:exported="false" />
         <activity
             android:name=".ProfilePage"
+            android:exported="false" />
+        <activity
+            android:name=".ForumQuestionsPage"
             android:exported="false" />
         <activity
             android:name=".BrowseCourse"

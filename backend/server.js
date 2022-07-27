@@ -1,6 +1,6 @@
 require("./config/mongo.js")
 
-const {MongoClient} = require("mongodb")
+const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
@@ -20,6 +20,7 @@ const port = "3010"
 const userStore = require('./controllers/userStore.js')
 const courseManager = require('./controllers/courseManager.js')
 const chatEngine = require('./controllers/chatEngine.js')
+const forumEngine = require('./controllers/forumEngine.js')
 const authUtils = require('./utils/authUtils.js')
 
 app.use(express.json())
@@ -63,6 +64,14 @@ app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
 app.get('/getConversationByGroupID/:groupID/:userID/:jwt', chatEngine.getConversationByGroupID)
 app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID/:jwt', chatEngine.getPrivateConversationByUserIDs)
 
+// routes for forumEngine
+app.get('/getAllQuestions/:userID/:jwt', forumEngine.getAllQuestions)
+app.get('/getAllQuestionsForATopic/:topic/:userID/:jwt', forumEngine.getAllQuestionsForATopic)
+app.get('/getAllQuestionsFromAUser/:userID/:jwt', forumEngine.getAllQuestionsFromAUser)
+app.get('/getAllAnswersForAQuestion/:questionID/:userID/:jwt', forumEngine.getAllAnswersForAQuestion)
+app.post("/postQuestion", forumEngine.postQuestion)
+app.post("/postAnswer", forumEngine.postAnswer)
+
 // route for firebase
 app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
 
@@ -74,10 +83,6 @@ io.on('connection', (socket) => {
     let jwtFromPrivate;
     let cachedUserID;
 
-    // socket.on('joinGroupChat', function (groupID, displayName) {
-    //     console.log(displayName + " : joined at groupID : " + groupID)
-    //     socket.join(groupID)
-    // })
     socket.on('joinGroupChat', async function (groupID, userID, jwt) {
         jwtFromGroup = jwt
         cachedUserID = userID
