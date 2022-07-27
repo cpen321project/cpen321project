@@ -27,9 +27,9 @@ public class PushNotificationService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         //make the api call to update the token for the user
-        String uuidString = CreateProfile.userID;
 //        Log.d(TAG, "phad lo token " + token + " " + uuidString);
-        postDatausingVolley(uuidString, token);
+        String userID = LoginPage.userID;
+        postDatausingVolley(userID, token);
 
 
     }

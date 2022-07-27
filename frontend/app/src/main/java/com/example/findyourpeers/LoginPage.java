@@ -28,6 +28,7 @@ public class LoginPage extends AppCompatActivity {
 
     private EditText unameET;
     private EditText passwordET;
+    public static String userID;
     public static String accessToken;
     public String token;
     final static String TAG = "LoginPage";
@@ -86,7 +87,7 @@ public class LoginPage extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = "http://34.130.14.116:3010/login";
+        String url = urls.URL + "login";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, loginData,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -106,8 +107,10 @@ public class LoginPage extends AppCompatActivity {
                                 Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
                                 Log.d("accessToken", successResult.getString("accessToken"));
                                 Log.d("UserId", successResult.getString("userID"));
+                                userID = unameStr;
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
                                 Log.d("accessToken", successResult.getString("accessToken"));
+                                postDataUsingVolley(userID);
                                 startActivity(viewProfileIntent);
                             }
                         }catch(JSONException e){
@@ -123,22 +126,21 @@ public class LoginPage extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequest);
     }
-
-    private void postDatausingVolley(String uuidString, String token) {
+    private void postDataUsingVolley(String userID) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-
 
         JSONObject newToken = new JSONObject();
         try {
             //input your API parameters
-            newToken.put("userID", uuidString);
+            newToken.put("userID", userID);
             newToken.put("registrationToken", token);
             newToken.put("jwt", LoginPage.accessToken);
+            Log.d(TAG, "trying to post the regToken");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = "http://34.130.14.116:3010/newRegistrationToken";
+        String url = urls.URL +  "newRegistrationToken";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -149,11 +151,11 @@ public class LoginPage extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(CreateProfile.this, "Sign up failed", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "unsuccessfully updated token for firebase");
+                Log.d(TAG, "Was not able to update firebase token on backend");
             }
         });
         requestQueue.add(jsonObjectRequest);
 
     }
+
 }
