@@ -4,38 +4,37 @@
 name: Node.js CI
 
 on:
-    push:
-        branches: [ "**" ]
-    pull_request:
-        branches: [ "**" ]
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
 
 env: 
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
 jobs:
-    test:
-        runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-        env:
-        working-directory: ./backend
+    env:
+      working-directory: ./backend
 
-        strategy:
-        matrix:
-            node-version: [14.x]
-            # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-        steps:
-        - uses: actions/checkout@v3
-        - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-            node-version: ${{ matrix.node-version }}
-            cache: 'npm'
-            cache-dependency-path: ./backend/package-lock.json
-        - name: npm ci 
-        working-directory: ${{ env.working-directory }}
-        run: npm ci
-        - name: npm test   
-        working-directory: ${{ env.working-directory }}
-        run: npm test
-
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ./backend/package-lock.json
+    - name: npm ci 
+      working-directory: ${{ env.working-directory }}
+      run: npm ci
+    - name: npm test   
+      working-directory: ${{ env.working-directory }}
+      run: npm test
