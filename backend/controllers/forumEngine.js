@@ -1,5 +1,6 @@
 const Question = require('../models/Question.js')
 const Answer = require('../models/Answer.js')
+const authUtils = require('../utils/authUtils.js')
 
 /*
     Interfaces exposed to front end:
@@ -51,14 +52,14 @@ module.exports = {
     }, 
 
     getAllQuestions: async (req, res) => {
-        // let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        // if (!tokenValidated) {
-        //     res.status(404)
-        //     return
-        // }
         console.log("----------------getAllQuestions----------------")
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
-        // select createdAt: 0, updatedAt: 0, __v: 0
         Question
             .find()
             .sort({ createdAt: -1 }) 
@@ -75,12 +76,13 @@ module.exports = {
     }, 
 
     getAllQuestionsForATopic: async (req, res) => {
-        // let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        // if (!tokenValidated) {
-        //     res.status(404)
-        //     return
-        // }
         console.log("----------------getAllQuestionsForATopic----------------")
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
         let topic = req.params.topic
 
@@ -99,12 +101,13 @@ module.exports = {
     }, 
 
     getAllQuestionsFromAUser: async (req, res) => {
-        // let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        // if (!tokenValidated) {
-        //     res.status(404)
-        //     return
-        // }
         console.log("----------------getAllQuestionsFromAUser----------------")
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
         let userID = req.params.userID
         console.log("Getting all Q's from userID: " + userID)
@@ -124,12 +127,13 @@ module.exports = {
     }, 
 
     getAllAnswersForAQuestion: async (req, res) => {
-        // let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        // if (!tokenValidated) {
-        //     res.status(404)
-        //     return
-        // }
         console.log("----------------getAllAnswersForAQuestion----------------")
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
         let questionID = req.params.questionID
         console.log("questionID: " + questionID)
@@ -164,8 +168,12 @@ module.exports = {
             return;
         }
 
-        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
-        // if (!tokenValidated) return
+        let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
         console.log(askerName + " : " + questionContent)
         console.log("isAskedAnonymously: " + isAskedAnonymously) 
@@ -196,8 +204,12 @@ module.exports = {
             return;
         }
 
-        // let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
-        // if (!tokenValidated) return
+        let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
         console.log(answererName + " : " + answerContent)
         
@@ -224,8 +236,12 @@ module.exports = {
             return;
         }
 
-        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
-        // if (!tokenValidated) return
+        let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
 
         console.log("questionID: " + questionID) 
         console.log(askerName + " : " + questionContent)
@@ -259,9 +275,12 @@ module.exports = {
             return;
         }
 
-        // let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
-        // if (!tokenValidated) return
-
+        let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
+        if (!tokenValidated) {
+            console.log("Token not validated")
+            res.status(404)
+            return
+        }
         console.log("answerID: " + answerID) 
         console.log(answererName + " : " + answerContent)
 

@@ -544,7 +544,11 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
         TextView askerNameTV = (TextView) questionView.findViewById(R.id.askerName_textView);
         String nameToDisplay = "nameToDisplayDefaultValue";
-        nameToDisplay = getNameToDisplay(askerName, isAskedAnonymously);
+        if (isAskedAnonymously) {
+            nameToDisplay = "anonymous";
+        } else {
+            nameToDisplay = askerName;
+        }
         askerNameTV.setText(nameToDisplay);
 
         TextView questionContentTV =
@@ -552,16 +556,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
         questionContentTV.setText(questionContent);
 
         questionList.addView(questionView);
-    }
-
-    private String getNameToDisplay(String askerName, Boolean isAskedAnonymously) {
-        String nameToDisplay;
-        if (isAskedAnonymously) {
-            nameToDisplay = "anonymous";
-        } else {
-            nameToDisplay = askerName;
-        }
-        return nameToDisplay;
     }
 
     private boolean checkQuestionContentIsEmpty(String questionContent) {

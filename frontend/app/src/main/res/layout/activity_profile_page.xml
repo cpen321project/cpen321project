@@ -16,19 +16,27 @@
 
         <TextView
             android:id="@+id/my_profile_text"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
+            android:paddingLeft="100dp"
+            android:layout_weight="1"
             android:text="@string/my_profile"
             android:textColor="@color/ubc_darkblue"
             android:textSize="34sp" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <ImageView
             android:id="@+id/edit_button_profile"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
+            android:paddingRight="10dp"
             app:srcCompat="@drawable/ic_baseline_edit_24" />
     </LinearLayout>
 

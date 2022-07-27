@@ -87,6 +87,7 @@ io.on('connection', (socket) => {
     let cachedUserID;
 
     socket.on('joinGroupChat', async function (groupID, userID, jwt) {
+        console.log("----------------joinGroupChat----------------")
         jwtFromGroup = jwt
         cachedUserID = userID
         let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
@@ -99,6 +100,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('groupMessage', async (groupID, senderName, messageContent) => {
+        console.log("----------------groupMessage----------------")
         let tokenIsValid = await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
         if (!tokenIsValid) { 
             console.log("Token not validated")
@@ -120,6 +122,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('joinPrivateChat', async function (displayName, userID, jwt) {
+        console.log("----------------joinPrivateChat----------------")
         jwtFromPrivate = jwt
         cachedUserID = userID
         let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
@@ -135,6 +138,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
+        console.log("----------------privateMessage----------------")
         let tokenIsValid = await authUtils.validateAccessToken(jwtFromPrivate, senderID)
         if (!tokenIsValid) { 
             console.log("Token not validated")
