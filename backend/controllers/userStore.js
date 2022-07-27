@@ -5,6 +5,7 @@ client.connect()
 
 const authUtils = require('../utils/authUtils.js')
 const chatEngine = require('../controllers/chatEngine.js')
+const forumEngine = require('../controllers/forumEngine.js')
 
 let dbUser, userCollection
 
@@ -234,21 +235,6 @@ module.exports = {
         });
     },
 
-    // getDisplayNameByUserIDfromDB: async (userID) => {
-    //     console.log("----------------getDisplayNameByUserIDfromDB------------------")
-    //     console.log("userID: " + userID)
-
-    //     let retrievedUser = await userCollection.findOne({ userID })
-    //     if (retrievedUser) {
-    //         console.log("retrievedUser: " + retrievedUser.displayName)
-    //         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
-    //         return retrievedUser.displayName
-    //     } else {
-    //         console.log("retrievedUser: not found");
-    //         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
-    //     }
-    // },
-
     getDisplayNameByUserID: async function (req, res) {
         let retrievedDisplayName = await module.exports.getDisplayNameByUserIDfromDB(req.params.userID)
         console.log("retrievedDisplayName: " + retrievedDisplayName)
@@ -278,6 +264,16 @@ module.exports = {
             console.log("bad updatePrivateChatsResult")
         }
 
+        // update all questions & answers in forumDB with new displayName
+        let updateQuestionsResult = await forumEngine.updateUserDisplayNameInQuestions(userID, displayName)
+        if (!updateQuestionsResult) {
+            console.log("bad updateQuestionsResult")
+        }
+        let updateAnswersResult = await forumEngine.updateUserDisplayNameInAnswers(userID, displayName)
+        if (!updateAnswersResult) {
+            console.log("bad updateAnswersResult")
+        }
+
         // update userDB
         let filter = { userID }
         let update = { displayName, coopStatus, yearStanding };
@@ -292,18 +288,3 @@ module.exports = {
         })
     }
 }
-
-// async function _getDisplayNameByUserIDfromDB(userID) {
-//     console.log("----------------getDisplayNameByUserIDfromDB------------------")
-//     console.log("userID: " + userID)
-
-//     let retrievedUser = await userCollection.findOne({ userID })
-//     if (retrievedUser) {
-//         console.log("retrievedUser: " + retrievedUser.displayName)
-//         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
-//         return retrievedUser.displayName
-//     } else {
-//         console.log("retrievedUser: not found");
-//         console.log("---------------end of getDisplayNameByUserIDfromDB-------------------")
-//     }
-// }

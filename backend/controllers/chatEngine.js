@@ -87,7 +87,6 @@ module.exports = {
         console.log("senderName: " + senderName)
         console.log("receiverName: " + receiverName)
 
-
         PrivateMessage
             .find({
                 $or: [
@@ -165,7 +164,5 @@ module.exports = {
                 return true
             }
         })
-
-
     }
 }

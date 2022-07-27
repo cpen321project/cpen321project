@@ -55,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
 
         //https://medium.com/@mohamedaymen.ourabi11/creating-a-realtime-chat-app-with-android-nodejs-and-socket-io-1050bc20c70
 
-        messageTxt = (EditText) findViewById(R.id.message) ;
+        messageTxt = (EditText) findViewById(R.id.message);
         send = (Button)findViewById(R.id.send);
 
         MessageList = new ArrayList<>();
