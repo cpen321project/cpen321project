@@ -31,7 +31,7 @@ import org.json.JSONObject;
 public class CreateProfile extends AppCompatActivity {
 
     private EditText displayName;
-    private String userID;
+    public String userID;
     public String displayNameStr;
     public String coopStatus;
     public String yearStanding;

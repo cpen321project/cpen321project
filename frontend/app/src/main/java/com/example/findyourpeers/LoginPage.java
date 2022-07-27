@@ -1,5 +1,6 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,6 +17,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +29,8 @@ public class LoginPage extends AppCompatActivity {
     private EditText unameET;
     private EditText passwordET;
     public static String accessToken;
+    public String token;
+    final static String TAG = "LoginPage";
 
 
     @Override
@@ -45,6 +51,26 @@ public class LoginPage extends AppCompatActivity {
 
             }
         });
+
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        token = task.getResult().toString();
+
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, token);
+//                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
     }
@@ -96,5 +122,38 @@ public class LoginPage extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void postDatausingVolley(String uuidString, String token) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+
+        JSONObject newToken = new JSONObject();
+        try {
+            //input your API parameters
+            newToken.put("userID", uuidString);
+            newToken.put("registrationToken", token);
+            newToken.put("jwt", LoginPage.accessToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Enter the correct url for your api service site
+        String url = "http://34.130.14.116:3010/newRegistrationToken";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+//                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "successfully updated token for firebase");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(CreateProfile.this, "Sign up failed", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "unsuccessfully updated token for firebase");
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+
     }
 }
