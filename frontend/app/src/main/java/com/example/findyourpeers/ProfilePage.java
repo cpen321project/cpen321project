@@ -38,6 +38,7 @@ public class ProfilePage extends AppCompatActivity {
     private String displayName;
     private ArrayList<String> courseListAL;
     final private String TAG = "ProfilePage";
+    private ImageView editBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
+        String username = intentProfile.getExtras().getString("username");
         String accessToken = LoginPage.accessToken;
         Log.d(TAG, "accessToken in ProfilePage: " +  accessToken);
 
@@ -55,6 +57,17 @@ public class ProfilePage extends AppCompatActivity {
         displayNameTV = findViewById(R.id.textView_displayname);
         coopTV = findViewById(R.id.textview_coop);
         yearTV = findViewById(R.id.textView_yearstanding);
+
+        editBtn = findViewById(R.id.edit_button_profile);
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editProfileIntent = new Intent(ProfilePage.this, EditProfile.class);
+                editProfileIntent.putExtra("userID", userID);
+                editProfileIntent.putExtra("username", username);
+                startActivity(editProfileIntent);
+            }
+        });
 
         // set up bottom navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

@@ -109,6 +109,7 @@ public class LoginPage extends AppCompatActivity {
                                 Log.d("UserId", successResult.getString("userID"));
                                 userID = unameStr;
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
+                                viewProfileIntent.putExtra("username", unameStr);
                                 Log.d("accessToken", successResult.getString("accessToken"));
                                 postDataUsingVolley(userID);
                                 startActivity(viewProfileIntent);
