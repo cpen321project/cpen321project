@@ -107,7 +107,8 @@ public class LoginPage extends AppCompatActivity {
                                 Intent viewProfileIntent = new Intent(LoginPage.this, ProfilePage.class);
                                 Log.d("accessToken", successResult.getString("accessToken"));
                                 Log.d("UserId", successResult.getString("userID"));
-                                userID = unameStr;
+                                //userID = unameStr;
+                                userID = successResult.getString("userID");
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
                                 viewProfileIntent.putExtra("username", unameStr);
                                 Log.d("accessToken", successResult.getString("accessToken"));

@@ -85,8 +85,8 @@ public class EditProfile extends AppCompatActivity {
             updatedprofile.put("displayName",name);
             updatedprofile.put("coopStatus", coop);
             updatedprofile.put("yearStanding", yearstand);
-            //updatedprofile.put("userID", userID);
-            updatedprofile.put("username", username);
+            updatedprofile.put("userID", userID);
+            //updatedprofile.put("username", username);
             updatedprofile.put("jwt", LoginPage.accessToken);
 
         } catch (JSONException e) {
