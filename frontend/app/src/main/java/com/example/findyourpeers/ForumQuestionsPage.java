@@ -475,7 +475,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 Intent viewAnswersIntent =
                         new Intent(ForumQuestionsPage.this, ForumAnswersPage.class);
                 viewAnswersIntent.putExtra("userID", userID);
-                viewAnswersIntent.putExtra("userName", displayName);
+                viewAnswersIntent.putExtra("displayName", displayName);
                 viewAnswersIntent.putExtra("topic", topic);
                 viewAnswersIntent.putExtra("questionContent", questionContent);
                 viewAnswersIntent.putExtra("askerName", askerName);
@@ -487,9 +487,9 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
         final View editQuestionDialogView =
-                inflater.inflate(R.layout.edit_question_dialog_layout, null, false);
+                inflater.inflate(R.layout.edit_dialog_layout, null, false);
         final EditText questionContentET =
-                (EditText) editQuestionDialogView.findViewById(R.id.questionContent_editText);
+                (EditText) editQuestionDialogView.findViewById(R.id.editInput_editText);
         TextView editLabel = (TextView) questionView.findViewById(R.id.edit_textView);
         if (askerID.equals(userID)) {
             editLabel.setVisibility(View.VISIBLE);
@@ -539,7 +539,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 dialog.show();
             }
         });
-
 
         TextView topicTV = (TextView) questionView.findViewById(R.id.topic_textView);
         topicTV.setText("#" + topic);

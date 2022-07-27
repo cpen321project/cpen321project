@@ -218,7 +218,7 @@ module.exports = {
         let jwt = req.body.jwt
 
         // check for null, undefined, 0, NaN, false, or empty string
-        if (!askerID || !askerName || !questionContent || !jwt ) {
+        if (!questionID || !askerID || !askerName || !questionContent || !jwt ) {
             console.log("Invalid body parameter(s).")
             res.status(400).send({ response: "Invalid body parameter(s)." })
             return;
@@ -253,7 +253,7 @@ module.exports = {
         let jwt = req.body.jwt
 
         // check for null, undefined, 0, NaN, false, or empty string
-        if (!answererID || !answererName || !answerContent || !jwt ) {
+        if (!answerID || !answererID || !answererName || !answerContent || !jwt ) {
             console.log("Invalid body parameter(s).")
             res.status(400).send({ response: "Invalid body parameter(s)." })
             return;

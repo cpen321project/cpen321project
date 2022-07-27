@@ -6,7 +6,7 @@
     android:padding="20dp">
 
     <EditText
-        android:id="@+id/questionContent_editText"
+        android:id="@+id/editInput_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"

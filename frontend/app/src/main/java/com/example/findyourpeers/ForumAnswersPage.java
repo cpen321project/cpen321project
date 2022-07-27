@@ -12,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +40,13 @@ public class ForumAnswersPage extends AppCompatActivity {
     final String TAG = "ForumAnswersPage";
     LinearLayout answerList;
     TextView noAnswersLabel;
+    String userID;
+
+    String topic;
+    String questionContent;
+    String askerName;
+    String questionID;
+    Boolean isAskedAnonymously;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +57,17 @@ public class ForumAnswersPage extends AppCompatActivity {
         noAnswersLabel = (TextView) findViewById(R.id.no_answers_label_textView);
 
         // for the current user
-        String answererID = getIntent().getExtras().getString("userID");
-        String answererName = getIntent().getExtras().getString("userName");
+        userID = getIntent().getExtras().getString("userID");
+        String displayName = getIntent().getExtras().getString("displayName");
         ArrayList<String> courseList =
                 (ArrayList<String>) getIntent().getSerializableExtra("courseList");
 
         // for the question
-        String topic = getIntent().getExtras().getString("topic");
-        String questionContent = getIntent().getExtras().getString("questionContent");
-        String askerName = getIntent().getExtras().getString("askerName");
-        String questionID = getIntent().getExtras().getString("questionID");
-        Boolean isAskedAnonymously = getIntent().getExtras().getBoolean("isAskedAnonymously");
+        topic = getIntent().getExtras().getString("topic");
+        questionContent = getIntent().getExtras().getString("questionContent");
+        askerName = getIntent().getExtras().getString("askerName");
+        questionID = getIntent().getExtras().getString("questionID");
+        isAskedAnonymously = getIntent().getExtras().getBoolean("isAskedAnonymously");
 
         TextView topicTV = (TextView) findViewById(R.id.topic_textView);
         TextView questionContentTV = (TextView) findViewById(R.id.questionContent_textView);
@@ -85,22 +90,22 @@ public class ForumAnswersPage extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.my_profile:
                         Intent displayProfileBackIntent = new Intent(ForumAnswersPage.this, ProfilePage.class);
-                        displayProfileBackIntent.putExtra("userID", answererID);
+                        displayProfileBackIntent.putExtra("userID", userID);
                         startActivity(displayProfileBackIntent);
                         return true;
                     case R.id.browse_courses:
                         Intent browseCourseIntent =
                                 new Intent(ForumAnswersPage.this, BrowseCourse.class);
-                        browseCourseIntent.putExtra("userID", answererID);
-                        browseCourseIntent.putExtra("displayName", answererName);
+                        browseCourseIntent.putExtra("userID", userID);
+                        browseCourseIntent.putExtra("displayName", displayName);
                         browseCourseIntent.putExtra("courseList", courseList);
                         startActivity(browseCourseIntent);
                         return true;
                     case R.id.qa_forum:
                         Intent forumQuestionPageIntent =
                                 new Intent(ForumAnswersPage.this, ForumQuestionsPage.class);
-                        forumQuestionPageIntent.putExtra("userID", answererID);
-                        forumQuestionPageIntent.putExtra("displayName", answererName);
+                        forumQuestionPageIntent.putExtra("userID", userID);
+                        forumQuestionPageIntent.putExtra("displayName", displayName);
                         forumQuestionPageIntent.putExtra("courseList", courseList);
                         startActivity(forumQuestionPageIntent);
                         return true;
@@ -109,7 +114,7 @@ public class ForumAnswersPage extends AppCompatActivity {
             }
         });
 
-        makeGetAllAnswersForAQuestionRequest(questionID, answererID, accessToken);
+        makeGetAllAnswersForAQuestionRequest(questionID, userID, accessToken);
 
         LayoutInflater inflater = LayoutInflater.from(this);
         final View postAnswerDialogView =
@@ -159,7 +164,7 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 answerContentET.setText("");
                                 anonCheckBox.setChecked(false);
 
-                                makePostAnswerRequest(questionID, topic, answererID, answererName,
+                                makePostAnswerRequest(questionID, topic, userID, displayName,
                                         answerContent, isAnsweredAnonymously, accessToken);
                             }
                         });
@@ -223,9 +228,6 @@ public class ForumAnswersPage extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // JSONException: Value Question of type java.lang.String cannot be converted to JSONObject
-                        // fix: make sure the backend endpoint returns json not string
-                        // see postQuestion on backend for fix
                         Toast.makeText(ForumAnswersPage.this, "Answer posted",
                                 Toast.LENGTH_SHORT).show();
 
@@ -268,13 +270,16 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 Log.d(TAG, "nextAnswer: " + nextAnswer);
 
                                 String topic = nextAnswer.getString("topic");
+                                String answerID = nextAnswer.getString("_id");
+                                String answererID = nextAnswer.getString("answererID");
                                 String answererName = nextAnswer.getString("answererName");
                                 String answerContent = nextAnswer.getString("answerContent");
                                 Boolean isAnsweredAnonymously = nextAnswer.getBoolean("isAnsweredAnonymously");
 
                                 Log.d(TAG, "isAnsweredAnonymously: " + isAnsweredAnonymously);
 
-                                addAnswerToView(answererName, answerContent, isAnsweredAnonymously);
+                                addAnswerToView(answerID, answererID, answererName, answerContent,
+                                        isAnsweredAnonymously);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -293,7 +298,8 @@ public class ForumAnswersPage extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void addAnswerToView(String answererName, String answerContent, Boolean isAnsweredAnonymously) {
+    private void addAnswerToView(String answerID, String answererID, String answererName,
+                                 String answerContent, Boolean isAnsweredAnonymously) {
         final View answerView = getLayoutInflater()
                 .inflate(R.layout.answer_layout, null, false);
 
@@ -308,9 +314,109 @@ public class ForumAnswersPage extends AppCompatActivity {
             nameToDisplay = answererName;
         }
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View editAnswerDialogView =
+                inflater.inflate(R.layout.edit_dialog_layout, null, false);
+        final EditText answerContentET =
+                (EditText) editAnswerDialogView.findViewById(R.id.editInput_editText);
+        TextView editLabel = (TextView) answerView.findViewById(R.id.edit_textView);
+
+        if (answererID.equals(userID)) {
+            editLabel.setVisibility(View.VISIBLE);
+            answerContentET.setText(answerContent);
+        } else {
+            editLabel.setVisibility(View.INVISIBLE);
+        }
+
+        editLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Trying to edit answer");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ForumAnswersPage.this);
+                builder.setCancelable(true);
+                builder.setTitle("Edit answer");
+                if (editAnswerDialogView.getParent() != null) {
+                    ((ViewGroup) editAnswerDialogView.getParent()).removeView(editAnswerDialogView);
+                }
+                builder.setView(editAnswerDialogView);
+                builder.setPositiveButton("Edit answer",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String answerContent = answerContentET.getText().toString();
+                                Log.d(TAG, "edited answerContent: " + answerContent);
+
+                                if (answerContent.equals("")) {
+                                    Log.d(TAG, "answerContent is empty");
+                                    Toast.makeText(ForumAnswersPage.this,
+                                            "Cannot post empty answer.", Toast.LENGTH_SHORT).show();
+
+                                    // make the fields the default again
+                                    answerContentET.setText("");
+                                    return;
+                                }
+
+                                answerContentET.setText("");
+                                
+                                makeEditAnswerRequest(answerID, answererID, answererName,
+                                        answerContent, accessToken);
+                            }
+                        });
+                builder.setNegativeButton("Cancel", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
         answererNameTV.setText(nameToDisplay);
         answerContentTV.setText(answerContent);
 
         answerList.addView(answerView);
+    }
+
+    private void makeEditAnswerRequest(String answerID, String answererID, String answererName, 
+                                       String answerContent, String accessToken) {
+        JSONObject answerToEdit = new JSONObject();
+        try {
+            answerToEdit.put("answerID", answerID);
+            answerToEdit.put("answererID", answererID);
+            answerToEdit.put("answererName", answererName);
+            answerToEdit.put("answerContent", answerContent);
+            answerToEdit.put("jwt", accessToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "-----------------------");
+        Log.d(TAG, answerID);
+        Log.d(TAG, answererID);
+        Log.d(TAG, answererName);
+        Log.d(TAG, answerContent);
+        Log.d(TAG, accessToken);
+        Log.d(TAG, "-----------------------");
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url = "http://10.0.2.2:3010/editAnswer/";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, answerToEdit,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "editAnswer successfully");
+                        Toast.makeText(ForumAnswersPage.this, "Answer edited",
+                                Toast.LENGTH_SHORT).show();
+
+                        answerList.removeAllViews();
+                        makeGetAllAnswersForAQuestionRequest(questionID, userID, accessToken);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "editAnswer error: " + error.getMessage());
+                Toast.makeText(ForumAnswersPage.this, "Failed to edit answer",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
 }
