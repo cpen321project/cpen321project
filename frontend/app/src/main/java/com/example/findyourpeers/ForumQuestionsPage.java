@@ -181,9 +181,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ForumQuestionsPage.this);
                 builder.setCancelable(true);
                 builder.setTitle("Post a question");
-                if (postQuestionDialogView.getParent() != null) {
-                    ((ViewGroup) postQuestionDialogView.getParent()).removeView(postQuestionDialogView);
-                }
+                checkViewHasParent(postQuestionDialogView);
                 builder.setView(postQuestionDialogView);
                 builder.setPositiveButton("Post question",
                         new DialogInterface.OnClickListener() {
@@ -219,13 +217,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                     return;
                                 }
 
-                                Boolean isAskedAnonymously = false;
-                                // get anon checkBox
-                                Boolean anonCheckBoxIsChecked = anonCheckBox.isChecked();
-                                if (anonCheckBoxIsChecked) {
-                                    Log.d(TAG, "anonCheckBox.isChecked(): " + anonCheckBoxIsChecked);
-                                    isAskedAnonymously = true;
-                                }
+                                Boolean isAskedAnonymously = getIsAskedAnonymously(anonCheckBox);
 
                                 questionContentET.setText("");
                                 topicSpinner.setSelection(0);
@@ -241,6 +233,22 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+    private void checkViewHasParent(View postQuestionDialogView) {
+        if (postQuestionDialogView.getParent() != null) {
+            ((ViewGroup) postQuestionDialogView.getParent()).removeView(postQuestionDialogView);
+        }
+    }
+
+    @NonNull
+    private Boolean getIsAskedAnonymously(CheckBox anonCheckBox) {
+        Boolean isAskedAnonymously = false;
+        if (anonCheckBox.isChecked()) {
+            Log.d(TAG, "anonCheckBox.isChecked(): " + anonCheckBox.isChecked());
+            isAskedAnonymously = true;
+        }
+        return isAskedAnonymously;
     }
 
     private void checkSelectedSpinnerItemIsValid(Spinner topicSpinner, CheckBox anonCheckBox) {
@@ -500,9 +508,8 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ForumQuestionsPage.this);
                 builder.setCancelable(true);
                 builder.setTitle("Edit question");
-                if (editQuestionDialogView.getParent() != null) {
-                    ((ViewGroup) editQuestionDialogView.getParent()).removeView(editQuestionDialogView);
-                }
+                checkViewHasParent(editQuestionDialogView);
+
                 builder.setView(editQuestionDialogView);
                 builder.setPositiveButton("Edit question",
                         new DialogInterface.OnClickListener() {
@@ -518,15 +525,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                     questionContentET.setText("");
                                     return;
                                 }
-//                                if (questionContent.equals("")) {
-//                                    Log.d(TAG, "questionContent is empty");
-//                                    Toast.makeText(ForumQuestionsPage.this,
-//                                            "Cannot post empty question.", Toast.LENGTH_SHORT).show();
-//
-//                                    // make the fields the default again
-//                                    questionContentET.setText("");
-//                                    return;
-//                                }
 
                                 questionContentET.setText("");
 
@@ -546,11 +544,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
         TextView askerNameTV = (TextView) questionView.findViewById(R.id.askerName_textView);
         String nameToDisplay = "nameToDisplayDefaultValue";
-        if (isAskedAnonymously) {
-            nameToDisplay = "anonymous";
-        } else {
-            nameToDisplay = askerName;
-        }
+        nameToDisplay = getNameToDisplay(askerName, isAskedAnonymously);
         askerNameTV.setText(nameToDisplay);
 
         TextView questionContentTV =
@@ -558,6 +552,16 @@ public class ForumQuestionsPage extends AppCompatActivity {
         questionContentTV.setText(questionContent);
 
         questionList.addView(questionView);
+    }
+
+    private String getNameToDisplay(String askerName, Boolean isAskedAnonymously) {
+        String nameToDisplay;
+        if (isAskedAnonymously) {
+            nameToDisplay = "anonymous";
+        } else {
+            nameToDisplay = askerName;
+        }
+        return nameToDisplay;
     }
 
     private boolean checkQuestionContentIsEmpty(String questionContent) {
