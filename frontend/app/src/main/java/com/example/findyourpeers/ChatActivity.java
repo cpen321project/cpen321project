@@ -32,6 +32,8 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
+    final String TAG = "ChatActivity";
+
     private Socket socket;
     private String Nickname;
     private String groupID;
@@ -110,12 +112,12 @@ public class ChatActivity extends AppCompatActivity {
                                 for (int i = 0; i < msgsArray.length(); i++) {
                                     try {
                                         JSONObject msg = msgsArray.getJSONObject(i);
-//                                Log.d("ChatActivity", "msg: " + msg);
+                                        Log.d(TAG, "next msg: " + msg);
 
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
-//                                Log.d("ChatActivity", "nickname: " + nickname);
-                                        Log.d("ChatActivity", "message: " + message);
+                                        Log.d(TAG, "nickname: " + nickname);
+                                        Log.d(TAG, "message: " + message);
 
                                         Message m = new Message(nickname, message);
                                         MessageList.add(m);
@@ -132,7 +134,7 @@ public class ChatActivity extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("ChatActivity", "Volley request error");
+                        Log.d(TAG, "Volley request error");
                     }
                 });
 
@@ -147,11 +149,11 @@ public class ChatActivity extends AppCompatActivity {
 
 //            socket.emit("joinGroupChat", groupID, Nickname);
             socket.emit("joinGroupChat", groupID, userID, LoginPage.accessToken);
-            Log.d("ChatActivity", "Joining group chat: " + groupID);
+            Log.d(TAG, "Joining group chat: " + groupID);
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Log.d("ChatActivity", "Error connect to socket");
+            Log.d(TAG, "Error connect to socket");
         }
 
         // send message action
@@ -164,12 +166,13 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     socket.emit("groupMessage",
                             groupID,
+                            userID,
                             Nickname,
                             messageTxt.getText().toString());
 
                     messageTxt.setText("");
 
-                    Log.d("ChatActivity", "Message emitted to server");
+                    Log.d(TAG, "Message emitted to server");
                 }
             }
         });

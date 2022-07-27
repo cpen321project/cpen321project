@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
         socket.join(groupID)
     })
 
-    socket.on('groupMessage', async (groupID, senderName, messageContent) => {
+    socket.on('groupMessage', async (groupID, senderID, senderName, messageContent) => {
         console.log("----------------groupMessage----------------")
         let tokenIsValid = await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
         if (!tokenIsValid) { 
@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
         console.log(senderName + " : " + messageContent)
         
         // save message to database 
-        chatEngine.saveMessageToDB(groupID, senderName, messageContent)
+        chatEngine.saveMessageToDB(groupID, senderID, senderName, messageContent)
         notificationManager.groupMessageNotification(senderName, groupID);
         // emit the message to clients connected in the room
         let message = {
