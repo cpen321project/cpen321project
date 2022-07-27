@@ -193,44 +193,16 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 String questionContent = questionContentET.getText().toString();
                                 Log.d(TAG, "questionContent: " + questionContent);
 
-                                if (questionContent.equals("")) {
-                                    Log.d(TAG, "questionContent is empty");
-                                    Toast.makeText(ForumQuestionsPage.this,
-                                            "Cannot post empty question.", Toast.LENGTH_SHORT).show();
-
-                                    // make the fields the default again
+                                Boolean qIsEmpty = checkQuestionContentIsEmpty(questionContent);
+                                if (qIsEmpty) {
                                     questionContentET.setText("");
-                                    topicSpinner.setSelection(0); // doesn't do it
+                                    topicSpinner.setSelection(0);
                                     anonCheckBox.setChecked(false);
-
                                     return;
                                 }
 
-                                // get selected topic
-                                topicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                    @Override
-                                    public void onItemSelected(AdapterView<?> parent, View view,
-                                                               int position, long id) {
-                                        String selectedTopic = (String) parent.getItemAtPosition(position);
-                                        Log.d(TAG, "selected topic: " + selectedTopic);
-
-                                        if (selectedTopic.equals("select a topic")) {
-                                            // user did not choose a topic. "select a topic" is the default
-                                            Log.d(TAG, "onItemSelected: No topic selected");
-                                            Toast.makeText(ForumQuestionsPage.this,
-                                                    "Please select a topic before posting a question.",
-                                                    Toast.LENGTH_SHORT).show();
-
-                                            anonCheckBox.setChecked(false);
-                                            return;
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onNothingSelected(AdapterView<?> parent) {
-                                        // do nothing
-                                    }
-                                });
+                                // check & get selected topic
+                                checkSelectedSpinnerItemIsValid(topicSpinner, anonCheckBox);
 
                                 String selectedTopic = (String) topicSpinner.getSelectedItem();
                                 if (selectedTopic.equals("select a topic")) {
@@ -241,7 +213,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
 
                                     questionContentET.setText("");
-                                    topicSpinner.setSelection(0); // doesn't do it
+                                    topicSpinner.setSelection(0);
                                     anonCheckBox.setChecked(false);
 
                                     return;
@@ -249,8 +221,9 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
                                 Boolean isAskedAnonymously = false;
                                 // get anon checkBox
-                                if (anonCheckBox.isChecked()) {
-                                    Log.d(TAG, "anonCheckBox.isChecked(): " + anonCheckBox.isChecked());
+                                Boolean anonCheckBoxIsChecked = anonCheckBox.isChecked();
+                                if (anonCheckBoxIsChecked) {
+                                    Log.d(TAG, "anonCheckBox.isChecked(): " + anonCheckBoxIsChecked);
                                     isAskedAnonymously = true;
                                 }
 
@@ -266,6 +239,33 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
+            }
+        });
+    }
+
+    private void checkSelectedSpinnerItemIsValid(Spinner topicSpinner, CheckBox anonCheckBox) {
+        topicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                String selectedTopic = (String) parent.getItemAtPosition(position);
+                Log.d(TAG, "selected topic: " + selectedTopic);
+
+                if (selectedTopic.equals("select a topic")) {
+                    // user did not choose a topic. "select a topic" is the default
+                    Log.d(TAG, "onItemSelected: No topic selected");
+                    Toast.makeText(ForumQuestionsPage.this,
+                            "Please select a topic before posting a question.",
+                            Toast.LENGTH_SHORT).show();
+
+                    anonCheckBox.setChecked(false);
+                    return;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
             }
         });
     }
@@ -300,9 +300,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // JSONException: Value Question of type java.lang.String cannot be converted to JSONObject
-                        // fix: make sure the backend endpoint returns json not string
-                        // see postQuestion on backend for fix
                         Toast.makeText(ForumQuestionsPage.this, "Question posted",
                                 Toast.LENGTH_SHORT).show();
 
@@ -494,8 +491,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
         if (askerID.equals(userID)) {
             editLabel.setVisibility(View.VISIBLE);
             questionContentET.setText(questionContent);
-        } else {
-            editLabel.setVisibility(View.INVISIBLE);
         }
 
         editLabel.setOnClickListener(new View.OnClickListener() {
@@ -517,15 +512,21 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 String questionContent = questionContentET.getText().toString();
                                 Log.d(TAG, "edited questionContent: " + questionContent);
 
-                                if (questionContent.equals("")) {
-                                    Log.d(TAG, "questionContent is empty");
-                                    Toast.makeText(ForumQuestionsPage.this,
-                                            "Cannot post empty question.", Toast.LENGTH_SHORT).show();
-
+                                Boolean qIsEmpty = checkQuestionContentIsEmpty(questionContent);
+                                if (qIsEmpty) {
                                     // make the fields the default again
                                     questionContentET.setText("");
                                     return;
                                 }
+//                                if (questionContent.equals("")) {
+//                                    Log.d(TAG, "questionContent is empty");
+//                                    Toast.makeText(ForumQuestionsPage.this,
+//                                            "Cannot post empty question.", Toast.LENGTH_SHORT).show();
+//
+//                                    // make the fields the default again
+//                                    questionContentET.setText("");
+//                                    return;
+//                                }
 
                                 questionContentET.setText("");
 
@@ -557,6 +558,16 @@ public class ForumQuestionsPage extends AppCompatActivity {
         questionContentTV.setText(questionContent);
 
         questionList.addView(questionView);
+    }
+
+    private boolean checkQuestionContentIsEmpty(String questionContent) {
+        if (questionContent.equals("")) {
+            Log.d(TAG, "questionContent is empty");
+            Toast.makeText(ForumQuestionsPage.this,
+                    "Cannot post empty question.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
     }
 
     private void makeEditQuestionRequest(String questionID, String askerID, String askerName,

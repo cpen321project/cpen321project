@@ -36,8 +36,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ForumAnswersPage extends AppCompatActivity {
-    String accessToken = LoginPage.accessToken;
     final String TAG = "ForumAnswersPage";
+    String accessToken = LoginPage.accessToken;
     LinearLayout answerList;
     TextView noAnswersLabel;
     String userID;
@@ -109,7 +109,8 @@ public class ForumAnswersPage extends AppCompatActivity {
                         forumQuestionPageIntent.putExtra("courseList", courseList);
                         startActivity(forumQuestionPageIntent);
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
@@ -132,7 +133,7 @@ public class ForumAnswersPage extends AppCompatActivity {
                 builder.setCancelable(true);
                 builder.setTitle("Post an answer");
                 if (postAnswerDialogView.getParent() != null) {
-                    ((ViewGroup)postAnswerDialogView.getParent()).removeView(postAnswerDialogView);
+                    ((ViewGroup) postAnswerDialogView.getParent()).removeView(postAnswerDialogView);
                 }
                 builder.setView(postAnswerDialogView);
                 builder.setPositiveButton("Post answer",
@@ -269,7 +270,6 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 JSONObject nextAnswer = response.getJSONObject(i);
                                 Log.d(TAG, "nextAnswer: " + nextAnswer);
 
-                                String topic = nextAnswer.getString("topic");
                                 String answerID = nextAnswer.getString("_id");
                                 String answererID = nextAnswer.getString("answererID");
                                 String answererName = nextAnswer.getString("answererName");
@@ -357,7 +357,7 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 }
 
                                 answerContentET.setText("");
-                                
+
                                 makeEditAnswerRequest(answerID, answererID, answererName,
                                         answerContent, accessToken);
                             }
@@ -375,7 +375,7 @@ public class ForumAnswersPage extends AppCompatActivity {
         answerList.addView(answerView);
     }
 
-    private void makeEditAnswerRequest(String answerID, String answererID, String answererName, 
+    private void makeEditAnswerRequest(String answerID, String answererID, String answererName,
                                        String answerContent, String accessToken) {
         JSONObject answerToEdit = new JSONObject();
         try {
