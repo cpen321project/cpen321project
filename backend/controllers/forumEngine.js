@@ -1,7 +1,5 @@
 const Question = require('../models/Question.js')
 const Answer = require('../models/Answer.js')
-const userStore = require('./userStore.js')
-const authUtils = require("../utils/authUtils.js")
 
 /*
     Interfaces exposed to front end:

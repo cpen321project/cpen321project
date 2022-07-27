@@ -32,12 +32,12 @@ import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
     public LinearLayout layoutCourseButton;
-    private TextView displaynameTV;
+    private TextView displayNameTV;
     private TextView coopTV;
     private TextView yearTV;
-    private String displayname;
+    private String displayName;
     private ArrayList<String> courseListAL;
-    private String TAG = "ProfilePage";
+    final private String TAG = "ProfilePage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class ProfilePage extends AppCompatActivity {
 
         layoutCourseButton = findViewById(R.id.layout_button_list);
 
-        displaynameTV = findViewById(R.id.textView_displayname);
+        displayNameTV = findViewById(R.id.textView_displayname);
         coopTV = findViewById(R.id.textview_coop);
         yearTV = findViewById(R.id.textView_yearstanding);
 
@@ -69,9 +69,17 @@ public class ProfilePage extends AppCompatActivity {
                         Intent browseCourseIntent =
                                 new Intent(ProfilePage.this, BrowseCourse.class);
                         browseCourseIntent.putExtra("userID", userID);
-                        browseCourseIntent.putExtra("displayName", displayname);
+                        browseCourseIntent.putExtra("displayName", displayName);
                         browseCourseIntent.putExtra("courselist", courseListAL);
                         startActivity(browseCourseIntent);
+                        return true;
+                    case R.id.qa_forum:
+                        Intent forumQuestionPageIntent =
+                                new Intent(ProfilePage.this, ForumQuestionsPage.class);
+                        forumQuestionPageIntent.putExtra("userID", userID);
+                        forumQuestionPageIntent.putExtra("displayName", displayName);
+                        forumQuestionPageIntent.putExtra("courseList", courseListAL);
+                        startActivity(forumQuestionPageIntent);
                         return true;
                     default: return false;
                 }
@@ -90,7 +98,7 @@ public class ProfilePage extends AppCompatActivity {
                         try {
                             JSONObject student = response.getJSONObject(0);
 
-                            displayname = student.getString("displayName");
+                            displayName = student.getString("displayName");
                             String coopstatus = student.getString("coopStatus");
                             String yearstanding = student.getString("yearStanding");
                             JSONArray coursesJSONArray = student.getJSONArray("courselist");
@@ -105,7 +113,7 @@ public class ProfilePage extends AppCompatActivity {
                             }
 
                             // Display the formatted json data in text view
-                            displaynameTV.setText("Display name: " + displayname);
+                            displayNameTV.setText("Display name: " + displayName);
 
                             if (coopstatus.equals("Yes")) {
                                 coopTV.setText("I am in Co-op");
@@ -139,7 +147,7 @@ public class ProfilePage extends AppCompatActivity {
                 Intent seeBlockedUsersIntent =
                         new Intent(ProfilePage.this, BlockedUsersPage.class);
                 seeBlockedUsersIntent.putExtra("userID", userID);
-                seeBlockedUsersIntent.putExtra("displayName", displayname);
+                seeBlockedUsersIntent.putExtra("displayName", displayName);
                 startActivity(seeBlockedUsersIntent);
             }
         });
@@ -150,7 +158,7 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent browseCourseIntent = new Intent(ProfilePage.this, BrowseCourse.class);
                 browseCourseIntent.putExtra("userID", userID);
-                browseCourseIntent.putExtra("displayName", displayname);
+                browseCourseIntent.putExtra("displayName", displayName);
                 browseCourseIntent.putExtra("courselist", courseListAL);
                 startActivity(browseCourseIntent);
             }
@@ -168,7 +176,7 @@ public class ProfilePage extends AppCompatActivity {
                 Intent viewStudentIntent = new Intent(ProfilePage.this, StudentListPage.class);
                 viewStudentIntent.putExtra("currentUserID", userID);
                 viewStudentIntent.putExtra("courseName", courseNameSingle);
-                viewStudentIntent.putExtra("displayName", displayname);
+                viewStudentIntent.putExtra("displayName", displayName);
                 viewStudentIntent.putExtra("courseList", courseListAL);
                 startActivity(viewStudentIntent);
             }
@@ -181,7 +189,7 @@ public class ProfilePage extends AppCompatActivity {
                 Intent chatIntent = new Intent(ProfilePage.this, ChatActivity.class);
                 chatIntent.putExtra("coursename", courseNameSingle);
                 chatIntent.putExtra("userID", userID); //userID
-                chatIntent.putExtra("displayname", displayname); //nickname
+                chatIntent.putExtra("displayname", displayName); //nickname
                 startActivity(chatIntent);
 
             }

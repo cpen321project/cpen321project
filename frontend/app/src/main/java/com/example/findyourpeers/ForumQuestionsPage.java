@@ -38,14 +38,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class ForumQuestionsPage extends AppCompatActivity {
     final String TAG = "ForumQuestionsPage";
     LinearLayout questionList;
 
-    // placeholder values
-    String userID = "johnID";
-    String userName = "johnName";
-    String accessToken = "placeholderJWT"; // set to LoginPage.accessToken when cognito fixed
+    String userID;
+    String displayName;
+    ArrayList<String> courseList;
+    String accessToken = LoginPage.accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,23 +56,28 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
         questionList = findViewById(R.id.question_list_linearLayout);
 
+        userID = getIntent().getExtras().getString("userID");
+        displayName = getIntent().getExtras().getString("displayName");
+        displayName = getIntent().getExtras().getString("displayName");
+        courseList = (ArrayList<String>) getIntent().getSerializableExtra("courseList");
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.my_profile:
-//                        Intent displayProfileBackIntent = new Intent(ForumQuestionsPage.this, ProfilePage.class);
-//                        displayProfileBackIntent.putExtra("userID", userID);
-//                        startActivity(displayProfileBackIntent);
+                        Intent displayProfileBackIntent = new Intent(ForumQuestionsPage.this, ProfilePage.class);
+                        displayProfileBackIntent.putExtra("userID", userID);
+                        startActivity(displayProfileBackIntent);
                         return true;
                     case R.id.browse_courses:
-//                        Intent browseCourseIntent =
-//                                new Intent(ForumQuestionsPage.this, BrowseCourse.class);
-//                        browseCourseIntent.putExtra("userID", userID);
-//                        browseCourseIntent.putExtra("displayName", userName);
-//                        browseCourseIntent.putExtra("courseList", studentCourseList); // need to fix this
-//                        startActivity(browseCourseIntent);
+                        Intent browseCourseIntent =
+                                new Intent(ForumQuestionsPage.this, BrowseCourse.class);
+                        browseCourseIntent.putExtra("userID", userID);
+                        browseCourseIntent.putExtra("displayName", displayName);
+                        browseCourseIntent.putExtra("courseList", courseList);
+                        startActivity(browseCourseIntent);
                         return true;
                     case R.id.qa_forum:
                         return true;
@@ -250,7 +257,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 topicSpinner.setSelection(0);
                                 anonCheckBox.setChecked(false);
 
-                                makePostQuestionRequest(selectedTopic, userID, userName,
+                                makePostQuestionRequest(selectedTopic, userID, displayName,
                                         questionContent, isAskedAnonymously, accessToken);
                             }
                         });
@@ -463,7 +470,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 Intent viewAnswersIntent =
                         new Intent(ForumQuestionsPage.this, ForumAnswersPage.class);
                 viewAnswersIntent.putExtra("userID", userID);
-                viewAnswersIntent.putExtra("userName", userName);
+                viewAnswersIntent.putExtra("userName", displayName);
                 viewAnswersIntent.putExtra("topic", topic);
                 viewAnswersIntent.putExtra("questionContent", questionContent);
                 viewAnswersIntent.putExtra("askerName", askerName);

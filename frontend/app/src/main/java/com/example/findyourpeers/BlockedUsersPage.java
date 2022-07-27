@@ -35,7 +35,6 @@ public class BlockedUsersPage extends AppCompatActivity {
     ArrayList<String> blockedUserIDs;
     HashMap<String, String> blockedUserNames;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

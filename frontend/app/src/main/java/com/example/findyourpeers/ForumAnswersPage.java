@@ -35,9 +35,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class ForumAnswersPage extends AppCompatActivity {
-    String accessToken = "placeholderJWT"; // set to LoginPage.accessToken when cognito fixed
-    String TAG = "ForumAnswersPage";
+    String accessToken = LoginPage.accessToken;
+    final String TAG = "ForumAnswersPage";
     LinearLayout answerList;
     TextView noAnswersLabel;
 
@@ -52,6 +54,9 @@ public class ForumAnswersPage extends AppCompatActivity {
         // for the current user
         String answererID = getIntent().getExtras().getString("userID");
         String answererName = getIntent().getExtras().getString("userName");
+        ArrayList<String> courseList =
+                (ArrayList<String>) getIntent().getSerializableExtra("courseList");
+
         // for the question
         String topic = getIntent().getExtras().getString("topic");
         String questionContent = getIntent().getExtras().getString("questionContent");
@@ -71,7 +76,6 @@ public class ForumAnswersPage extends AppCompatActivity {
             askerNameTV.setText(askerName);
         }
 
-        //askerNameTV.setText(askerName);
         questionContentTV.setText(questionContent);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -80,19 +84,25 @@ public class ForumAnswersPage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.my_profile:
-//                        Intent displayProfileBackIntent = new Intent(ForumAnswersPage.this, ProfilePage.class);
-//                        displayProfileBackIntent.putExtra("userID", answererID);
-//                        startActivity(displayProfileBackIntent);
+                        Intent displayProfileBackIntent = new Intent(ForumAnswersPage.this, ProfilePage.class);
+                        displayProfileBackIntent.putExtra("userID", answererID);
+                        startActivity(displayProfileBackIntent);
                         return true;
                     case R.id.browse_courses:
-//                        Intent browseCourseIntent =
-//                                new Intent(ForumAnswersPage.this, BrowseCourse.class);
-//                        browseCourseIntent.putExtra("userID", answererID);
-//                        browseCourseIntent.putExtra("displayName", answererName);
-//                        browseCourseIntent.putExtra("courseList", studentCourseList); // need to fix this
-//                        startActivity(browseCourseIntent);
+                        Intent browseCourseIntent =
+                                new Intent(ForumAnswersPage.this, BrowseCourse.class);
+                        browseCourseIntent.putExtra("userID", answererID);
+                        browseCourseIntent.putExtra("displayName", answererName);
+                        browseCourseIntent.putExtra("courseList", courseList);
+                        startActivity(browseCourseIntent);
                         return true;
                     case R.id.qa_forum:
+                        Intent forumQuestionPageIntent =
+                                new Intent(ForumAnswersPage.this, ForumQuestionsPage.class);
+                        forumQuestionPageIntent.putExtra("userID", answererID);
+                        forumQuestionPageIntent.putExtra("displayName", answererName);
+                        forumQuestionPageIntent.putExtra("courseList", courseList);
+                        startActivity(forumQuestionPageIntent);
                         return true;
                     default: return false;
                 }

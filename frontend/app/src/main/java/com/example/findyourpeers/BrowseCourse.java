@@ -75,6 +75,14 @@ public class BrowseCourse extends AppCompatActivity {
                         return true;
                     case R.id.browse_courses:
                         return true;
+                    case R.id.qa_forum:
+                        Intent forumQuestionPageIntent =
+                                new Intent(BrowseCourse.this, ForumQuestionsPage.class);
+                        forumQuestionPageIntent.putExtra("userID", userID);
+                        forumQuestionPageIntent.putExtra("displayName", displayName);
+                        forumQuestionPageIntent.putExtra("courseList", studentCourseList);
+                        startActivity(forumQuestionPageIntent);
+                        return true;
                     default: return false;
                 }
             }
