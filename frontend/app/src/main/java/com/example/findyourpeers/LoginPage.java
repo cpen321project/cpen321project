@@ -39,6 +39,7 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
+
         unameET= findViewById(R.id.username_login);
         passwordET= findViewById(R.id.password_login);
 
@@ -112,7 +113,7 @@ public class LoginPage extends AppCompatActivity {
                                 viewProfileIntent.putExtra("userID", successResult.getString("userID"));
                                 viewProfileIntent.putExtra("username", unameStr);
                                 Log.d("accessToken", successResult.getString("accessToken"));
-                                postDataUsingVolley(userID);
+//                                postDataUsingVolley(userID);
                                 startActivity(viewProfileIntent);
                             }
                         }catch(JSONException e){
@@ -128,36 +129,39 @@ public class LoginPage extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequest);
     }
-    private void postDataUsingVolley(String userID) {
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-
-        JSONObject newToken = new JSONObject();
-        try {
-            //input your API parameters
-            newToken.put("userID", userID);
-            newToken.put("registrationToken", token);
-            newToken.put("jwt", LoginPage.accessToken);
-            Log.d(TAG, "trying to post the regToken");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // Enter the correct url for your api service site
-        String url = Urls.URL +  "newRegistrationToken";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-//                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "successfully updated token for firebase");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Was not able to update firebase token on backend");
-            }
-        });
-        requestQueue.add(jsonObjectRequest);
-
-    }
+//    private void postDataUsingVolley(String userID) {
+//        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+//
+//        JSONObject newToken = new JSONObject();
+//        try {
+//            //input your API parameters
+//            newToken.put("userID", userID);
+//            newToken.put("registrationToken", token);
+//            newToken.put("jwt", LoginPage.accessToken);
+//            Log.d(TAG, "trying to post the regToken");
+//            Log.d(TAG, userID);
+//            Log.d(TAG, token);
+//            Log.d(TAG, accessToken);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        // Enter the correct url for your api service site
+//        String url = Urls.URL +  "newRegistrationToken";
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+////                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
+//                        Log.d(TAG, "successfully updated token for firebase");
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d(TAG, "Was not able to update firebase token on backend");
+//            }
+//        });
+//        requestQueue.add(jsonObjectRequest);
+//
+//    }
 
 }
