@@ -53,7 +53,6 @@ app.post("/login",userStore.login)
 app.post("/resendconfirmationcode", userStore.resendConfirmationCode)
 app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
 app.put("/editprofile", userStore.editProfile)
-app.put("/editdisplaynameincourse", courseManager.editDisplayNameInCourse)
 
 // routes for courseManager
 app.get("/getstudentlist/:coursename/:jwt/:userID", courseManager.getStudentList)

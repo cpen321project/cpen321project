@@ -6,6 +6,7 @@ client.connect()
 const authUtils = require('../utils/authUtils.js')
 const chatEngine = require('../controllers/chatEngine.js')
 const forumEngine = require('../controllers/forumEngine.js')
+const courseManager = require('../controllers/courseManager.js')
 
 let dbUser, userCollection
 
@@ -286,5 +287,15 @@ module.exports = {
                 res.status(200).send({ response: "Profile updated successfully" })
             }
         })
+
+        //update courseDB
+        var courses = await userCollection.find({ userID: userID }).project({ courselist: 1, _id: 0 }).toArray();
+        console.log("courselist " + courses[0].courselist)
+
+
+        courses[0].courselist.forEach(coursename => {
+        console.log("coursename " + coursename);
+        courseManager.editDisplayNameInCourse(displayName, userID, coursename)});
+
     }
 }

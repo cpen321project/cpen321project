@@ -113,40 +113,16 @@ module.exports = {
         })
     },
 
-    editDisplayNameInCourse: async (req, res) => {
-        let displayName= req.body.displayName
-        let userID = req.body.userID
-        let coursename = req.body.coursename;
-        let jwt = req.body.jwt
-
-        if (!displayName || !userID || !coursename || !jwt ) {
-            console.log("Invalid body parameter(s).")
-            res.status(400).send({ response: "Invalid body parameter(s)." })
-            return;
-        }
-
-        await dbCourse.collection(coursename).findOneAndUpdate({}, (err, result) => {
-            if (err) {
-                console.log("Error in addUserToCourse: " + err)
-                res.status(400).send(err)
-            } else {
-                console.log("addUserToCourse successfully")
-                res.status(200).send("User added successfully\n")
-                notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
-            }
-        })
-
-        let filter = { userID: userID }
-        let update = { displayName: displayName, coopStatus: coopStatus, yearStanding: yearStanding};
-        userCollection.findOneAndUpdate(filter, {$set : update}, function(err, resultProfileUpdated){
+    editDisplayNameInCourse: async (displayNameNew, userID, coursename) => {
+        
+        let update = { displayName: displayNameNew};
+        await dbCourse.collection(coursename).updateOne({userID}, {$set : update}, function(err, resultProfileUpdated){
             if (err) {
                 console.log("err: " + err)
-                res.status(400).send({ response: "Failed to findOneAndUpdate profile" })
             } else {
                 console.log("resultProfileUpdated: " + resultProfileUpdated)
-                res.status(200).send({ response: "Profile updated successfully" })
+
             }
-        }
-        )
+        })
     }
 }
