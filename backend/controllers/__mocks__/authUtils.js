@@ -1,9 +1,9 @@
 exports.validateAccessToken = async (JWT, userID) => {
     if (!JWT || !userID) {
         return false
-    }else if(userID==="1x1x1x"){
+    }else if(userID==="badUserID"){
         return false;
-    }else if(userID==="1y1y1y" && JWT === "validJWT"){
+    }else if(userID==="goodUserID" && JWT === "validJWT"){
         return true;
     }else if(JWT === "invalidJWT"){
         return false;
