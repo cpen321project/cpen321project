@@ -297,4 +297,42 @@ module.exports = {
             }
         })
     }, 
+
+    updateUserDisplayNameInQuestions: async (userID, newDisplayName) => {
+        console.log("-------updateUserDisplayNameInQuestions-------")
+        console.log("userID: " + userID)
+        console.log("newDisplayName: " + newDisplayName)
+
+        let filter = { askerID: userID }
+        let update = { askerName: newDisplayName }
+
+        Question.updateMany(filter, update, function (err, resultAfterUpdate) {
+            if (err) {
+                console.log("Failed to update askerName with error: " + err)
+                return false
+            } else {
+                console.log("askerName updated successfully, resultAfterUpdate: " + resultAfterUpdate)
+                return true
+            }
+        })
+    },
+
+    updateUserDisplayNameInAnswers: async (userID, newDisplayName) => {
+        console.log("-------updateUserDisplayNameInAnswers-------")
+        console.log("userID: " + userID)
+        console.log("newDisplayName: " + newDisplayName)
+
+        let filter = { answererID: userID }
+        let update = { answererName: newDisplayName }
+
+        Answer.updateMany(filter, update, function (err, resultAfterUpdate) {
+            if (err) {
+                console.log("Failed to update answererName with error: " + err)
+                return false
+            } else {
+                console.log("answererName updated successfully, resultAfterUpdate: " + resultAfterUpdate)
+                return true
+            }
+        })
+    },
 }
