@@ -129,11 +129,11 @@ module.exports = {
         console.log("--------inside getUserProfile--------")
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
-        //let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        //if (!tokenIsValid) { 
-        //     console.log("Token not validated")
-        //    return
-        //}
+        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenIsValid) { 
+             console.log("Token not validated")
+            return
+        }
 
         // check if we want to get another user's profile (ie. in student list page)
         let userIDOfProfileToGet = req.params.userID

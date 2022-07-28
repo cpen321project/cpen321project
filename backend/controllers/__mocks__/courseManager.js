@@ -14,6 +14,7 @@
 // addCourseToUser
 // deleteUserFromCourse
 // deleteCourseFromUser
+// editDisplayNameInCourse
 
 module.exports = {
     // getStudentList : async (req, res) => {
@@ -149,5 +150,7 @@ module.exports = {
         res.status = 400
         res.json = "error"
         }
-    }
+    },
+
+
 }

@@ -182,6 +182,7 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(browseCourseIntent);
             }
         });
+
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
