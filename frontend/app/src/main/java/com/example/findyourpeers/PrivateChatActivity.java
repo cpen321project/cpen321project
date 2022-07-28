@@ -25,8 +25,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -77,6 +85,16 @@ public class PrivateChatActivity extends AppCompatActivity {
         mLayoutManager.setStackFromEnd(true);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
+        SecretKey key = null;
+        try {
+            key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        SecretKey finalKey = key;
+
 
         String serverIP = "10.0.2.2";
 
@@ -107,11 +125,12 @@ public class PrivateChatActivity extends AppCompatActivity {
 
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
+                                        String decryptedMsg = Crypto.decrypt(message, finalKey);
                                         Log.d("PrivateChatActivity", "message: " + message);
 
                                         Message m = new Message(nickname, message);
                                         MessageList.add(m);
-                                    } catch (JSONException e) {
+                                    } catch (JSONException | NoSuchPaddingException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -156,14 +175,29 @@ public class PrivateChatActivity extends AppCompatActivity {
                     Toast.makeText(PrivateChatActivity.this,
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
+                    String encryptedMsg = null;
+                    try {
+                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), finalKey);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (IllegalBlockSizeException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchPaddingException e) {
+                        e.printStackTrace();
+                    } catch (BadPaddingException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeyException e) {
+                        e.printStackTrace();
+                    }
+
                     socket.emit("privateMessage",
                             senderID,
                             receiverID,
-                            messageTxt.getText().toString(),
+                            encryptedMsg,
                             isBlocked);
 
                     String nickname = senderName;
-                    String message = messageTxt.getText().toString();
+                    String message = encryptedMsg;
 
                     Message m = new Message(nickname, message);
                     MessageList.add(m);
@@ -192,6 +226,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                             // only show the message if we're currently talking to that person
                             if (nickname.equals(receiverName) ) {
                                 String message = data.getString("message");
+                                String decryptedMsg = Crypto.decrypt(message, finalKey);
 
                                 Message m = new Message(nickname, message);
                                 MessageList.add(m);
@@ -204,6 +239,16 @@ public class PrivateChatActivity extends AppCompatActivity {
                                 myRecyclerView.setAdapter(chatBoxAdapter);
                             }
                         } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchPaddingException e) {
+                            e.printStackTrace();
+                        } catch (IllegalBlockSizeException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (BadPaddingException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeyException e) {
                             e.printStackTrace();
                         }
                     }
