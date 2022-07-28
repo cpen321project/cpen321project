@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,9 +69,6 @@ public class EditProfile extends AppCompatActivity {
                     return;
                 }
                 // calling a method to post the data and passing our name and job.
-                for(int i=0; i<studentCourseList.size(); i++){
-                    replaceNameInCourses(displayNameStr, studentCourseList.get(i));
-                }
                 putDataUsingVolley(displayNameStr, coopStatus, yearStanding);
             }
         });
@@ -78,48 +76,12 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    private void replaceNameInCourses(String name, String coursename) {
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-
-
-//        PushNotificationService.krleTest("lauda");
-
-
-        JSONObject updatedprofile = new JSONObject();
-        try {
-            //input your API parameters
-            updatedprofile.put("displayName",name);
-            updatedprofile.put("userID", userID);
-            updatedprofile.put("jwt", LoginPage.accessToken);
-            updatedprofile.put("coursename", coursename);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // Enter the correct url for your api service site
-        String url = "http://10.0.2.2:3010/editdisplaynameincourse";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedprofile,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(EditProfile.this, "Profile edited in courses", Toast.LENGTH_SHORT).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(EditProfile.this, "Unable to edit display name in courses", Toast.LENGTH_SHORT).show();
-            }
-        });
-        requestQueue.add(jsonObjectRequest);
-
-    }
 
     private void putDataUsingVolley(String name, String coop, String yearstand) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
 
 //        PushNotificationService.krleTest("lauda");
-
 
         JSONObject updatedprofile = new JSONObject();
         try {
@@ -128,7 +90,6 @@ public class EditProfile extends AppCompatActivity {
             updatedprofile.put("coopStatus", coop);
             updatedprofile.put("yearStanding", yearstand);
             updatedprofile.put("userID", userID);
-            //updatedprofile.put("username", username);
             updatedprofile.put("jwt", LoginPage.accessToken);
 
         } catch (JSONException e) {
