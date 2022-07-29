@@ -35,18 +35,19 @@ describe("courseManager tests", () => {
         let userID = "validUserID"
         let jwt = "validJWT"
         await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
-            .expect(400)
+            .expect(200)
             .then(res => {
                 expect(res.body).toEqual("No students found for this course")
             })
     })
 
-    it("tests getStudentList with course name without space", async () => {
-        let courseName = "CPEN321"
+    // make sure this course is in the db 
+    it("tests getStudentList with course name with space", async () => {
+        let courseName = "CPEN 211"
         let userID = "validUserID"
         let jwt = "validJWT"
         await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
-            .expect(400)
+            .expect(200)
             .then(res => {
                 expect(res.body).toEqual("No students found for this course")
             })
@@ -130,17 +131,21 @@ describe("courseManager tests", () => {
             .expect(200)
     })
 
-    // // addUserToCourse tests
-    // it("triggers addUserToCourse", async () => {
-    //     expect.assertions(2)
-    //     const req = {
-    //         body: { displayName: "john", userID: "john" }
-    //     }
-    //     let res = {}
-    //     await courseManager.addUserToCourse(req, res)
-    //     expect(res.status).toEqual(200)
-    //     expect(res.json).toEqual("User added successfully\n")
-    // })
+    // addUserToCourse tests
+    it("tests addUserToCourse with empty course name", async () => {
+        let courseName = "" 
+        let userID = "validUserID"
+        let displayName = "someDisplayName"
+        let jwt = "validJWT"
+        await request(app).post("/addusertocourse")
+            .set({
+                courseName, 
+                userID, 
+                displayName, 
+                jwt
+            })
+            .expect(404)
+    })
 
     // // addCourseToUser tests
     // it("triggers addCourseToUser", async () => {

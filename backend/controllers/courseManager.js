@@ -20,6 +20,7 @@ module.exports = {
         let courseName = req.params.coursename
 
         if (!jwt || !userID || !courseName) {
+            console.log("Invalid parameters")
             return res.status(404).json("Invalid parameters")
         }
 
@@ -37,7 +38,7 @@ module.exports = {
                 return res.status(400).send(err)
             } else if (resultstudent.length === 0) {
                 console.log("No students found for this course")
-                return res.status(400).json("No students found for this course")
+                return res.status(200).json("No students found for this course")
             } else {
                 console.log("getStudentList successfully: resultstudent: " + resultstudent)
                 return res.status(200).json(resultstudent)
@@ -46,11 +47,21 @@ module.exports = {
     },
 
     addUserToCourse: async (req, res) => {
-        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        console.log("-------------addUserToCourse-------------")
+        let jwt = req.body.jwt
+        let userID = req.body.userID
+        let courseName = req.body.coursename
+        let displayName = req.body.displayName
+
+        if (!jwt || !userID || !courseName || !displayName) {
+            console.log("Invalid parameters")
+            return res.status(404).json("Invalid parameters")
+        }
+
+        let tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(400).json("Invalid parameters")
         }
 
         await dbCourse.collection(req.body.coursename).insertOne({
@@ -59,10 +70,10 @@ module.exports = {
         }, (err, result) => {
             if (err) {
                 console.log("Error in addUserToCourse: " + err)
-                res.status(400).send(err)
+                return res.status(400).send(err)
             } else {
                 console.log("addUserToCourse successfully")
-                res.status(200).send("User added successfully\n")
+                res.status(200).json("User added successfully")
                 notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
             }
         })
@@ -126,9 +137,9 @@ module.exports = {
     },
 
     editDisplayNameInCourse: async (displayNameNew, userID, coursename) => {
-        
-        let update = { displayName: displayNameNew};
-        await dbCourse.collection(coursename).updateOne({userID}, {$set : update}, function(err, resultProfileUpdated){
+
+        let update = { displayName: displayNameNew };
+        await dbCourse.collection(coursename).updateOne({ userID }, { $set: update }, function (err, resultProfileUpdated) {
             if (err) {
                 console.log("err: " + err)
                 return false;
