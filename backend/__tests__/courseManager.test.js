@@ -50,16 +50,6 @@ describe("courseManager tests", () => {
             .expect(200);
     });
 
-    it("tests heh", async () => {
-        let courseName = "aa"
-        let userID = "goodUserID"
-        let jwt = "validJWT"
-        await request(app).get("/heh")
-            .expect(200)
-            .then(response => {
-                console.log("response: " + response)
-            })
-    })
     // getStudentList tests
     it("tests getStudentList with invalid coursename", async () => {
         // app.get("/getstudentlist/:coursename/:jwt/:userID", courseManager.getStudentList)
