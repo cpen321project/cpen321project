@@ -4,10 +4,10 @@ const authUtils = require('../utils/authUtils.js')
 
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
-const {MongoClient} = require("mongodb");
-const uri = "mongodb://localhost:27017"
-const client = new MongoClient(uri)
-client.connect()
+// const {MongoClient} = require("mongodb");
+// const uri = "mongodb://localhost:27017"
+// const client = new MongoClient(uri)
+// client.connect()
 
 let dbUser, userCollection, dbCourse
 

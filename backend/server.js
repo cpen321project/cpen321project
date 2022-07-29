@@ -5,7 +5,8 @@
 // client.connect()
 
 // const express = require('express')
-const { app, client } = require("./app.js")
+// const { app, client } = require("./app.js")
+const app = require("./app.js")
 
 const http = require('http')
 // const app = express()

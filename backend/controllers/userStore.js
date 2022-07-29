@@ -1,7 +1,7 @@
-const { MongoClient } = require("mongodb")
-const uri = "mongodb://localhost:27017"
-const client = new MongoClient(uri)
-client.connect()
+// const { MongoClient } = require("mongodb")
+// const uri = "mongodb://localhost:27017"
+// const client = new MongoClient(uri)
+// client.connect()
 
 const authUtils = require('../utils/authUtils.js')
 const chatEngine = require('../controllers/chatEngine.js')

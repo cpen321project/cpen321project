@@ -3,6 +3,7 @@ const { MongoClient } = require("mongodb")
 const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri)
 client.connect()
+global.client = client
 
 const express = require('express')
 const app = express();
@@ -19,7 +20,8 @@ app.get('/', (req, res) => {
 })
 app.use(express.json())
 
-module.exports = { app, client }
+// module.exports = { app, client }
+module.exports = app
 
 // routes for userStore
 app.get("/getuserprofile/:otherUserID/:userID/:jwt", userStore.getUserProfile)

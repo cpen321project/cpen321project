@@ -6,7 +6,8 @@
         - authUtils
 */
 
-const { app, client } = require("../app")
+// const { app, client } = require("../app")
+const app = require("../app")
 const request = require("supertest");
 var mongoose = require('mongoose')
 
