@@ -33,25 +33,25 @@ module.exports = {
     //         return res.status(500).json({ success: false, error })
     //     }
     // },
-    getStudentList: jest.fn( async (courseNameNoSpace)=> {
-        let courseNameSpace = courseNameNoSpace.substring(0,4)+ " "+courseNameNoSpace.substring(4,courseNameNoSpace.length)
-            if (courseNameSpace === null) {
-                return({success: false})
-            } else if (courseNameSpace === "") {
-                return({err: "error"})
-            } else if (courseNameSpace === "CPEN 321") {
-                return ([
-                    {
-                        userID: "john",
-                        displayName: "john",
-                    },
-                    {
-                        userID: "mary",
-                        displayName: "mary",
-                    },
-                ])
-            }
-      }),
+    getStudentList: jest.fn(async (courseNameNoSpace) => {
+        let courseNameSpace = courseNameNoSpace.substring(0, 4) + " " + courseNameNoSpace.substring(4, courseNameNoSpace.length)
+        if (courseNameSpace === null) {
+            return ({ success: false })
+        } else if (courseNameSpace === "") {
+            return ({ err: "error" })
+        } else if (courseNameSpace === "CPEN 321") {
+            return ([
+                {
+                    userID: "john",
+                    displayName: "john",
+                },
+                {
+                    userID: "mary",
+                    displayName: "mary",
+                },
+            ])
+        }
+    }),
 
     // addUserToCourse :  async (req, res) => {
     //     try{
@@ -67,7 +67,7 @@ module.exports = {
     //         res.status(400).send(err)
     //     }
     // }, 
-    addUserToCourse:  async (req, res) => {
+    addUserToCourse: async (req, res) => {
         let displayName = req.body.displayName
         let userID = req.body.userID
 
@@ -78,7 +78,7 @@ module.exports = {
             res.status = 400
             res.json = "error"
         }
-    }, 
+    },
 
     // addCourseToUser : async (req, res) => {
     //     userCollection.updateOne({"userID": req.body.userID}, {$push:{"courselist":req.body.coursename}},(err, result)=>{
@@ -90,7 +90,7 @@ module.exports = {
     //         res.status(200).json({ ok: true })
     //     });
     // },
-    addCourseToUser : async (req, res) => {
+    addCourseToUser: async (req, res) => {
         let userID = req.body.userID
         let courselist = req.body.coursename
 
@@ -115,8 +115,8 @@ module.exports = {
     //         res.status(400).send(err)
     //     }
     // },
-    deleteUserFromCourse : async (req, res) => {
-        let coursenamespace = req.params.coursename.substring(0,4)+ " "+req.params.coursename.substring(4,req.params.coursename.length)
+    deleteUserFromCourse: async (req, res) => {
+        let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
         let userID = req.body.userID
 
         if (userID && coursenamespace) {
@@ -139,16 +139,16 @@ module.exports = {
     //         res.status(400).send(err)
     //     }
     // },
-    deleteCourseFromUser : async (req, res) => {
+    deleteCourseFromUser: async (req, res) => {
         let userID = req.body.userID
         let courselist = req.body.coursename
 
         if (userID && courselist) {
             res.status = 200
-        res.json = "Course deleted successfully\n"
+            res.json = "Course deleted successfully\n"
         } else {
-        res.status = 400
-        res.json = "error"
+            res.status = 400
+            res.json = "error"
         }
     },
 

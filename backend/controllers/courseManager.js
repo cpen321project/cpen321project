@@ -18,17 +18,19 @@ module.exports = {
         let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
-            res.status(404).send({ err: "Token not validated" })
+            res.status(400).send({ err: "Token not validated" })
             return
         }
         let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
         await dbCourse.collection(coursenamespace).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, resultstudent) => {
             if (err) {
                 console.error("Error in getStudentList: " + err)
-                res.status(400).send(err)
+                return res.status(400).send(err)
+            } else if (!resultstudent) {
+                return res.status(400).json("No students found for this course")
             } else {
-                console.log("getStudentList successfully")
-                res.status(200).json(resultstudent)
+                console.log("getStudentList successfully: resultstudent: " + resultstudent)
+                return res.status(200).json(resultstudent)
             }
         })
     },
