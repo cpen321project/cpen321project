@@ -38,3 +38,5 @@ jobs:
     - name: npm test   
       working-directory: ${{ env.working-directory }}
       run: npm test
+      env: 
+        CI: true
