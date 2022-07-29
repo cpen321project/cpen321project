@@ -1,16 +1,10 @@
 const notificationManager = require("./notifcationManager.js")
 const authUtils = require("../utils/authUtils.js")
 
-const { MongoClient } = require("mongodb")
-const uri = "mongodb://localhost:27017"
-const client = new MongoClient(uri)
-client.connect()
-
-let dbUser, dbCourse, userCollection
-
-dbUser = client.db("user")
-dbCourse = client.db("course")
-userCollection = dbUser.collection("userCollection")
+const mongoUtil = require( '../mongoUtil' );
+let dbUser = mongoUtil.getDbUser;
+let dbCourse = mongoUtil.getDbCourse;
+let userCollection = mongoUtil.getUserCollection;
 
 module.exports = {
     getStudentList: async (req, res) => {

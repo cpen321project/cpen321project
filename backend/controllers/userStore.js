@@ -1,17 +1,15 @@
-const { MongoClient } = require("mongodb")
-const uri = "mongodb://localhost:27017"
-const client = new MongoClient(uri)
-client.connect()
+const mongoUtil = require('../mongoUtil.js');
+let dbUser, dbCourse, userCollection
+
+dbUser = mongoUtil.getDbUser;
+dbCourse = mongoUtil.getDbCourse;
+userCollection = mongoUtil.getUserCollection;
+
 
 const authUtils = require('../utils/authUtils.js')
 const chatEngine = require('../controllers/chatEngine.js')
 const forumEngine = require('../controllers/forumEngine.js')
 const courseManager = require('../controllers/courseManager.js')
-
-let dbUser, userCollection
-
-dbUser = client.db("user")
-userCollection = dbUser.collection("userCollection")
 
 // interface not exposed to frontend
 async function getDisplayNameByUserIDfromDB(userID) {
