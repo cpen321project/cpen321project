@@ -6,12 +6,10 @@
         - authUtils
 */
 
-// const { app, client } = require("../app")
 const app = require("../app")
 const request = require("supertest");
 var mongoose = require('mongoose')
 
-let notifcationManager = require("../controllers/notifcationManager")
 jest.mock("../controllers/notifcationManager")
 jest.mock("../utils/authUtils")
 
@@ -22,9 +20,7 @@ beforeAll(() => {
 })
 
 afterAll(async () => {
-    // await module.exports.forumDB.close();
     await mongoose.disconnect()
-    // await mongoose.connection.close()
 
     await client.close()
 })
