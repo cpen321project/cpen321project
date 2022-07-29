@@ -50,10 +50,10 @@ module.exports = {
         console.log("-------------addUserToCourse-------------")
         let jwt = req.body.jwt
         let userID = req.body.userID
-        let courseName = req.body.coursename
+        let coursename = req.body.coursename
         let displayName = req.body.displayName
 
-        if (!jwt || !userID || !courseName || !displayName) {
+        if (!jwt || !userID || !coursename || !displayName) {
             console.log("Invalid parameters")
             return res.status(404).json("Invalid parameters")
         }
@@ -64,17 +64,28 @@ module.exports = {
             return res.status(400).json("Invalid parameters")
         }
 
+        const collection = await dbCourse.listCollections({}, { nameOnly: true }).toArray()
+        console.log('List of all collections :: ', JSON.stringify(collection))
+
+        let findResult = await dbCourse.collection(coursename).find({ userID }).toArray()
+        if (findResult.length !== 0) {
+            console.log("findResult: " + findResult + ".")
+            console.log("User already in course. Not added")
+            return res.status(400).json("User already in course. Not added")
+
+        }
+
         await dbCourse.collection(req.body.coursename).insertOne({
             displayName: req.body.displayName,
             userID: req.body.userID,
-        }, (err, result) => {
+        }, async (err, result) => {
             if (err) {
                 console.log("Error in addUserToCourse: " + err)
                 return res.status(400).send(err)
             } else {
                 console.log("addUserToCourse successfully")
-                res.status(200).json("User added successfully")
-                notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+                await notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+                return res.status(200).json("User added successfully")
             }
         })
     },

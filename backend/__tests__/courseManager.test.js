@@ -11,8 +11,15 @@ const app = require("../app")
 const request = require("supertest");
 var mongoose = require('mongoose')
 
+let notifcationManager = require("../controllers/notifcationManager")
 jest.mock("../controllers/notifcationManager")
 jest.mock("../utils/authUtils")
+
+beforeAll(() => {
+    dbUser = client.db("user")
+    dbCourse = client.db("course")
+    userCollection = dbUser.collection("userCollection")
+})
 
 afterAll(async () => {
     // await module.exports.forumDB.close();
@@ -20,7 +27,7 @@ afterAll(async () => {
     // await mongoose.connection.close()
 
     await client.close()
-});
+})
 
 describe("courseManager tests", () => {
 
@@ -42,16 +49,30 @@ describe("courseManager tests", () => {
             })
     })
 
-    // make sure this course is in the db 
     it("tests getStudentList with course name with space", async () => {
-        let courseName = "CPEN 211"
+        let courseName = "TIBT 300"
         let userID = "validUserID"
         let jwt = "validJWT"
+
+        // first add the course to the courseDB
+        try {
+            await dbCourse.createCollection(courseName)
+        } catch (err) {
+            // course is already in db, no need to add
+        }
+
         await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
             .expect(200)
             .then(res => {
                 expect(res.body).toEqual("No students found for this course")
             })
+
+        // remove this collection once we're done 
+        try {
+            await dbCourse.collection(courseName).drop();
+        } catch (err) {
+            // collection DNE, don't drop
+        }
     })
 
     it("tests getStudentList with empty course name", async () => {
@@ -125,27 +146,111 @@ describe("courseManager tests", () => {
     // For this to pass, need to have the course in course db first, 
     // change it to some very obscure course 
     it("tests getStudentList with valid params", async () => {
-        let courseName = "CPEN211" //"CPEN321" 
+        let courseName = "TIBT300" 
         let userID = "validUserID"
         let jwt = "validJWT"
+
+        // first add the course to the courseDB
+        try {
+            await dbCourse.createCollection(courseName)
+        } catch (err) {
+            // course is already in db, no need to add
+        }
+
         await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
             .expect(200)
+
+        // drop when done
+        try {
+            await dbCourse.collection(courseName).drop();
+        } catch (err) {
+            // collection DNE, don't drop
+        }
     })
 
     // addUserToCourse tests
     it("tests addUserToCourse with empty course name", async () => {
-        let courseName = "" 
+        let coursename = ""
         let userID = "validUserID"
         let displayName = "someDisplayName"
         let jwt = "validJWT"
         await request(app).post("/addusertocourse")
-            .set({
-                courseName, 
-                userID, 
-                displayName, 
+            .send({
+                coursename,
+                userID,
+                displayName,
                 jwt
             })
             .expect(404)
+    })
+
+    // for this test to pass, need to set userID to be one already 
+    // in the course with coursename
+    it("tests addUserToCourse with userID already in course", async () => {
+        let coursename = "TIBT 300"
+        let userID = "validUserID"
+        let displayName = "someDisplayName"
+        let jwt = "validJWT"
+        console.log("here")
+
+        // add this user to the course first (if collection DNE, will create)
+        await dbCourse.collection(coursename).insertOne({
+            displayName,
+            userID,
+        })
+
+        await request(app).post("/addusertocourse")
+            .send({
+                coursename,
+                userID,
+                displayName,
+                jwt
+            })
+            .expect(400)
+            .then(res => {
+                expect(res.body).toEqual("User already in course. Not added")
+            })
+
+        // delete this user after we're done
+        dbCourse.collection(coursename).deleteOne({ "userID": userID })
+
+        // drop the collection
+        try {
+            await dbCourse.collection(coursename).drop();
+        } catch (err) {
+            // collection DNE, don't drop
+        }
+    })
+
+    it("tests addUserToCourse with valid course not added before", async () => {
+        let coursename = "TIBT 100"
+        let userID = "validUserID"
+        let displayName = "someDisplayName"
+        let jwt = "validJWT"
+
+        // drop this collection if it exists, before adding the student
+        try {
+            await dbCourse.collection(coursename).drop();
+        } catch (err) {
+            // collection DNE, don't drop
+        }
+
+        await request(app).post("/addusertocourse")
+            .send({
+                coursename,
+                userID,
+                displayName,
+                jwt
+            })
+            .expect(200)
+
+        // drop this collection 
+        try {
+            await dbCourse.collection(coursename).drop();
+        } catch (err) {
+            // collection DNE, don't drop
+        }
+
     })
 
     // // addCourseToUser tests
