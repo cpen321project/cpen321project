@@ -31,34 +31,104 @@ describe("courseManager tests", () => {
 
     // getStudentList tests
     it("tests getStudentList with invalid coursename", async () => {
-        // app.get("/getstudentlist/:coursename/:jwt/:userID", courseManager.getStudentList)
-        let courseName = "aa"
-        let userID = "dfadfaf"//"goodUserID"
+        let courseName = "aaaaaa"
+        let userID = "validUserID"
         let jwt = "validJWT"
         await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
             .expect(400)
-            .then(response => {
-                console.log("response: " + response)
+            .then(res => {
+                expect(res.body).toEqual("No students found for this course")
             })
     })
 
-    // it("tests getStudentList with invalid coursename", async () => {
-    //     expect.assertions(1)
-    //     let courseNameNoSpace = "CPEN321"
-    //     const receivedResult = await courseManager.getStudentList(courseNameNoSpace)
-    //     return expect(receivedResult).toEqual(
-    //         [
-    //             {
-    //                 userID: "john",
-    //                 displayName: "john",
-    //             },
-    //             {
-    //                 userID: "mary",
-    //                 displayName: "mary",
-    //             },
-    //         ]
-    //     )
-    // })
+    it("tests getStudentList with course name without space", async () => {
+        let courseName = "CPEN321"
+        let userID = "validUserID"
+        let jwt = "validJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(400)
+            .then(res => {
+                expect(res.body).toEqual("No students found for this course")
+            })
+    })
+
+    it("tests getStudentList with empty course name", async () => {
+        let courseName = ""
+        let userID = "validUserID"
+        let jwt = "validJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(404)
+    })
+
+    it("tests getStudentList with null userID", async () => {
+        let courseName = "CPEN321"
+        let userID = null
+        let jwt = "validJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(400)
+            .then(res => {
+                expect(res.body.err).toEqual("Token not validated")
+            })
+    })
+
+    it("tests getStudentList with empty userID", async () => {
+        let courseName = "CPEN321"
+        let userID = ""
+        let jwt = "validJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(404)
+    })
+
+    it("tests getStudentList with invalid userID", async () => {
+        let courseName = "CPEN321"
+        let userID = "invalidUserID"
+        let jwt = "validJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(400)
+            .then(res => {
+                expect(res.body.err).toEqual("Token not validated")
+            })
+    })
+
+    it("tests getStudentList with null jwt", async () => {
+        let courseName = "CPEN321"
+        let userID = "validUserID"
+        let jwt = null
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(400)
+            .then(res => {
+                expect(res.body.err).toEqual("Token not validated")
+            })
+    })
+
+    it("tests getStudentList with empty jwt", async () => {
+        let courseName = "CPEN321"
+        let userID = "validUserID"
+        let jwt = ""
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(404)
+    })
+
+    it("tests getStudentList with invalid jwt", async () => {
+        let courseName = "CPEN321"
+        let userID = "validUserID"
+        let jwt = "invalidJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(400)
+            .then(res => {
+                expect(res.body.err).toEqual("Token not validated")
+            })
+    })
+
+    // For this to pass, need to have the course in course db first, 
+    // change it to some very obscure course 
+    it("tests getStudentList with valid params", async () => {
+        let courseName = "CPEN211" //"CPEN321" 
+        let userID = "validUserID"
+        let jwt = "validJWT"
+        await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
+            .expect(200)
+    })
 
     // // addUserToCourse tests
     // it("triggers addUserToCourse", async () => {

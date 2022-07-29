@@ -15,6 +15,14 @@ userCollection = dbUser.collection("userCollection")
 module.exports = {
     getStudentList: async (req, res) => {
         console.log("-------------getStudentList-------------")
+        let jwt = req.params.jwt
+        let userID = req.params.userID
+        let courseName = req.params.coursename
+
+        if (!jwt || !userID || !courseName) {
+            return res.status(404).json("Invalid parameters")
+        }
+
         let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
@@ -22,11 +30,13 @@ module.exports = {
             return
         }
         let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
+        console.log("coursenamespace: " + coursenamespace)
         await dbCourse.collection(coursenamespace).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray((err, resultstudent) => {
             if (err) {
                 console.error("Error in getStudentList: " + err)
                 return res.status(400).send(err)
-            } else if (!resultstudent) {
+            } else if (resultstudent.length === 0) {
+                console.log("No students found for this course")
                 return res.status(400).json("No students found for this course")
             } else {
                 console.log("getStudentList successfully: resultstudent: " + resultstudent)
