@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FindYourPeers"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="29">
         <activity
             android:name=".EditProfile"
             android:exported="false" />
@@ -87,13 +87,14 @@
             android:name=".PushNotificationService"
             android:exported="false">
             <intent-filter>
-                <action android:name="come.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

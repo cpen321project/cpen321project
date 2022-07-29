@@ -255,7 +255,7 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://10.0.2.2:3010/deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
+        String urlUserToCourse = Urls.URL + "deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
                 new Response.Listener<String>() {
@@ -310,7 +310,7 @@ public class ProfilePage extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void postDataUsingVolley(String userID) {
+    public void postDataUsingVolley(String userID) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         JSONObject newToken = new JSONObject();

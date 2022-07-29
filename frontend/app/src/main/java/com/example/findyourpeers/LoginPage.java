@@ -55,25 +55,6 @@ public class LoginPage extends AppCompatActivity {
         });
 
 
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        token = task.getResult().toString();
-
-                        // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, token);
-//                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
 
     }
 
@@ -127,39 +108,6 @@ public class LoginPage extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequest);
     }
-//    private void postDataUsingVolley(String userID) {
-//        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//
-//        JSONObject newToken = new JSONObject();
-//        try {
-//            //input your API parameters
-//            newToken.put("userID", userID);
-//            newToken.put("registrationToken", token);
-//            newToken.put("jwt", LoginPage.accessToken);
-//            Log.d(TAG, "trying to post the regToken");
-//            Log.d(TAG, userID);
-//            Log.d(TAG, token);
-//            Log.d(TAG, accessToken);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        // Enter the correct url for your api service site
-//        String url = Urls.URL +  "newRegistrationToken";
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-////                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
-//                        Log.d(TAG, "successfully updated token for firebase");
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d(TAG, "Was not able to update firebase token on backend");
-//            }
-//        });
-//        requestQueue.add(jsonObjectRequest);
-//
-//    }
+
 
 }

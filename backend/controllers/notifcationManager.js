@@ -122,6 +122,10 @@ module.exports = {
         let resultstudents = await dbCourse.collection(groupID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray(); 
         
         resultstudents.forEach( async (student) => {
+            if (student.displayName == senderName) {
+                console.log("skipping coz it be sender " + senderName);
+                return;
+            }
             take = await userCollection.findOne({ userID: student.userID });
             console.log("Take= "+ take.displayName)
             userToken = take.registrationToken;
@@ -130,9 +134,10 @@ module.exports = {
             const message = {
                 notification: { 
                     title: "You've got a group message from " + senderName, 
-                    body: "You've got a group message notification in the course " + groupID, 
+                    body: "You've got a group message notification in the course " + groupID,
                 },
                 token: userToken,
+
             };
 
             admin.messaging().send(message)
