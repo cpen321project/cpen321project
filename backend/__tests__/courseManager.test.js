@@ -6,41 +6,20 @@
         - authUtils
 */
 
-// const mongoose = require("mongoose");
-// const { MongoClient } = require('mongodb');
-
-const app = require("../app")
+const { app, client } = require("../app")
 const request = require("supertest");
-// const courseManager = require("../controllers/courseManager")
+var mongoose = require('mongoose')
 
 jest.mock("../controllers/notifcationManager")
-// const notificationManager = require("../controllers/notifcationManager")
 jest.mock("../utils/authUtils")
-// const authUtils = require("../utils/authUtils")
 
-// beforeAll((done) => {
-//     mongoose.connect("mongodb://localhost:27017/JestDB",
-//         { useNewUrlParser: true, useUnifiedTopology: true },
-//         () => done());
-// });
+afterAll(async () => {
+    // await module.exports.forumDB.close();
+    await mongoose.disconnect()
+    // await mongoose.connection.close()
 
-// afterAll((done) => {
-//     mongoose.connection.db.dropDatabase(() => {
-//         mongoose.connection.close(() => done())
-//     });
-// });
-
-// beforeAll(async () => {
-//     connection = await MongoClient.connect("mongodb://localhost:27017/user", {
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true,
-//     });
-//     db = await connection.db("user");
-// });
-
-// afterAll(async () => {
-//     await connection.close();
-// });
+    await client.close()
+});
 
 describe("courseManager tests", () => {
 

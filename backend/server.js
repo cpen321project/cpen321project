@@ -1,8 +1,8 @@
-require("./config/mongo.js")
-const { MongoClient } = require("mongodb")
-const uri = "mongodb://localhost:27017"
-const client = new MongoClient(uri)
-client.connect()
+// require("./config/mongo.js")
+// const { MongoClient } = require("mongodb")
+// const uri = "mongodb://localhost:27017"
+// const client = new MongoClient(uri)
+// client.connect()
 
 // const express = require('express')
 const app = require("./app.js")

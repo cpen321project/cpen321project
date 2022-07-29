@@ -7,6 +7,9 @@
     "start": "nodemon server.js",
     "start:server": "node server.js"
   },
+  "nodemonConfig": {
+    "ignore": ["__tests__/*"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

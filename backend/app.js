@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 })
 app.use(express.json())
 
-module.exports = app
+module.exports = { app, client }
 
 // routes for userStore
 app.get("/getuserprofile/:otherUserID/:userID/:jwt", userStore.getUserProfile)
