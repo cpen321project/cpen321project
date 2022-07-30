@@ -19,56 +19,51 @@ exports.signUserUp = (email, password, username) => {
     // Returns a user uuid
 
     if(!email||!password||!username){
-        return new Promise.reject("null")
+        return Promise.reject({message: "null"})
     }else if(email==="" || password === "" || username === ""){
-        return Promise.reject("empty")
+        return Promise.reject({message: "empty"})
     }else if(containsSpecialChars(username)){
-        return Promise.reject("contains special character")
+        return Promise.reject({message: "contains special character"})
     }else if(username.toString().length<1 ||username.toString().length>128){
         console.log("length not match")
-        return Promise.reject("length not match")
+        return Promise.reject({message: "length not match"})
     }else if(checkUppercase(username)){
         console.log("contains uppercase")
-        return Promise.reject("contains uppercase")
+        return Promise.reject({message: "contains uppercase"})
     }else if(email === "a@my.com"){
         console.log("email in use")
-        return Promise.reject("email in use")
+        return Promise.reject({message: "email in use"})
     }else if(!containsSpecialChars(email)){
         console.log("invalid email")
-        return Promise.reject("invalid email")
-    }else if(!containsSpecialChars(password) || password.toString().length<1 ||password.toString().length>256 || !checkUppercase(password) || !containsNumber(password)){
+        return Promise.reject({message: "invalid email"})
+    }else if(!containsSpecialChars(password)){ 
+    //|| password.toString().length<1 ||password.toString().length>256 || !checkUppercase(password) || !containsNumber(password)){
         console.log("invalid password")
-        return Promise.reject("invalid password")
+        return Promise.reject({message: "invalid password"})
     }        
 
-    return Promise.resolve()
+    return Promise.resolve({UserSub: "string sign up usersub"})
 }
 
 exports.confrimSignUP = (username, confirmationCode) => {
     if(confirmationCode === "mismatchCode"){
-        console.log("mismatch code")
-        return res.status(400).json({ success: false, result: "code mismatch" })
+        return Promise.reject({message: "mismatch code"})
     }else if(confirmationCode === "expiredCode"){
-        console.log("expired code")
-        return res.status(400).json({ success: false, result: "code expired" })
+        return Promise.reject({message: "code expired"})
     }else if(username === "notExist"){
-        console.log("username dne")
-        return res.status(400).json({ success: false, result: "username dne" })
+        return Promise.reject({message: "username dne"})
     }
     
-    return Promise.resolve()
+    return Promise.resolve({UserSub: "string sign up usersub"})
 }
 
 exports.login = (username, password) => {
     if(password === "wrongPassword"){
-        console.log("wrongPassword")
-        return res.status(400).json({ success: false, result: "wrong password" })
+        return Promise.reject({message: "wrong password"})
     }else if(username === "" || password === ""){
-        console.log("empty password or username")
-        return res.status(400).json({ success: false, result: "empty parameter" })
+        return Promise.reject({message: "empty parameter"})
     }else if(username === "notRegistered"){
-        console.log("no username")
-        return res.status(400).json({ success: false, result: "no username" })
+        return Promise.reject({message: "no username"})
     }
 
     return Promise.resolve()
@@ -78,11 +73,9 @@ exports.login = (username, password) => {
 exports.resendConfrimationCode = async (username) => {
     // Resened confirmation code in case the previous confirmation code was expired
     if(username === ""){
-        console.log("empty username")
-        return res.status(400).json({ success: false, result: "empty parameter" })
+        return Promise.reject({message: "empty username"})
     }else if(username === "notRegistered"){
-        console.log("no username")
-        return res.status(400).json({ success: false, result: "no username" })
+        return Promise.reject({message: "no username"})
     }
 
     return Promise.resolve()

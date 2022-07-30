@@ -132,8 +132,8 @@ module.exports = {
         console.log("req.params.jwt: " + req.params.jwt);
         let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) { 
-             console.log("Token not validated")
-            return
+            console.log("Token not validated")
+            return res.status(400).json("Token not validated")
         }
 
         // check if we want to get another user's profile (ie. in student list page)
@@ -141,6 +141,13 @@ module.exports = {
         console.log("req.params.otherUserID: " + req.params.otherUserID);
         if (req.params.otherUserID != "0") {
             userIDOfProfileToGet = req.params.otherUserID
+        }
+
+        let findResult = await userCollection.find({ userID: userIDOfProfileToGet }).toArray()
+        if (findResult.length === 0) {
+            console.log("findResult: " + findResult + ".")
+            console.log("No user exists")
+            return res.status(400).json("No user exists")
         }
 
         await userCollection.find({ userID: userIDOfProfileToGet }).toArray((err, userProfileResult) => {
@@ -153,6 +160,8 @@ module.exports = {
                 res.status(200).json(userProfileResult)
             }
         })
+
+
 
     },
 
@@ -182,15 +191,48 @@ module.exports = {
         //     res.status(404)
         //     return
         // }
+
+        let displayName= req.body.displayName;
+        let userID= req.body.userID;
+        let coopStatus = req.body.coopStatus;
+        let yearStanding = req.body.yearStanding;
+        let registrationToken= req.body.registrationToken;
+        
+        if(displayName === null || userID === null || coopStatus === null|| yearStanding === null|| registrationToken === null){
+            console.log("null parameter")
+            return res.status(400).json("null parameter")
+        }
+
+        if(displayName == "" || userID == "" || coopStatus == "" || yearStanding == "" || registrationToken == ""){
+            console.log("empty parameter")
+            return res.status(400).json("empty parameter")
+        }
+
+        if(containsSpecialChars(displayName)){
+            console.log("display name contains special character")
+            return res.status(400).json("display name contains special character")
+        }
+        
+        if(!(coopStatus == "Yes" || coopStatus == "No")){
+            console.log(coopStatus)
+            console.log("coop status invalid")
+            return res.status(400).json("coop status invalid")
+        }
+
+        if(!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding== "5")){
+            console.log("year standing invalid")
+            return res.status(400).json("year standing invalid")
+        }
+
         var courselistarr = [];
         var blockeruserarr = [];
         userCollection.insertOne(
             {
-                displayName: req.body.displayName,
-                userID: req.body.userID,
-                coopStatus: req.body.coopStatus,
-                yearStanding: req.body.yearStanding,
-                registrationToken: req.body.registrationToken,
+                displayName: displayName,
+                userID: userID,
+                coopStatus: coopStatus,
+                yearStanding: yearStanding,
+                registrationToken: registrationToken,
                 courselist: courselistarr,
                 blockedUsers: blockeruserarr,
             },
@@ -206,12 +248,37 @@ module.exports = {
     },
 
     block: async (req, res) => {
-        let tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        console.log("-------------block-------------")
+        let jwt = req.body.jwt
+        let userID = req.body.userID
+        let blockedUserAdd = req.body.blockedUserAdd
+
+        if (!userID || !blockedUserAdd) {
+            console.log("Invalid parameters")
+            return res.status(404).json("Invalid parameters")
+        }
+
+        let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
-            return
+            return res.status(400).json("Token not validated")
         }
-        userCollection.updateOne({ "userID": req.body.userID }, { $push: { "blockedUsers": req.body.blockedUserAdd } }, (err, result) => {
+
+        let findResult = await userCollection.find({ userID: blockedUserAdd }).toArray()
+        if (findResult.length === 0) {
+            console.log("findResult: " + findResult + ".")
+            console.log("No user exists to be blocked")
+            return res.status(400).json("No user exists to be blocked")
+        }
+
+        let findResult2 = await userCollection.findOne({ "userID": userID, blockedUsers: blockedUserAdd })
+        if (findResult2) {
+            console.log("Already blocked.")
+            return res.status(400).json("Already blocked")
+        }
+
+
+        userCollection.updateOne({ "userID": userID }, { $push: { "blockedUsers": blockedUserAdd } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)
@@ -301,3 +368,7 @@ module.exports = {
     }
 }
 
+function containsSpecialChars(str) {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
+};
