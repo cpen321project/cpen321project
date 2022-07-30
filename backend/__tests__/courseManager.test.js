@@ -19,12 +19,6 @@ beforeAll(() => {
     userCollection = dbUser.collection("userCollection")
 })
 
-afterAll(async () => {
-    await mongoose.disconnect()
-
-    await client.close()
-})
-
 describe("courseManager tests", () => {
 
     it("tests server connection", () => {
@@ -287,4 +281,12 @@ describe("courseManager tests", () => {
     // })
 
     // editDisplayNameInCourse tests
+
+    afterAll(async () => {
+        await mongoose.disconnect()
+    
+        if (client) {
+            await client.close()
+        }
+    })
 })
