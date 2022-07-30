@@ -61,7 +61,7 @@ module.exports = {
         let tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
-            return res.status(400).json("Invalid parameters")
+            return res.status(400).json("Token not validated")
         }
 
         const collection = await dbCourse.listCollections({}, { nameOnly: true }).toArray()
@@ -72,7 +72,6 @@ module.exports = {
             console.log("findResult: " + findResult + ".")
             console.log("User already in course. Not added")
             return res.status(400).json("User already in course. Not added")
-
         }
 
         await dbCourse.collection(req.body.coursename).insertOne({
@@ -91,12 +90,36 @@ module.exports = {
     },
 
     addCourseToUser: async (req, res) => {
-        tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
+        console.log("-------------addCourseToUser-------------")
+        let jwt = req.body.jwt
+        let userID = req.body.userID
+        let coursename = req.body.coursename
+        let displayName = req.body.displayName
+
+        if (!jwt || !userID || !coursename || !displayName) {
+            console.log("Invalid parameters")
+            return res.status(404).json("Invalid parameters")
+        }
+
+        let tokenIsValid = await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(400).json("Token not validated")
         }
+
+        // coursename is alphnumeric characs and has at least 1 space
+        if (!(coursename.match("^[A-Za-z0-9 ]*$") && /\s/.test(coursename))) {
+            return res.status(400).json("Invalid coursename")
+        }
+
+        // check if course added already
+        let findResult = await userCollection.findOne({ "userID": userID, courselist: coursename })
+        if (findResult) {
+            console.log("findResult.displayName: " + findResult.displayName)
+            console.log("Already added.")
+            return res.status(400).json("Already added")
+        }
+
         await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } }, (err, result) => {
             if (err) {
                 console.error("Error in addCourseToUser: " + err)
@@ -106,6 +129,18 @@ module.exports = {
                 res.status(200).json({ ok: true })
             }
         })
+
+        // await userCollection.updateOne({ "userID": req.body.userID }, 
+        //     { $setOnInsert: { "courselist": req.body.coursename } }, 
+        //     { upsert: true }, (err, result) => {
+        //         if (err) {
+        //             console.error("Error in addCourseToUser: " + err)
+        //             res.status(400).send(err)
+        //         } else {
+        //             console.log("addCourseToUser successfully")
+        //             res.status(200).json({ ok: true })
+        //         }
+        // })
     },
 
     deleteUserFromCourse: async (req, res) => {
