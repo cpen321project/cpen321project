@@ -86,6 +86,8 @@ describe("courseManager tests", () => {
             .then(res => {
                 expect(res.body.err).toEqual("Token not validated")
             })
+
+        jest.setTimeout(30000);
     })
 
     it("tests getStudentList with empty userID", async () => {
@@ -107,6 +109,8 @@ describe("courseManager tests", () => {
             .then(res => {
                 expect(res.body.err).toEqual("Token not validated")
             })
+
+        jest.setTimeout(30000);
     })
 
     it("tests getStudentList with null jwt", async () => {
@@ -119,6 +123,8 @@ describe("courseManager tests", () => {
             .then(res => {
                 expect(res.body.err).toEqual("Token not validated")
             })
+        
+        jest.setTimeout(30000);
     })
 
     it("tests getStudentList with empty jwt", async () => {
@@ -128,6 +134,8 @@ describe("courseManager tests", () => {
         let jwt = ""
         await request(app).get("/getstudentlist/" + courseName + "/" + jwt + "/" + userID)
             .expect(404)
+
+        jest.setTimeout(30000);
     })
 
     it("tests getStudentList with invalid jwt", async () => {
@@ -140,6 +148,8 @@ describe("courseManager tests", () => {
             .then(res => {
                 expect(res.body.err).toEqual("Token not validated")
             })
+        
+        jest.setTimeout(30000);
     })
 
     // For this to pass, need to have the course in course db first, 
@@ -166,6 +176,8 @@ describe("courseManager tests", () => {
         } catch (err) {
             // collection DNE, don't drop
         }
+
+        jest.setTimeout(30000);
     })
 
     // addUserToCourse tests
@@ -183,6 +195,8 @@ describe("courseManager tests", () => {
                 jwt
             })
             .expect(404)
+
+        jest.setTimeout(30000);
     })
 
     // for this test to pass, need to set userID to be one already 
@@ -222,6 +236,8 @@ describe("courseManager tests", () => {
         } catch (err) {
             // collection DNE, don't drop
         }
+
+        jest.setTimeout(30000);
     })
 
     it("tests addUserToCourse with valid course not added before", async () => {
@@ -254,6 +270,7 @@ describe("courseManager tests", () => {
             // collection DNE, don't drop
         }
 
+        jest.setTimeout(30000);
     })
 
     // // addCourseToUser tests
