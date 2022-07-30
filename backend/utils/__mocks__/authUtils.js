@@ -11,3 +11,9 @@ exports.validateAccessToken = jest.fn(async (JWT, userID) => {
         return false;
     }
 })
+
+exports.signUserUp = (email, password, username) => {
+    // Signs the user up and sends a confirmation code to the provided email
+    // Returns a user uuid
+    return Promise.resolve()
+}

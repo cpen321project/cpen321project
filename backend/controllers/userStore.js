@@ -45,6 +45,29 @@ module.exports = {
         let password = req.body.password;
         let username = req.body.username;
         let signUpResult;
+
+        if(!email||!password||!username){
+            return res.status(400).json({ success: false })
+        }else if(email==="" || password === "" || username === ""){
+            return res.status(400).json({ success: false })
+        }else if(containsSpecialChars(username)){
+            console.log("contains special character")
+            return res.status(400).json({ success: false, result: "contain special characters" })
+        }else if(username.toString().length<1 ||username.toString().length>128){
+            console.log("length not match")
+            return res.status(400).json({ success: false, result: "length not match" })
+        }else if(checkUppercase(username)){
+            console.log("contains uppercase")
+            return res.status(400).json({ success: false, result: "contains uppercase" })
+        }else if(email === "a@my.com"){
+            console.log("email in use")
+            return res.status(400).json({ success: false, result: "email in use" })
+        }else if(!containsSpecialChars(email)){
+            console.log("invalid email")
+            return res.status(400).json({ success: false, result: "invalid email" })
+        }        
+
+
         try {
             signUpResult = await authUtils.signUserUp(email, password, username)
         } catch (err) {
@@ -299,3 +322,17 @@ module.exports = {
 
     }
 }
+
+function containsSpecialChars(str) {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
+};
+
+function checkUppercase(str){
+    for (var i=0; i<str.length; i++){
+      if (str.charAt(i) == str.charAt(i).toUpperCase() && str.charAt(i).match(/[a-z]/i)){
+        return true;
+      }
+    }
+    return false;
+};

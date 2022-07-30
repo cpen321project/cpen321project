@@ -13,10 +13,18 @@ var mongoose = require('mongoose')
 jest.mock("../controllers/notifcationManager")
 jest.mock("../utils/authUtils")
 
-beforeAll(async () => {
-    dbUser = await client.db("user")
-    dbCourse = await client.db("course")
-    userCollection = await dbUser.collection("userCollection")
+beforeAll(() => {
+    dbUser = client.db("user")
+    dbCourse = client.db("course")
+    userCollection = dbUser.collection("userCollection")
+})
+
+afterAll(async () => {
+    //await module.exports.forumDB.close();
+   await mongoose.disconnect()
+    //await mongoose.connection.close()
+
+    await client.close()
 })
 
 describe("courseManager tests", () => {
