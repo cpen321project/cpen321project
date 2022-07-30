@@ -1,6 +1,9 @@
 package com.example.findyourpeers;
 
 
+import android.util.Log;
+
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -21,20 +24,25 @@ public class Crypto {
         SecretKeyFactory secretKeyfactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec keySpec = new PBEKeySpec(chatId.toCharArray(), salt.getBytes(), 65536, 256);
         SecretKey secretKey = new  SecretKeySpec(secretKeyfactory.generateSecret(keySpec).getEncoded(), "AES");
+        Log.d("generating public Key", secretKey.toString());
         return secretKey;
     }
-    public static String encrypt(String input, SecretKey key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException {
-        Cipher cipher = Cipher.getInstance("AES_192/ECB/NoPadding");
+    public static String encrypt(String input, SecretKey key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, UnsupportedEncodingException {
+        Log.d("encrypting a message", input);
+        Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] cipherText = cipher.doFinal(input.getBytes());
+        byte[] cipherText = cipher.doFinal(input.getBytes("UTF-8"));
         String encryptedText = Base64.getEncoder().encodeToString(cipherText);
+        Log.d("encrypting a message", encryptedText);
         return encryptedText;
     }
 
     public static String decrypt(String cipherText, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        Cipher cipher = Cipher.getInstance("AES_192/ECB/NoPadding");
+        Log.d("decrypting a message", cipherText);
+        Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decryptedText = cipher.doFinal(Base64.getDecoder().decode(cipherText));
+        Log.d("decrypting a message", new String(decryptedText));
         return new String(decryptedText);
     }
 //

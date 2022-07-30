@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -187,6 +188,8 @@ public class PrivateChatActivity extends AppCompatActivity {
                     } catch (BadPaddingException e) {
                         e.printStackTrace();
                     } catch (InvalidKeyException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
 

@@ -28,6 +28,7 @@ module.exports = {
                 res.status(400).send(err)
             } else {
                 console.log("getStudentList successfully")
+                console.log(resultstudent)
                 res.status(200).json(resultstudent)
             }
         })
