@@ -1,4 +1,4 @@
-exports.validateAccessToken = async (JWT, userID) => {
+exports.validateAccessToken = jest.fn(async (JWT, userID) => {
     if (!JWT || !userID) {
         return false
     } else if (userID === "invalidUserID") {
@@ -10,4 +10,4 @@ exports.validateAccessToken = async (JWT, userID) => {
     } else if (JWT === "expiredJWT") {
         return false;
     }
-}
+})

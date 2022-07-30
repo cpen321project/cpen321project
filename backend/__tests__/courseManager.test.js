@@ -13,10 +13,10 @@ var mongoose = require('mongoose')
 jest.mock("../controllers/notifcationManager")
 jest.mock("../utils/authUtils")
 
-beforeAll(() => {
-    dbUser = client.db("user")
-    dbCourse = client.db("course")
-    userCollection = dbUser.collection("userCollection")
+beforeAll(async () => {
+    dbUser = await client.db("user")
+    dbCourse = await client.db("course")
+    userCollection = await dbUser.collection("userCollection")
 })
 
 describe("courseManager tests", () => {
@@ -29,6 +29,7 @@ describe("courseManager tests", () => {
 
     // getStudentList tests
     it("tests getStudentList with invalid coursename", async () => {
+        console.log("1")
         let courseName = "aaaaaa"
         let userID = "validUserID"
         let jwt = "validJWT"
@@ -40,6 +41,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with course name with space", async () => {
+        console.log("2")
         let courseName = "TIBT 300"
         let userID = "validUserID"
         let jwt = "validJWT"
@@ -66,6 +68,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with empty course name", async () => {
+        console.log("3")
         let courseName = ""
         let userID = "validUserID"
         let jwt = "validJWT"
@@ -74,6 +77,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with null userID", async () => {
+        console.log("4")
         let courseName = "CPEN321"
         let userID = null
         let jwt = "validJWT"
@@ -85,6 +89,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with empty userID", async () => {
+        console.log("5")
         let courseName = "CPEN321"
         let userID = ""
         let jwt = "validJWT"
@@ -93,6 +98,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with invalid userID", async () => {
+        console.log("6")
         let courseName = "CPEN321"
         let userID = "invalidUserID"
         let jwt = "validJWT"
@@ -104,6 +110,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with null jwt", async () => {
+        console.log("7")
         let courseName = "CPEN321"
         let userID = "validUserID"
         let jwt = null
@@ -115,6 +122,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with empty jwt", async () => {
+        console.log("8")
         let courseName = "CPEN321"
         let userID = "validUserID"
         let jwt = ""
@@ -123,6 +131,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests getStudentList with invalid jwt", async () => {
+        console.log("9")
         let courseName = "CPEN321"
         let userID = "validUserID"
         let jwt = "invalidJWT"
@@ -136,6 +145,7 @@ describe("courseManager tests", () => {
     // For this to pass, need to have the course in course db first, 
     // change it to some very obscure course 
     it("tests getStudentList with valid params", async () => {
+        console.log("10")
         let courseName = "TIBT300" 
         let userID = "validUserID"
         let jwt = "validJWT"
@@ -160,6 +170,7 @@ describe("courseManager tests", () => {
 
     // addUserToCourse tests
     it("tests addUserToCourse with empty course name", async () => {
+        console.log("11")
         let coursename = ""
         let userID = "validUserID"
         let displayName = "someDisplayName"
@@ -177,6 +188,7 @@ describe("courseManager tests", () => {
     // for this test to pass, need to set userID to be one already 
     // in the course with coursename
     it("tests addUserToCourse with userID already in course", async () => {
+        console.log("12")
         let coursename = "TIBT 300"
         let userID = "validUserID"
         let displayName = "someDisplayName"
@@ -213,6 +225,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests addUserToCourse with valid course not added before", async () => {
+        console.log("13")
         let coursename = "TIBT 100"
         let userID = "validUserID"
         let displayName = "someDisplayName"
