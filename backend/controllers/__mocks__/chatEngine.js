@@ -19,5 +19,13 @@ module.exports = {
         } else if (userID === "" || newDisplayName === "") {
             return false;
         }
-    })
+    }),
+
+    getConversationByGroupID: async (req, res) => {
+        return res.status(200).send("getConvGroupMock")
+    },
+
+    getPrivateConversationByUserIDs: async (req, res) => {
+        return res.status(200).send("getConvPrivMock")
+    }
 }

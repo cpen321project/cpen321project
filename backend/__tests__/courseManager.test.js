@@ -20,7 +20,9 @@ beforeAll(() => {
 })
 
 afterAll(async () => {
-    await mongoose.disconnect()
+    await module.exports.forumDB.close();
+   await mongoose.disconnect()
+    await mongoose.connection.close()
 
     await client.close()
 })
