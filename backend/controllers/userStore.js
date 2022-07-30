@@ -56,7 +56,7 @@ module.exports = {
             console.log("signup: err: " + err)
             console.log("signUpResult: " + signUpResult)
 
-            return res.status(200).json({ success: false, result: err.message })
+            return res.status(400).json({ success: false, result: err.message })
         }
         console.log("signUpResult: " + signUpResult)
         return res.status(200).json({ success: true, result: signUpResult })
