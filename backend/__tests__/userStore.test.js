@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
 jest.mock("../controllers/chatEngine")
 jest.mock("../controllers/forumEngine")
 jest.mock("../utils/authUtils")
-//const userStore = require("../controllers/userStore")
+//const { getDisplayNameByUserIDfromDB } = require("../controllers/userStore")
 
 beforeAll(async () => {
     dbUser = await client.db("user")
@@ -456,7 +456,7 @@ describe("userStore tests", () => {
             blockedUsers: [],
         })
  
-         // add the course to the user
+         // add the blockedUserAdd to the user
          await userCollection.updateOne(
              { "userID": userID },
              { $push: { "blockedUsers": blockedUserAdd } }
@@ -561,6 +561,541 @@ describe("userStore tests", () => {
         await userCollection.deleteOne({ "userID": blockedUserAdd })
     })
 
+    // it("tests getDisplayNameByUserID empty user ID", async () => {
+    //     let userID = ""
+    //     await request(app).get("/getDisplayNameByUserID/" + userID).expect(404)
+    //     jest.setTimeout(30000);
+    // })
+
+    // it("tests getDisplayNameByUserID invalid user ID", async () => {
+    //     let userID = "dne"
+    //     await request(app).get("/getDisplayNameByUserID/" + userID).expect(404)
+    //     jest.setTimeout(30000);
+    // })
+
+    // it("tests getDisplayNameByUserID valid user ID", async () => {
+    //     let userID = "validUserID"
+
+    //     await userCollection.insertOne({
+    //         displayName: "sample DN getDN",
+    //         userID,
+    //         coopStatus: "Yes",
+    //         yearStanding: "1",
+    //         registrationToken: "regToken",
+    //         courselist: [],
+    //         blockedUsers: [],
+    //     })
+
+    //     await request(app).get("/getDisplayNameByUserID/" + userID).expect(200)
+        
+    //     await userCollection.deleteOne({ "userID": userID })
+
+
+    // })
+
+    it("tests unblock with invalid user id", async () => {
+        let userIDtoDelete = "userIDtoDelete"
+        let userID = "invalidUserID"
+        let jwt = "validJWT"
+
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
+    })
+
+    it("tests unblock with invalid userIDtoDelete", async () => {
+        let userIDtoDelete = "userIDtoDeleteDNE"
+        let userID = "validUserID"
+        let jwt = "validJWT"
+
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
+    })
+
+
+     it("tests unblock with previously not blocked user", async () => {
+        let userIDtoDelete = "userIDtoDelete"
+        let userID = "validUserID"
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: "sample DN",
+             userID,
+             coopStatus: "Yes",
+             yearStanding: "1",
+             registrationToken: "regToken",
+             courselist: [],
+             blockedUsers: [],
+         })
+
+         //add new blocked user
+         await userCollection.insertOne({
+            displayName: "sample DN 2",
+            userID: userIDtoDelete,
+            coopStatus: "Yes",
+            yearStanding: "1",
+            registrationToken: "regToken",
+            courselist: [],
+            blockedUsers: [],
+        })
+ 
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
+ 
+         // delete user
+         await userCollection.deleteOne({ "userID": userID })
+         await userCollection.deleteOne({ "userID": userIDtoDelete })
+        
+    })
+
+    it("tests unblock with  null jwt", async () => {
+        let userIDtoDelete = "userIDtoDelete"
+        let userID = "validUserID"
+        let jwt = null
+
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
+    })
+
+    it("tests unblock with  empty jwt", async () => {
+        let userIDtoDelete = "userIDtoDelete"
+        let userID = "validUserID"
+        let jwt = ""
+
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(404)
+    })
+
+    it("tests unblock with invalid jwt", async () => {
+        let userIDtoDelete = "userIDtoDelete"
+        let userID = "validUserID"
+        let jwt = "invalidJWT"
+
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
+    })
+
+     it("tests unblock with valid userIDtoDelete being blocked before", async () => {
+        let userIDtoDelete = "userIDtoDelete"
+        let userID = "validUserID"
+        let jwt = "validJWT"
+
+        // delete user if it exists 
+        await userCollection.deleteOne({ "userID": userID })
+
+        // add new user
+        await userCollection.insertOne({
+            displayName: "sample DN",
+            userID,
+            coopStatus: "Yes",
+            yearStanding: "1",
+            registrationToken: "regToken",
+            courselist: [],
+            blockedUsers: [userIDtoDelete],
+        })
+
+        await userCollection.insertOne({
+            displayName: "sample DN blocked",
+            userID: userIDtoDelete,
+            coopStatus: "Yes",
+            yearStanding: "1",
+            registrationToken: "regToken",
+            courselist: [],
+            blockedUsers: [],
+        })
+
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(200)
+
+
+
+        // delete user
+        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ "userID": userIDtoDelete })
+    })
+
+    it("tests edit profile with illegal display name", async () => {
+        let displayName = "$%*^*$##$"
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = "validJWT"
+
+        // delete user if it exists 
+        await userCollection.deleteOne({ "userID": userID })
+
+        // add new user
+        await userCollection.insertOne({
+            displayName: displayName,
+            userID,
+            coopStatus: coopStatus,
+            yearStanding: yearStanding,
+            registrationToken: "regToken",
+            courselist: ["INDO 100"],
+            blockedUsers: [],
+        })
+
+        await dbCourse.collection("INDO 100").insertOne({
+            displayName: displayName,
+            userID: userID,
+        })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+
+        jest.setTimeout(30000);
+    })
+
+    it("tests edit profile with empty display name", async () => {
+        let displayName = ""
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+    
+    it("tests edit profile with illegal year standing", async () => {
+        let displayName = "yayayay"
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = "7"
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+    it("tests edit profile with empty year standing", async () => {
+        let displayName = "yayaya"
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = ""
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+    it("tests edit profile with empty coop status", async () => {
+        let displayName = "yayayya"
+        let userID = "validUserID"
+        let coopStatus = ""
+        let yearStanding = "1"
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+
+    it("tests edit profile with empty userID", async () => {
+        let displayName = "yayaya"
+        let userID = ""
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+
+    it("tests edit profile with valid parameters", async () => {
+        let displayName = "yayaya"
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = "validJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: [],
+             blockedUsers: [],
+         })
+
+         await userCollection.updateOne({ "userID": userID }, { $push: { "courselist": "INDO 100" } })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(200)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+    // it("tests edit profile with null jwt", async () => {
+    //     let displayName = "yayaya"
+    //     let userID = "validUserID"
+    //     let coopStatus = "Yes"
+    //     let yearStanding = "1"
+    //     let jwt = null
+
+    //     await request(app).put("/editprofile").send({
+    //             displayName,
+    //             userID,
+    //             coopStatus,
+    //             yearStanding,
+    //             jwt
+    //         })
+    //         .expect(400)
+    //     jest.setTimeout(30000);
+
+    //     await userCollection.deleteOne({ "userID": userID })
+    //     await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    // })
+
+    it("tests edit profile with empty jwt", async () => {
+        let displayName = "yayaya"
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = ""
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+
+    it("tests edit profile with empty userID", async () => {
+        let displayName = "yayaya"
+        let userID = "validUserID"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = "invalidJWT"
+
+         // delete user if it exists 
+         await userCollection.deleteOne({ "userID": userID })
+
+         // add new user
+         await userCollection.insertOne({
+             displayName: displayName,
+             userID,
+             coopStatus: coopStatus,
+             yearStanding: yearStanding,
+             registrationToken: "regToken",
+             courselist: ["INDO 100"],
+             blockedUsers: [],
+         })
+ 
+         await dbCourse.collection("INDO 100").insertOne({
+             displayName: displayName,
+             userID: userID,
+         })
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        await userCollection.deleteOne({ "userID": userID })
+        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
 
 
 })

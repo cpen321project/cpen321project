@@ -1,8 +1,8 @@
 module.exports = {
     updateUserDisplayNameInGroupChats: jest.fn(async (userID, newDisplayName) => {
-        if (userID === "badUserID") {
+        if (userID === "validUserID") {
             return false;
-        } else if (userID === "goodUserID") {
+        } else if (userID === "invalidUserID") {
             return true;
         } else if (userID === null || newDisplayName === null) {
             return false;
@@ -12,9 +12,9 @@ module.exports = {
     }),
 
     updateUserDisplayNameInPrivateChats: jest.fn(async (userID, newDisplayName) => {
-        if (userID === "badUserID") {
+        if (userID === "validUserID") {
             return false;
-        } else if (userID === "goodUserID") {
+        } else if (userID === "invalidUserID") {
             return true;
         } else if (userID === "" || newDisplayName === "") {
             return false;

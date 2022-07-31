@@ -25,20 +25,14 @@ exports.signUserUp = (email, password, username) => {
     }else if(containsSpecialChars(username)){
         return Promise.reject({message: "contains special character"})
     }else if(username.toString().length<1 ||username.toString().length>128){
-        console.log("length not match")
         return Promise.reject({message: "length not match"})
     }else if(checkUppercase(username)){
-        console.log("contains uppercase")
         return Promise.reject({message: "contains uppercase"})
     }else if(email === "a@my.com"){
-        console.log("email in use")
         return Promise.reject({message: "email in use"})
     }else if(!containsSpecialChars(email)){
-        console.log("invalid email")
         return Promise.reject({message: "invalid email"})
-    }else if(!containsSpecialChars(password)){ 
-    //|| password.toString().length<1 ||password.toString().length>256 || !checkUppercase(password) || !containsNumber(password)){
-        console.log("invalid password")
+    }else if(!containsSpecialChars(password)|| password.toString().length<1 ||password.toString().length>256 || !checkUppercase(password) || !containsNumber(password)){
         return Promise.reject({message: "invalid password"})
     }        
 

@@ -290,11 +290,37 @@ module.exports = {
     },
 
     unblock: async (req, res) => {
-        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        console.log("-------------unblock-------------")
+        let jwt = req.params.jwt
+        let userID = req.params.userID
+        let userIDtoDelete = req.params.userIDtoDelete
+
+        if (!userID || !userIDtoDelete || !jwt) {
+            console.log("Invalid parameters unblock")
+            return res.status(400).json("Invalid parameters unblock")
+        }
+
+
+        let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
-            return
-        } userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": req.params.userIDtoDelete } }, (err, result) => {
+            return res.status(400).json("Token not validated")
+        } 
+        
+        let findResult = await userCollection.find({ userID: userIDtoDelete }).toArray()
+        if (findResult.length === 0) {
+            console.log("findResult: " + findResult + ".")
+            console.log("No user exists to be unblocked")
+            return res.status(400).json("No user exists to be unblocked")
+        }
+
+        let findResult2 = await userCollection.findOne({ "userID": userID, blockedUsers: userIDtoDelete })
+        if (!findResult2) {
+            console.log("Not blocked previously.")
+            return res.status(400).json("Not blocked previously")
+        }
+        
+        userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)
@@ -317,11 +343,37 @@ module.exports = {
         let yearStanding = req.body.yearStanding
         let jwt = req.body.jwt
 
-        if (!displayName || !userID || !coopStatus || !yearStanding || !jwt) {
-            console.log("Invalid body parameter(s).")
-            res.status(400).send({ response: "Invalid body parameter(s)." })
-            return;
+        if(!displayName|| !userID || !coopStatus || !yearStanding || !jwt){
+            console.log("null parameter")
+            return res.status(400).json("null parameter")
         }
+
+        if(displayName == "" || userID == "" || coopStatus == "" || yearStanding == "" || jwt == ""){
+            console.log("empty parameter")
+            return res.status(400).json("empty parameter")
+        }
+
+        if(containsSpecialChars(displayName)){
+            console.log("display name contains special character")
+            return res.status(400).json("display name contains special character")
+        }
+        
+        if(!(coopStatus == "Yes" || coopStatus == "No")){
+            console.log(coopStatus)
+            console.log("coop status invalid")
+            return res.status(400).json("coop status invalid")
+        }
+
+        if(!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding== "5")){
+            console.log("year standing invalid")
+            return res.status(400).json("year standing invalid")
+        }
+
+        let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
+        if (!tokenIsValid) {
+            console.log("Token not validated")
+            return res.status(400).json("Token not validated")
+        } 
 
         // update all group & private msgs in chatDB with new displayName
         let updateGroupChatsResult = await chatEngine.updateUserDisplayNameInGroupChats(userID, displayName)
@@ -358,7 +410,7 @@ module.exports = {
 
         //update courseDB
         var courses = await userCollection.find({ userID: userID }).project({ courselist: 1, _id: 0 }).toArray();
-        console.log("courselist " + courses[0].courselist)
+        //console.log("courselist " + courses[0].courselist)
 
 
         courses[0].courselist.forEach(coursename => {

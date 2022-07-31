@@ -1,8 +1,8 @@
 module.exports = {
     updateUserDisplayNameInQuestions: jest.fn(async (userID, newDisplayName) => {
-        if (userID === "badUserID") {
+        if (userID === "invalidUserID") {
             return false;
-        } else if (userID === "goodUserID") {
+        } else if (userID === "validUserID") {
             return true;
         } else if (userID === null || newDisplayName === null) {
             return false;
@@ -13,9 +13,9 @@ module.exports = {
     }),
 
     updateUserDisplayNameInAnswers: jest.fn(async (userID, newDisplayName) => {
-        if (userID === "badUserID") {
+        if (userID === "invalidUserID") {
             return false;
-        } else if (userID === "goodUserID") {
+        } else if (userID === "validUserID") {
             return true;
         } else if (userID === null || newDisplayName === null) {
             return false;
