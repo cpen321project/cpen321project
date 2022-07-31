@@ -56,8 +56,9 @@ module.exports = {
         let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenValidated) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            // res.status(404)
+            // return
+            return res.status(404).json("Token not validated")
         }
 
         Question
@@ -77,14 +78,14 @@ module.exports = {
 
     getAllQuestionsForATopic: async (req, res) => {
         console.log("----------------getAllQuestionsForATopic----------------")
-        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!tokenValidated) {
-            console.log("Token not validated")
-            res.status(404)
-            return
-        }
 
         let topic = req.params.topic
+
+        let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        if (!tokenValidated) {
+            //console.log("Token not validated")
+            return res.status(404).json("Token not validated")
+        }
 
         Question
             .find({ topic })
@@ -104,9 +105,8 @@ module.exports = {
         console.log("----------------getAllQuestionsFromAUser----------------")
         let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenValidated) {
-            console.log("Token not validated")
-            res.status(404)
-            return
+            //console.log("Token not validated")
+            return res.status(404).json("Token not validated")
         }
 
         let userID = req.params.userID
