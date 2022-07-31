@@ -88,7 +88,7 @@ public class ChatActivity extends AppCompatActivity {
 //            });
 //        }
 
-        String serverIP = "10.0.2.2";
+        String serverIP = "34.130.14.116";
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
