@@ -35,8 +35,10 @@ jobs:
     - name: npm ci 
       working-directory: ${{ env.working-directory }}
       run: npm ci
-    - name: initialize mongodb
-      run: mongosh --port 27017
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.6.0
+      with:
+        mongodb-port: 27017
     - name: npm test   
       working-directory: ${{ env.working-directory }}
       env: 
