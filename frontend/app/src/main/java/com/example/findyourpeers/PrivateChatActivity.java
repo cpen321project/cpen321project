@@ -127,11 +127,11 @@ public class PrivateChatActivity extends AppCompatActivity {
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
                                         String decryptedMsg = Crypto.decrypt(message, finalKey);
-                                        Log.d("PrivateChatActivity", "message: " + message);
+                                        Log.d("PrivateChatActivity", "message: " + decryptedMsg);
 
-                                        Message m = new Message(nickname, message);
+                                        Message m = new Message(nickname, decryptedMsg);
                                         MessageList.add(m);
-                                    } catch (JSONException | NoSuchPaddingException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+                                    } catch (JSONException | NoSuchPaddingException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | UnsupportedEncodingException e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -200,7 +200,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                             isBlocked);
 
                     String nickname = senderName;
-                    String message = encryptedMsg;
+                    String message = messageTxt.getText().toString();
 
                     Message m = new Message(nickname, message);
                     MessageList.add(m);
@@ -231,7 +231,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                                 String message = data.getString("message");
                                 String decryptedMsg = Crypto.decrypt(message, finalKey);
 
-                                Message m = new Message(nickname, message);
+                                Message m = new Message(nickname, decryptedMsg);
                                 MessageList.add(m);
 
                                 // add the new updated list to the adapter
@@ -252,6 +252,8 @@ public class PrivateChatActivity extends AppCompatActivity {
                         } catch (BadPaddingException e) {
                             e.printStackTrace();
                         } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
