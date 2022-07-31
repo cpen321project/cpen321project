@@ -1,8 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,8 +38,8 @@ import java.util.ArrayList;
 
 public class BrowseCourse extends AppCompatActivity {
 
-    public String userID;
-    public String displayName;
+    public String userID = LoginPage.userID;
+    public String displayName = ProfilePage.displayName;
     public LinearLayout layoutCourseList;
     private ArrayList<String> studentCourseList;
 
@@ -48,9 +48,9 @@ public class BrowseCourse extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_course);
         Intent intentCourse = getIntent();
-        userID = intentCourse.getExtras().getString("userID");
-        displayName = intentCourse.getExtras().getString("displayName");
-        studentCourseList = (ArrayList<String>) intentCourse.getSerializableExtra("courselist");
+//        userID = intentCourse.getExtras().getString("userID");
+        displayName = ProfilePage.displayName; //intentCourse.getExtras().getString("displayName");
+        studentCourseList = ProfilePage.courseListAL; //(ArrayList<String>) intentCourse.getSerializableExtra("courselist");
 
         //AutoCompleteTextView actvCourse = (AutoCompleteTextView) findViewById(R.id.autocompletecourse);
         EditText etCourse = (EditText) findViewById(R.id.edit_text_course);

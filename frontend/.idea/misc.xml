@@ -7,10 +7,12 @@
         <entry key="app/src/main/res/layout/activity_browse_more_course.xml" value="0.2259963768115942" />
         <entry key="app/src/main/res/layout/activity_create_profile.xml" value="0.2259963768115942" />
         <entry key="app/src/main/res/layout/activity_edit_profile.xml" value="0.2259963768115942" />
-        <entry key="app/src/main/res/layout/activity_enter_code.xml" value="0.12409420289855072" />
+        <entry key="app/src/main/res/layout/activity_enter_code.xml" value="0.2273870495782382" />
         <entry key="app/src/main/res/layout/activity_forum_answers_page.xml" value="0.16614583333333333" />
         <entry key="app/src/main/res/layout/activity_forum_questions_page.xml" value="0.16614583333333333" />
+        <entry key="app/src/main/res/layout/activity_login_page.xml" value="0.2296195652173913" />
         <entry key="app/src/main/res/layout/activity_profile_page.xml" value="0.2259963768115942" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.2296195652173913" />
         <entry key="app/src/main/res/layout/activity_student_list_page.xml" value="0.2259963768115942" />
         <entry key="app/src/main/res/layout/activity_view_other_profile.xml" value="0.2259963768115942" />
         <entry key="app/src/main/res/layout/coursename_buttons_layout.xml" value="0.2259963768115942" />

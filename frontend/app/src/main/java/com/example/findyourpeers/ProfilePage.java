@@ -1,18 +1,18 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,10 +38,11 @@ public class ProfilePage extends AppCompatActivity {
     private TextView displayNameTV;
     private TextView coopTV;
     private TextView yearTV;
-    private String displayName;
-    private ArrayList<String> courseListAL;
+    public static String displayName;
+    public static ArrayList<String> courseListAL;
     final private String TAG = "ProfilePage";
     private ImageView editBtn;
+
 
     public String token;
 
@@ -50,8 +51,11 @@ public class ProfilePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
-        String userID = intentProfile.getExtras().getString("userID");
-        String username = intentProfile.getExtras().getString("username");
+
+        String userID =   LoginPage.userID; //intentProfile.getExtras().getString("userID");
+        String username =  LoginPage.username;   //intentProfile.getExtras().getString("username");
+
+
         String accessToken = LoginPage.accessToken;
         Log.d(TAG, "accessToken in ProfilePage: " +  accessToken);
 
@@ -69,7 +73,7 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent editProfileIntent = new Intent(ProfilePage.this, EditProfile.class);
                 editProfileIntent.putExtra("userID", userID);
-                //editProfileIntent.putExtra("username", username);
+//                editProfileIntent.putExtra("username", username);
                 editProfileIntent.putExtra("courselist", courseListAL);
                 startActivity(editProfileIntent);
             }
@@ -191,14 +195,18 @@ public class ProfilePage extends AppCompatActivity {
                             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                             return;
                         }
+                        else   {
+                            token = task.getResult().toString();
+                            Log.d(TAG, token);
+//                            postDataUsingVolley(userID);
+                        }
 
                         // Get new FCM registration token
-                        token = task.getResult().toString();
+
 
                         // Log and toast
 //                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, token);
-                        postDataUsingVolley(userID);
+
 //                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -312,38 +320,38 @@ public class ProfilePage extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void postDataUsingVolley(String userID) {
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-
-        JSONObject newToken = new JSONObject();
-        try {
-            //input your API parameters
-            newToken.put("userID", userID);
-            newToken.put("registrationToken", token);
-            newToken.put("jwt", LoginPage.accessToken);
-            Log.d(TAG, "trying to post the regToken");
-            Log.d(TAG, userID);
-            Log.d(TAG, token);
-            Log.d(TAG, LoginPage.accessToken);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // Enter the correct url for your api service site
-        String url = Urls.URL +  "newRegistrationToken";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-//                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "successfully updated token for firebase");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Was not able to update firebase token on backend");
-            }
-        });
-        requestQueue.add(jsonObjectRequest);
-
-    }
+//    public void postDataUsingVolley(String userID) {
+//        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+//
+//        JSONObject newToken = new JSONObject();
+//        try {
+//            //input your API parameters
+//            newToken.put("userID", userID);
+//            newToken.put("registrationToken", token);
+//            newToken.put("jwt", LoginPage.accessToken);
+//            Log.d(TAG, "trying to post the regToken");
+//            Log.d(TAG, userID);
+//            Log.d(TAG, token);
+//            Log.d(TAG, LoginPage.accessToken);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        // Enter the correct url for your api service site
+//        String url = Urls.URL +  "newRegistrationToken";
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+////                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
+//                        Log.d(TAG, "successfully updated token for firebase");
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d(TAG, "Was not able to update firebase token on backend");
+//            }
+//        });
+//        requestQueue.add(jsonObjectRequest);
+//
+//    }
 }
