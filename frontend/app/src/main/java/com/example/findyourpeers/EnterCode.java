@@ -73,7 +73,7 @@ public class EnterCode extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = Urls.URL + "resendconfirmationcode";
+        String url = "http://34.130.14.116:3010/resendconfirmationcode";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, resendData,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -114,7 +114,7 @@ public class EnterCode extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = Urls.URL + "confirmsignup";
+        String url = "http://34.130.14.116:3010/confirmsignup";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, verifData,
                 new Response.Listener<JSONObject>() {
                     @Override
