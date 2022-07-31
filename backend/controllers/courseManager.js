@@ -1,11 +1,6 @@
 const notificationManager = require("./notifcationManager.js")
 const authUtils = require("../utils/authUtils.js")
 
-// const { MongoClient } = require("mongodb")
-// const uri = "mongodb://localhost:27017"
-// const client = new MongoClient(uri)
-// client.connect()
-
 let dbUser, dbCourse, userCollection
 
 dbUser = client.db("user")
@@ -191,7 +186,7 @@ module.exports = {
             console.log("Course not added before. Not deleted")
             return res.status(400).json("Course not added before. Not deleted")
         }
-        
+
         let updateResult = await userCollection.updateMany({ "userID": req.body.userID }, { $pull: { "courselist": req.body.coursename } })
         if (updateResult) {
             console.log("deleteCourseFromUser successfully")

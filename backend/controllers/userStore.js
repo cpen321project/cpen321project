@@ -31,16 +31,6 @@ module.exports.getDisplayNameByUserIDfromDB = getDisplayNameByUserIDfromDB
 
 module.exports = {
     signup: async (req, res) => {
-        // try {
-        //     let email = req.body.email;
-        //     let password = req.body.password;
-        //     let username = req.body.username;
-        //     authUtils.signUserUp(email,password,username)
-        //     return res.status(200).json({ success: true})
-        // } catch (error) {
-        //     return res.status(400).json({ success: false, error })
-        // }
-
         let email = req.body.email;
         let password = req.body.password;
         let username = req.body.username;
@@ -179,8 +169,6 @@ module.exports = {
                 res.status(200).json(resultcourse)
             }
         })
-
-
     },
 
     createProfile: async (req, res) => {

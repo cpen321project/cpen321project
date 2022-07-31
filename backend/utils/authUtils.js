@@ -51,8 +51,10 @@ exports.signUserUp = (email, password, username) => {
             "Username": username,
         }
         cognito.signUp(cognitoParams, function (err, res) {
-            if (err)
+            if (err) {
                 reject(err)    // Example error codes: InvalidPasswordException, InvalidParameterException (invalid email address)
+                return
+            }
             resolve(res.UserSub)
         })
     })
