@@ -69,19 +69,18 @@ module.exports = {
             return res.status(400).json("User already in course. Not added")
         }
 
-        await dbCourse.collection(req.body.coursename).insertOne({
+        let insertResult = await dbCourse.collection(req.body.coursename).insertOne({
             displayName: req.body.displayName,
             userID: req.body.userID,
-        }, async (err, result) => {
-            if (err) {
-                console.log("Error in addUserToCourse: " + err)
-                return res.status(400).json(err)
-            } else {
-                console.log("addUserToCourse successfully")
-                await notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
-                return res.status(200).json("User added successfully")
-            }
         })
+        if (insertResult) {
+            console.log("addUserToCourse successfully")
+            await notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
+            return res.status(200).json("User added successfully")
+        } else {
+            console.log("Error in addUserToCourse")
+            return res.status(400).json("Error in addUserToCourse")
+        }
     },
 
     addCourseToUser: async (req, res) => {
@@ -89,9 +88,8 @@ module.exports = {
         let jwt = req.body.jwt
         let userID = req.body.userID
         let coursename = req.body.coursename
-        let displayName = req.body.displayName
 
-        if (!jwt || !userID || !coursename || !displayName) {
+        if (!jwt || !userID || !coursename) {
             console.log("Invalid parameters")
             return res.status(404).json("Invalid parameters")
         }
@@ -110,20 +108,18 @@ module.exports = {
         // check if course added already
         let findResult = await userCollection.findOne({ "userID": userID, courselist: coursename })
         if (findResult) {
-            console.log("findResult.displayName: " + findResult.displayName)
             console.log("Already added.")
             return res.status(400).json("Already added")
         }
 
-        await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } }, (err, result) => {
-            if (err) {
-                console.error("Error in addCourseToUser: " + err)
-                res.status(400).json(err)
-            } else {
-                console.log("addCourseToUser successfully")
-                res.status(200).json({ ok: true })
-            }
-        })
+        let updateResult = await userCollection.updateOne({ "userID": req.body.userID }, { $push: { "courselist": req.body.coursename } })
+        if (updateResult) {
+            console.log("addCourseToUser successfully")
+            return res.status(200).json({ ok: true })
+        } else {
+            console.error("Error in addCourseToUser")
+            return res.status(400).json("Error in addCourseToUser")
+        }
     },
 
     deleteUserFromCourse: async (req, res) => {
@@ -132,35 +128,39 @@ module.exports = {
         let coursename = req.params.coursename
         let jwt = req.params.jwt
 
-        tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+        console.log("userID: " + userID)
+        console.log("coursename: " + coursename)
+        console.log("jwt: " + jwt)
+
+        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
             return res.status(400).json("Token not validated")
         }
 
-        // coursename is alphnumeric characs and has at least 1 space
-        if (!(coursename.match("^[A-Za-z0-9 ]*$") && /\s/.test(coursename))) {
+        // coursename is alphnumeric characs
+        if (!(coursename.match("^[A-Za-z0-9]*$"))) {
             return res.status(400).json("Invalid coursename")
         }
 
+        let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
+        
         // check if user is added to course 
-        let findResult = await dbCourse.collection(coursename).find({ userID }).toArray()
+        let findResult = await dbCourse.collection(coursenamespace).find({ userID }).toArray()
         if (findResult.length === 0) {
             console.log("findResult: " + findResult + ".")
             console.log("User has not added course before. Not deleted")
             return res.status(400).json("User has not added course before. Not deleted")
         }
 
-        let coursenamespace = req.params.coursename.substring(0, 4) + " " + req.params.coursename.substring(4, req.params.coursename.length)
-        await dbCourse.collection(coursenamespace).deleteOne({ "userID": req.params.userID }, (err, result) => {
-            if (err) {
-                console.log("Error in deleteUserFromCourse: " + err)
-                res.status(400).json(err)
-            } else {
-                console.log("deleteUserFromCourse successfully")
-                res.status(200).json("User deleted successfully")
-            }
-        })
+        let deleteResult = await dbCourse.collection(coursenamespace).deleteOne({ "userID": req.params.userID })
+        if (deleteResult) {
+            console.log("deleteUserFromCourse successfully")
+            return res.status(200).json("User deleted successfully")
+        } else {
+            console.log("Error in deleteUserFromCourse")
+            return res.status(400).json(err)
+        }
     },
 
     deleteCourseFromUser: async (req, res) => {
@@ -191,16 +191,15 @@ module.exports = {
             console.log("Course not added before. Not deleted")
             return res.status(400).json("Course not added before. Not deleted")
         }
-
-        await userCollection.updateMany({ "userID": req.body.userID }, { $pull: { "courselist": req.body.coursename } }, (err, result) => {
-            if (err) {
-                console.log("Error in deleteCourseFromUser: " + err)
-                res.status(400).json(err)
-            } else {
-                console.log("deleteCourseFromUser successfully")
-                res.status(200).json("Course deleted successfully")
-            }
-        })
+        
+        let updateResult = await userCollection.updateMany({ "userID": req.body.userID }, { $pull: { "courselist": req.body.coursename } })
+        if (updateResult) {
+            console.log("deleteCourseFromUser successfully")
+            return res.status(200).json({ result: "Course deleted successfully" })
+        } else {
+            console.log("Error in deleteCourseFromUser")
+            return res.status(400).json(err)
+        }
     },
 
     editDisplayNameInCourse: async (displayNameNew, userID, coursename) => {

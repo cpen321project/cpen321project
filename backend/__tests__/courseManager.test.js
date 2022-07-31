@@ -424,14 +424,12 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with null jwt", async () => {
         let coursename = "TIBT 100"
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = null
 
         await request(app).post("/addcoursetouser")
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(404)
@@ -440,14 +438,12 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with empty jwt", async () => {
         let coursename = "TIBT 100"
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = ""
 
         await request(app).post("/addcoursetouser")
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(404)
@@ -456,14 +452,12 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with invalid jwt", async () => {
         let coursename = "TIBT 100"
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = "invalidJWT"
 
         await request(app).post("/addcoursetouser")
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(400)
@@ -472,14 +466,12 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with empty course name", async () => {
         let coursename = ""
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = "validJWT"
 
         await request(app).post("/addcoursetouser")
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(404)
@@ -488,7 +480,6 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with already added course", async () => {
         let coursename = "TIBT 100"
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = "validJWT"
 
         // delete user if it exists 
@@ -496,7 +487,7 @@ describe("courseManager tests", () => {
 
         // add new user
         await userCollection.insertOne({
-            displayName,
+            displayName: "someDisplayName",
             userID,
             coopStatus: "Yes",
             yearStanding: "1",
@@ -515,7 +506,6 @@ describe("courseManager tests", () => {
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(400)
@@ -531,7 +521,6 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with course not added before", async () => {
         let coursename = "TIBT 100"
         let userID = "validUserID"
-        let displayName = "someDisplayName2"
         let jwt = "validJWT"
 
         // delete user if it exists 
@@ -539,7 +528,7 @@ describe("courseManager tests", () => {
 
         // add new user
         await userCollection.insertOne({
-            displayName,
+            displayName: "someDisplayName",
             userID,
             coopStatus: "Yes",
             yearStanding: "1",
@@ -552,7 +541,6 @@ describe("courseManager tests", () => {
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(200)
@@ -564,7 +552,6 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with invalid coursename", async () => {
         let coursename = "-32f(1 .-="
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = "validJWT"
 
         // delete user if it exists 
@@ -572,7 +559,7 @@ describe("courseManager tests", () => {
 
         // add new user
         await userCollection.insertOne({
-            displayName,
+            displayName: "someDisplayName",
             userID,
             coopStatus: "Yes",
             yearStanding: "1",
@@ -585,7 +572,6 @@ describe("courseManager tests", () => {
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(400)
@@ -600,7 +586,6 @@ describe("courseManager tests", () => {
     it("tests addCourseToUser with coursename with no space", async () => {
         let coursename = "CPEN321"
         let userID = "validUserID"
-        let displayName = "someDisplayName"
         let jwt = "validJWT"
 
         // delete user if it exists 
@@ -608,7 +593,7 @@ describe("courseManager tests", () => {
 
         // add new user
         await userCollection.insertOne({
-            displayName,
+            displayName: "someDisplayName",
             userID,
             coopStatus: "Yes",
             yearStanding: "1",
@@ -621,7 +606,6 @@ describe("courseManager tests", () => {
             .send({
                 coursename,
                 userID,
-                displayName,
                 jwt
             })
             .expect(400)
@@ -688,8 +672,8 @@ describe("courseManager tests", () => {
             })
     })
 
-    it("tests deleteUserFromCourse with course name without space", async () => {
-        let coursename = "CPEN321"
+    it("tests deleteUserFromCourse with course name with space", async () => {
+        let coursename = "CPEN 321"
         let userID = "validUserID"
         let jwt = "validJWT"
 
@@ -701,7 +685,7 @@ describe("courseManager tests", () => {
     })
 
     it("tests deleteUserFromCourse with course user is not registered in", async () => {
-        let coursename = "TIBT 100"
+        let coursename = "TIBT100"
         let userID = "validUserID"
         let jwt = "validJWT"
 
@@ -730,12 +714,13 @@ describe("courseManager tests", () => {
     })
 
     it("tests deleteUserFromCourse with course they're registered in ", async () => {
-        let coursename = "TIBT 100"
+        let coursename = "TIBT400"
         let userID = "validUserID"
         let jwt = "validJWT"
 
+        console.log("here")
         // add this user to the course first (if collection DNE, will create)
-        await dbCourse.collection(coursename).insertOne({
+        await dbCourse.collection("TIBT 400").insertOne({
             displayName: "someDisplayName",
             userID,
         })
@@ -748,7 +733,7 @@ describe("courseManager tests", () => {
 
         // remove this collection once we're done 
         try {
-            await dbCourse.collection(coursename).drop()
+            await dbCourse.collection("TIBT 400").drop()
         } catch (err) {
             // collection DNE, don't drop
         }
@@ -912,7 +897,7 @@ describe("courseManager tests", () => {
             })
             .expect(200)
             .then(res => {
-                expect(res.body).toEqual("Course deleted successfully")
+                expect(res.body).toEqual({"result": "Course deleted successfully"})
             })
 
         await userCollection.deleteOne({ "userID": userID })
