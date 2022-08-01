@@ -86,48 +86,6 @@ public class PrivateChatActivity extends AppCompatActivity {
         String url = "http://" + serverIP + ":3010/getPrivateConversationByUserIDs/"
                 + senderID + "/" + receiverID + "/" + LoginPage.accessToken;
 
-//        JsonObjectRequest jsonObjectRequest =
-//                new JsonObjectRequest(Request.Method.GET, url, null,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//                                JSONArray msgsArray = new JSONArray();
-//                                try {
-//                                    msgsArray = response.getJSONArray("retrievedMsgs");
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                                for (int i = 0; i < msgsArray.length(); i++) {
-//                                    try {
-//                                        JSONObject msg = msgsArray.getJSONObject(i);
-//
-//                                        String nickname = msg.getString("senderName");
-//                                        String message = msg.getString("messageContent");
-//                                        Log.d("PrivateChatActivity", "message: " + message);
-//
-//                                        Message m = new Message(nickname, message);
-//                                        MessageList.add(m);
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                                // notify adapter dataset changed
-//                                chatBoxAdapter = new ChatBoxAdapter(MessageList);
-//                                chatBoxAdapter.notifyDataSetChanged();
-//                                myRecyclerView.setAdapter(chatBoxAdapter);
-//
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.d("PrivateChatActivity", "Volley request error");
-//                    }
-//                });
-//
-//        // Add the request to the RequestQueue.
-//        queue.add(jsonObjectRequest);
-
         JsonArrayRequest jsonArrayRequest =
                 new JsonArrayRequest(Request.Method.GET, url, null,
                         new Response.Listener<JSONArray>() {

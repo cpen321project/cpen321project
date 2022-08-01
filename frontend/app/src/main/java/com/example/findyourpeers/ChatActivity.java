@@ -68,27 +68,6 @@ public class ChatActivity extends AppCompatActivity {
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
 
-        // https://stackoverflow.com/questions/34102741/recyclerview-not-scrolling-to-end-when-keyboard-opens
-//        if (Build.VERSION.SDK_INT >= 11) {
-//            myRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//                @Override
-//                public void onLayoutChange(View v,
-//                                           int left, int top, int right, int bottom,
-//                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                    if (bottom < oldBottom) {
-//                        myRecyclerView.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (myRecyclerView.getAdapter().getItemCount() > 1)
-//                                myRecyclerView.smoothScrollToPosition(
-//                                        myRecyclerView.getAdapter().getItemCount() - 1);
-//                            }
-//                        }, 100);
-//                    }
-//                }
-//            });
-//        }
-
         String serverIP = "10.0.2.2";
 
         // Instantiate the RequestQueue.
