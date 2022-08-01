@@ -131,9 +131,9 @@ io.on('connection', (socket) => {
             return
         }
         console.log("Inside joinPrivateChat:")
-        usersSockets[displayName] = socket.id
+        usersSockets[userID] = socket.id
         console.log(displayName + " : initiated a private chat")
-        console.log("usersSockets[displayName]: " + usersSockets[displayName])
+        console.log("usersSockets[userID]: " + usersSockets[userID])
         // socket.join(groupID)
     })
 
@@ -169,7 +169,7 @@ io.on('connection', (socket) => {
                 "senderNickname": senderName
             }
 
-            let receiverSocketID = usersSockets[receiverName]
+            let receiverSocketID = usersSockets[receiverID]
             // add check for senderSocketID (socket.id),
             // for try to send without join first
             if (receiverSocketID) {
