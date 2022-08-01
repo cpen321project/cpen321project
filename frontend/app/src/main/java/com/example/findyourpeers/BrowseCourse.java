@@ -48,9 +48,9 @@ public class BrowseCourse extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_course);
         Intent intentCourse = getIntent();
-//        userID = intentCourse.getExtras().getString("userID");
-        displayName = ProfilePage.displayName; //intentCourse.getExtras().getString("displayName");
-        studentCourseList = ProfilePage.courseListAL; //(ArrayList<String>) intentCourse.getSerializableExtra("courselist");
+        userID = intentCourse.getExtras().getString("userID");
+        displayName = intentCourse.getExtras().getString("displayName");
+        studentCourseList = (ArrayList<String>) intentCourse.getSerializableExtra("courselist");
 
         //AutoCompleteTextView actvCourse = (AutoCompleteTextView) findViewById(R.id.autocompletecourse);
         EditText etCourse = (EditText) findViewById(R.id.edit_text_course);
@@ -190,6 +190,7 @@ public class BrowseCourse extends AppCompatActivity {
                                 }
                             }
                         });
+
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -217,7 +218,7 @@ public class BrowseCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://34.130.14.116:3010/addusertocourse";
+        String urlUserToCourse = Urls.URL + "addusertocourse";
         JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, urlUserToCourse, usertoadd,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -247,7 +248,7 @@ public class BrowseCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlCourseToUser = "http://34.130.14.116:3010/addcoursetouser";
+        String urlCourseToUser = Urls.URL + "addcoursetouser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, urlCourseToUser, coursetoadd,
                 new Response.Listener<JSONObject>() {
                     @Override

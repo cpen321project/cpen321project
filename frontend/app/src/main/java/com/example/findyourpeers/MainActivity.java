@@ -1,23 +1,21 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 
 
 public class MainActivity extends AppCompatActivity {
     public static final String FCM_CHANNEL_ID = "FCM_CHANNEL_ID";
+    private final Trace viewLoadTrace = FirebasePerformance.startTrace("TestActivity-LoadTime");
 
     final static String TAG = "MainActivity";
     public String token;
@@ -66,6 +64,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(signUpIntent);
             }
         });
+
+//        FirstDrawListener.registerFirstDrawListener(mainView, new FirstDrawListener.OnFirstDrawCallback() {
+//            @Override
+//            public void onDrawingStart() {
+//                // In practice you can also record this event separately
+//            }
+//
+//            @Override
+//            public void onDrawingFinish() {
+//                // This is when the Activity UI is completely drawn on the screen
+//                viewLoadTrace.stop();
+//            }
+//        });
 
     }
 }

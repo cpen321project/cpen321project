@@ -1,8 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +8,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +35,7 @@ public class StudentListPage extends AppCompatActivity {
     String currentUserID;
     TextView titleCourse;
     ArrayList<String> courseList;
+    private Integer studentButtonCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class StudentListPage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlStudentList = "http://34.130.14.116:3010/getstudentlist/"
+        String urlStudentList = Urls.URL + "getstudentlist/"
                 + coursenameNoSpace + "/" + LoginPage.accessToken + "/" + currentUserID;
 
         // Initialize a new JsonArrayRequest instance
@@ -139,6 +140,8 @@ public class StudentListPage extends AppCompatActivity {
 
         TextView studentName = (TextView) studentButtonView.findViewById(R.id.text_username);
         studentName.setText(displayName);
+        studentName.setTag("button-"+ studentButtonCounter);
+        studentButtonCounter++;
         studentName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

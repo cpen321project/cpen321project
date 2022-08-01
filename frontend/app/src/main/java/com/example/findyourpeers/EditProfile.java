@@ -96,7 +96,7 @@ public class EditProfile extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = "http://34.130.14.116:3010/editprofile";
+        String url = Urls.URL + "editprofile";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, updatedprofile,
                 new Response.Listener<JSONObject>() {
                     @Override

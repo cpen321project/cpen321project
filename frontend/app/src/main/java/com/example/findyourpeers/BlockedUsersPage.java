@@ -50,7 +50,7 @@ public class BlockedUsersPage extends AppCompatActivity {
         layoutStudentButton = findViewById(R.id.layout_student_list);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://34.130.14.116:3010/getuserprofile/"
+        String urltest = Urls.URL + "getuserprofile/"
                 +"0" + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
@@ -110,7 +110,7 @@ public class BlockedUsersPage extends AppCompatActivity {
     }
 
     private void makeDisplayNameGetRequest(RequestQueue requestQueue, String thisUserID) {
-        String requestUrl = "http://34.130.14.116/getDisplayNameByUserID/" + thisUserID;
+        String requestUrl = Urls.URL + "getDisplayNameByUserID/" + thisUserID;
         JsonObjectRequest displayNameRequest = new JsonObjectRequest(Request.Method.GET, requestUrl,
                 null, new Response.Listener<JSONObject>() {
             @Override
