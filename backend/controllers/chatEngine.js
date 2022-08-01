@@ -59,15 +59,11 @@ module.exports = {
         //         }
         //     })
 
-        let retrievedMessages = Message
-            .find({ groupID })
-            .select({
-                _id: 0,
-            })
-            .sort({ createdAt: 'asc' })
+        let retrievedMessages = await Message.find({ groupID }).select({ _id: 0 }).sort({ createdAt: 'asc' })
         if (retrievedMessages) {
             console.log("succesfully retrieved messages")
-            // return res.status(200).send({ retrievedMessages })
+            console.log("retrievedMessages: " + retrievedMessages)
+            // return res.status(200).send( {retrievedMessages} )
             return res.status(200).json(retrievedMessages)
         } else {
             res.status(500).json({ success: false, err })
@@ -114,8 +110,8 @@ module.exports = {
 
         console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 
-        let senderName = await userStore.getDisplayNameByUserIDfromDB(senderID);
-        let receiverName = await userStore.getDisplayNameByUserIDfromDB(receiverID);
+        let senderName = await getDisplayNameByUserIDfromDB(senderID);
+        let receiverName = await getDisplayNameByUserIDfromDB(receiverID);
         console.log("senderName: " + senderName)
         console.log("receiverName: " + receiverName)
 
@@ -173,6 +169,7 @@ module.exports = {
 
         if (retrievedMessages) {
             console.log("succesfully retrieved messages")
+            console.log("retrievedMessages: " + retrievedMessages)
             // return res.status(200).send({ retrievedMessages })
             return res.status(200).json(retrievedMessages)
         } else {

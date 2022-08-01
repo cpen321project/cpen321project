@@ -1,13 +1,13 @@
 module.exports = {
     getDisplayNameByUserID: async function (req, res) {
-        let retrievedDisplayName = await module.exports.getDisplayNameByUserIDfromDB(req.params.userID)
+        let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
         console.log("retrievedDisplayName: " + retrievedDisplayName)
         res.status(200).json({ retrievedDisplayName })
     },
     getDisplayNameByUserIDfromDB: (userID) => {
         console.log("----------------getDisplayNameByUserIDfromDB------------------")
         console.log("userID: " + userID)
-    
+
         if (userID === "validUserID") {
             return "displayName1"
         } else if (userID === "receiverID") {
@@ -15,7 +15,7 @@ module.exports = {
         } else {
             return "defaultDisplayName"
         }
-    }, 
+    },
     signup: async (req, res) => {
         return res.status(200)
     },
@@ -50,3 +50,17 @@ module.exports = {
         return res.status(200)
     }
 }
+
+function getDisplayNameByUserIDfromDB(userID) {
+    console.log("----------------getDisplayNameByUserIDfromDB------------------")
+    console.log("userID: " + userID)
+
+    if (userID === "validUserID") {
+        return "displayName1"
+    } else if (userID === "receiverID") {
+        return "displayName2"
+    } else {
+        return "defaultDisplayName"
+    }
+}
+global.getDisplayNameByUserIDfromDB = getDisplayNameByUserIDfromDB

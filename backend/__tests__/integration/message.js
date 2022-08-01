@@ -395,8 +395,8 @@ describe("private message and group message use case tests", () => {
         })
 
         afterAll(async () => {
-            ioServer.close()
             sender.disconnect()
+            ioServer.close()
 
             await mongoose.disconnect()
             if (client) {

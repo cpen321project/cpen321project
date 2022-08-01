@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -82,25 +83,58 @@ public class PrivateChatActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         // getPrivateConversationByUserIDs
-//        String url = "http://" + serverIP + ":3010/getPrivateConversationByUserNames/"
-//                + senderName + "/" + receiverName;
-
         String url = "http://" + serverIP + ":3010/getPrivateConversationByUserIDs/"
                 + senderID + "/" + receiverID + "/" + LoginPage.accessToken;
 
-        // change to array request for clean up
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.GET, url, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                JSONArray msgsArray = new JSONArray();
-                                try {
-                                    msgsArray = response.getJSONArray("retrievedMsgs");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+//        JsonObjectRequest jsonObjectRequest =
+//                new JsonObjectRequest(Request.Method.GET, url, null,
+//                        new Response.Listener<JSONObject>() {
+//                            @Override
+//                            public void onResponse(JSONObject response) {
+//                                JSONArray msgsArray = new JSONArray();
+//                                try {
+//                                    msgsArray = response.getJSONArray("retrievedMsgs");
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                                for (int i = 0; i < msgsArray.length(); i++) {
+//                                    try {
+//                                        JSONObject msg = msgsArray.getJSONObject(i);
+//
+//                                        String nickname = msg.getString("senderName");
+//                                        String message = msg.getString("messageContent");
+//                                        Log.d("PrivateChatActivity", "message: " + message);
+//
+//                                        Message m = new Message(nickname, message);
+//                                        MessageList.add(m);
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                                // notify adapter dataset changed
+//                                chatBoxAdapter = new ChatBoxAdapter(MessageList);
+//                                chatBoxAdapter.notifyDataSetChanged();
+//                                myRecyclerView.setAdapter(chatBoxAdapter);
+//
+//                            }
+//                        }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.d("PrivateChatActivity", "Volley request error");
+//                    }
+//                });
+//
+//        // Add the request to the RequestQueue.
+//        queue.add(jsonObjectRequest);
 
+        JsonArrayRequest jsonArrayRequest =
+                new JsonArrayRequest(Request.Method.GET, url, null,
+                        new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                JSONArray msgsArray = new JSONArray();
+                                msgsArray = response;//.getJSONArray("retrievedMsgs");
                                 for (int i = 0; i < msgsArray.length(); i++) {
                                     try {
                                         JSONObject msg = msgsArray.getJSONObject(i);
@@ -129,7 +163,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                 });
 
         // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest);
+        queue.add(jsonArrayRequest);
 
         // connect socket client to the server
         try {

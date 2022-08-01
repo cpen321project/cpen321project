@@ -1,8 +1,3 @@
-// const { MongoClient } = require("mongodb")
-// const uri = "mongodb://localhost:27017"
-// const client = new MongoClient(uri)
-// client.connect()
-
 const authUtils = require('../utils/authUtils.js')
 const chatEngine = require('../controllers/chatEngine.js')
 const forumEngine = require('../controllers/forumEngine.js')
@@ -26,8 +21,7 @@ async function getDisplayNameByUserIDfromDB(userID) {
         console.log("retrievedUser: not found");
     }
 }
-module.exports.getDisplayNameByUserIDfromDB = getDisplayNameByUserIDfromDB
-
+global.getDisplayNameByUserIDfromDB = getDisplayNameByUserIDfromDB
 
 module.exports = {
     signup: async (req, res) => {
@@ -121,7 +115,7 @@ module.exports = {
         console.log("req.params.userID: " + req.params.userID);
         console.log("req.params.jwt: " + req.params.jwt);
         let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!tokenIsValid) { 
+        if (!tokenIsValid) {
             console.log("Token not validated")
             return res.status(400).json("Token not validated")
         }
@@ -180,34 +174,34 @@ module.exports = {
         //     return
         // }
 
-        let displayName= req.body.displayName;
-        let userID= req.body.userID;
+        let displayName = req.body.displayName;
+        let userID = req.body.userID;
         let coopStatus = req.body.coopStatus;
         let yearStanding = req.body.yearStanding;
-        let registrationToken= req.body.registrationToken;
-        
-        if(displayName === null || userID === null || coopStatus === null|| yearStanding === null|| registrationToken === null){
+        let registrationToken = req.body.registrationToken;
+
+        if (displayName === null || userID === null || coopStatus === null || yearStanding === null || registrationToken === null) {
             console.log("null parameter")
             return res.status(400).json("null parameter")
         }
 
-        if(displayName == "" || userID == "" || coopStatus == "" || yearStanding == "" || registrationToken == ""){
+        if (displayName == "" || userID == "" || coopStatus == "" || yearStanding == "" || registrationToken == "") {
             console.log("empty parameter")
             return res.status(400).json("empty parameter")
         }
 
-        if(containsSpecialChars(displayName)){
+        if (containsSpecialChars(displayName)) {
             console.log("display name contains special character")
             return res.status(400).json("display name contains special character")
         }
-        
-        if(!(coopStatus == "Yes" || coopStatus == "No")){
+
+        if (!(coopStatus == "Yes" || coopStatus == "No")) {
             console.log(coopStatus)
             console.log("coop status invalid")
             return res.status(400).json("coop status invalid")
         }
 
-        if(!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding== "5")){
+        if (!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding == "5")) {
             console.log("year standing invalid")
             return res.status(400).json("year standing invalid")
         }
@@ -293,8 +287,8 @@ module.exports = {
         if (!tokenIsValid) {
             console.log("Token not validated")
             return res.status(400).json("Token not validated")
-        } 
-        
+        }
+
         let findResult = await userCollection.find({ userID: userIDtoDelete }).toArray()
         if (findResult.length === 0) {
             console.log("findResult: " + findResult + ".")
@@ -307,7 +301,7 @@ module.exports = {
             console.log("Not blocked previously.")
             return res.status(400).json("Not blocked previously")
         }
-        
+
         userCollection.updateOne({ "userID": req.params.userID }, { $pull: { "blockedUsers": userIDtoDelete } }, (err, result) => {
             if (err) {
                 console.error(err)
@@ -319,7 +313,8 @@ module.exports = {
     },
 
     getDisplayNameByUserID: async function (req, res) {
-        let retrievedDisplayName = await module.exports.getDisplayNameByUserIDfromDB(req.params.userID)
+        console.log("inside getDisplayNameByUserID")
+        let retrievedDisplayName = await getDisplayNameByUserIDfromDB(req.params.userID)
         console.log("retrievedDisplayName: " + retrievedDisplayName)
         res.status(200).json({ retrievedDisplayName })
     },
@@ -336,23 +331,23 @@ module.exports = {
             return res.status(400).json("null parameter")
         }
 
-        if(displayName == "" || userID == "" || coopStatus == "" || yearStanding == "" || jwt == ""){
+        if (displayName == "" || userID == "" || coopStatus == "" || yearStanding == "" || jwt == "") {
             console.log("empty parameter")
             return res.status(400).json("empty parameter")
         }
 
-        if(containsSpecialChars(displayName)){
+        if (containsSpecialChars(displayName)) {
             console.log("display name contains special character")
             return res.status(400).json("display name contains special character")
         }
-        
-        if(!(coopStatus == "Yes" || coopStatus == "No")){
+
+        if (!(coopStatus == "Yes" || coopStatus == "No")) {
             console.log(coopStatus)
             console.log("coop status invalid")
             return res.status(400).json("coop status invalid")
         }
 
-        if(!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding== "5")){
+        if (!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding == "5")) {
             console.log("year standing invalid")
             return res.status(400).json("year standing invalid")
         }
@@ -361,7 +356,7 @@ module.exports = {
         if (!tokenIsValid) {
             console.log("Token not validated")
             return res.status(400).json("Token not validated")
-        } 
+        }
 
         // update all group & private msgs in chatDB with new displayName
         let updateGroupChatsResult = await chatEngine.updateUserDisplayNameInGroupChats(userID, displayName)
@@ -402,8 +397,9 @@ module.exports = {
 
 
         courses[0].courselist.forEach(coursename => {
-        console.log("coursename " + coursename);
-        courseManager.editDisplayNameInCourse(displayName, userID, coursename)});
+            console.log("coursename " + coursename);
+            courseManager.editDisplayNameInCourse(displayName, userID, coursename)
+        });
 
     }
 }

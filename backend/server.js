@@ -121,8 +121,8 @@ io.on('connection', (socket) => {
             // get names of sender and receiver 
             let senderName, receiverName
             try {
-                senderName = await userStore.getDisplayNameByUserIDfromDB(senderID);
-                receiverName = await userStore.getDisplayNameByUserIDfromDB(receiverID);
+                senderName = await getDisplayNameByUserIDfromDB(senderID);
+                receiverName = await getDisplayNameByUserIDfromDB(receiverID);
                 console.log("senderName: " + senderName)
                 console.log("receiverName: " + receiverName)
             } catch (err) {
