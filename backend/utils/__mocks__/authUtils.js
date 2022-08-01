@@ -1,13 +1,15 @@
 exports.validateAccessToken = jest.fn(async (JWT, userID) => {
     if (!JWT || !userID) {
         return false
-    } else if (userID === "invalidUserID") {
+    } else if (JWT === "" || userID === ""){
         return false
-    } else if (userID === "validUserID" && JWT === "validJWT") {
+    }else if (userID.includes("invalidUserID")) {
+        return false
+    }else if (JWT.includes("invalidJWT")) {
+        return false
+    }else if (userID.includes("validUserID") && JWT.includes("validJWT")) {
         return true
-    } else if (JWT === "invalidJWT") {
-        return false
-    } else if (JWT === "expiredJWT") {
+    } else if (JWT.includes("expiredJWT")) {
         return false
     } else {
         return false

@@ -186,9 +186,23 @@ describe("userStore tests", () => {
 
     it("tests getUserProfile with valid userID in database", async () => {
         let otherUserID = "0"
-        let userID = "validUserID"
+        let userID = "validUserID100"
         let jwt = "validJWT"
-        await request(app).get("/getuserprofile/" + otherUserID + "/" + userID + "/" + jwt).expect(400)
+
+        await userCollection.insertOne({
+            displayName: "GUP test valid",
+            userID,
+            coopStatus: "Yes",
+            yearStanding: "1",
+            registrationToken: "regToken",
+            courselist: [],
+            blockedUsers: [],
+        })
+
+        await request(app).get("/getuserprofile/" + otherUserID + "/" + userID + "/" + jwt).expect(200)
+
+        await userCollection.deleteOne({ "userID": userID })
+
         jest.setTimeout(30000);
     })
 
@@ -712,10 +726,10 @@ describe("userStore tests", () => {
 
     it("tests edit profile with illegal display name", async () => {
         let displayName = "$%*^*$##$"
-        let userID = "validUserID"
+        let userID = "validUserID1"
         let coopStatus = "Yes"
         let yearStanding = "1"
-        let jwt = "validJWT"
+        let jwt = "validJWT1"
 
         // delete user if it exists 
         await userCollection.deleteOne({ "userID": userID })
@@ -753,10 +767,10 @@ describe("userStore tests", () => {
 
     it("tests edit profile with empty display name", async () => {
         let displayName = ""
-        let userID = "validUserID"
+        let userID = "validUserID2"
         let coopStatus = "Yes"
         let yearStanding = "1"
-        let jwt = "validJWT"
+        let jwt = "validJWT2"
 
          // delete user if it exists 
          await userCollection.deleteOne({ "userID": userID })
@@ -793,10 +807,10 @@ describe("userStore tests", () => {
     
     it("tests edit profile with illegal year standing", async () => {
         let displayName = "yayayay"
-        let userID = "validUserID"
+        let userID = "validUserID3"
         let coopStatus = "Yes"
         let yearStanding = "7"
-        let jwt = "validJWT"
+        let jwt = "validJWT3"
 
          // delete user if it exists 
          await userCollection.deleteOne({ "userID": userID })
@@ -833,10 +847,10 @@ describe("userStore tests", () => {
 
     it("tests edit profile with empty year standing", async () => {
         let displayName = "yayaya"
-        let userID = "validUserID"
+        let userID = "validUserID4"
         let coopStatus = "Yes"
         let yearStanding = ""
-        let jwt = "validJWT"
+        let jwt = "validJWT4"
 
          // delete user if it exists 
          await userCollection.deleteOne({ "userID": userID })
@@ -873,10 +887,10 @@ describe("userStore tests", () => {
 
     it("tests edit profile with empty coop status", async () => {
         let displayName = "yayayya"
-        let userID = "validUserID"
+        let userID = "validUserID5"
         let coopStatus = ""
         let yearStanding = "1"
-        let jwt = "validJWT"
+        let jwt = "validJWT5"
 
          // delete user if it exists 
          await userCollection.deleteOne({ "userID": userID })
@@ -917,7 +931,7 @@ describe("userStore tests", () => {
         let userID = ""
         let coopStatus = "Yes"
         let yearStanding = "1"
-        let jwt = "validJWT"
+        let jwt = "validJWTaa"
 
          // delete user if it exists 
          await userCollection.deleteOne({ "userID": userID })
@@ -955,13 +969,13 @@ describe("userStore tests", () => {
 
     it("tests edit profile with valid parameters", async () => {
         let displayName = "yayaya"
-        let userID = "validUserID"
+        let userID = "validUserID6"
         let coopStatus = "Yes"
         let yearStanding = "1"
-        let jwt = "validJWT"
+        let jwt = "validJWT6"
 
          // delete user if it exists 
-         await userCollection.deleteOne({ "userID": userID })
+         //await userCollection.deleteOne({ "userID": userID })
 
          // add new user
          await userCollection.insertOne({
@@ -988,37 +1002,37 @@ describe("userStore tests", () => {
                 yearStanding,
                 jwt
             })
-            .expect(200)
+            .expect(200).then(userCollection.deleteOne({ "userID": userID })).then(dbCourse.collection("INDO 100").deleteOne({ "userID": userID }))
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        //await userCollection.deleteOne({ "userID": userID })
+        //await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
     })
 
-    // it("tests edit profile with null jwt", async () => {
-    //     let displayName = "yayaya"
-    //     let userID = "validUserID"
-    //     let coopStatus = "Yes"
-    //     let yearStanding = "1"
-    //     let jwt = null
+    it("tests edit profile with null jwt", async () => {
+        let displayName = "yayaya"
+        let userID = "validUserIDbb"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = null
 
-    //     await request(app).put("/editprofile").send({
-    //             displayName,
-    //             userID,
-    //             coopStatus,
-    //             yearStanding,
-    //             jwt
-    //         })
-    //         .expect(400)
-    //     jest.setTimeout(30000);
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
 
-    //     await userCollection.deleteOne({ "userID": userID })
-    //     await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
-    // })
+        // await userCollection.deleteOne({ "userID": userID })
+        // await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
 
     it("tests edit profile with empty jwt", async () => {
         let displayName = "yayaya"
-        let userID = "validUserID"
+        let userID = "validUserIDcc"
         let coopStatus = "Yes"
         let yearStanding = "1"
         let jwt = ""
@@ -1059,7 +1073,7 @@ describe("userStore tests", () => {
 
     it("tests edit profile with empty userID", async () => {
         let displayName = "yayaya"
-        let userID = "validUserID"
+        let userID = ""
         let coopStatus = "Yes"
         let yearStanding = "1"
         let jwt = "invalidJWT"

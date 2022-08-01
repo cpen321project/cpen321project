@@ -331,7 +331,7 @@ module.exports = {
         let yearStanding = req.body.yearStanding
         let jwt = req.body.jwt
 
-        if(!displayName|| !userID || !coopStatus || !yearStanding || !jwt){
+        if(displayName === null|| userID === null || coopStatus === null || yearStanding === null|| jwt === null){
             console.log("null parameter")
             return res.status(400).json("null parameter")
         }
