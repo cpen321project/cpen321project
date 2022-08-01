@@ -131,8 +131,7 @@ module.exports = {
         let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenValidated) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(404).json("Token not validated")
         }
 
         let questionID = req.params.questionID
@@ -164,15 +163,18 @@ module.exports = {
         // check for null, undefined, 0, NaN, false, or empty string, and check boolean is boolean
         if (!topic || !askerID || !askerName || !questionContent || typeof isAskedAnonymously !== "boolean" || !jwt ) {
             console.log("Invalid body parameter(s).")
-            res.status(400).send({ response: "Invalid body parameter(s)." })
-            return;
+            return res.status(400).send({ response: "Invalid body parameter(s)." });
+        }
+
+        if (topic === ""|| askerID === "" || askerName === "" || questionContent === "" || isAskedAnonymously === "" || jwt === "" ) {
+            console.log("empty body parameter(s).")
+            return res.status(400).send({ response: "Invalid body parameter(s)." });
         }
 
         let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
         if (!tokenValidated) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(404).json("Token not validated")
         }
 
         console.log(askerName + " : " + questionContent)
@@ -200,15 +202,18 @@ module.exports = {
         // check for null, undefined, 0, NaN, false, or empty string, and check boolean is boolean
         if (!questionID || !topic || !answererID || !answererName || !answerContent || typeof isAnsweredAnonymously !== "boolean" || !jwt ) {
             console.log("Invalid body parameter(s).")
-            res.status(400).send({ response:"Invalid body parameter(s)." })
-            return;
+            return res.status(400).json("Invalid body parameter(s)")
+        }
+
+        if (questionID === "" || topic === ""|| answererID === "" || answererName === "" || answerContent === "" || isAnsweredAnonymously === "" || jwt === "" ) {
+            console.log("empty body parameter(s).")
+            return res.status(400).json("empty body parameter(s)")
         }
 
         let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
         if (!tokenValidated) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(404).json("Token not validated")
         }
 
         console.log(answererName + " : " + answerContent)
@@ -232,15 +237,13 @@ module.exports = {
         // check for null, undefined, 0, NaN, false, or empty string
         if (!questionID || !askerID || !askerName || !questionContent || !jwt ) {
             console.log("Invalid body parameter(s).")
-            res.status(400).send({ response: "Invalid body parameter(s)." })
-            return;
+            return res.status(400).json("Invalid body parameter(s)")
         }
 
         let tokenValidated = await authUtils.validateAccessToken(jwt, askerID)
         if (!tokenValidated) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(404).json("Token not validated")
         }
 
         console.log("questionID: " + questionID) 
@@ -275,11 +278,16 @@ module.exports = {
             return;
         }
 
+        if (answerID === "" || answererID === "" || answererName === "" || answerContent === ""  || jwt === "") {
+            console.log("empty body parameter(s).")
+            res.status(400).send({ response: "empty body parameter(s)." })
+            return;
+        }
+
         let tokenValidated = await authUtils.validateAccessToken(jwt, answererID)
         if (!tokenValidated) {
             console.log("Token not validated")
-            res.status(404)
-            return
+            return res.status(404).json("Token not validated")
         }
         console.log("answerID: " + answerID) 
         console.log(answererName + " : " + answerContent)
