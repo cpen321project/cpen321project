@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -96,18 +97,14 @@ public class ChatActivity extends AppCompatActivity {
                 "/" + userID + "/" + LoginPage.accessToken;
 
         // Request a string response from the provided URL.
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.GET, url, null,
-                        new Response.Listener<JSONObject>() {
+        JsonArrayRequest jsonArrayRequest =
+                new JsonArrayRequest(Request.Method.GET, url, null,
+                        new Response.Listener<JSONArray>() {
                             @Override
-                            public void onResponse(JSONObject response) {
+                            public void onResponse(JSONArray response) {
 //                        Log.d("ChatActivity", "Response: " + response);
                                 JSONArray msgsArray = new JSONArray();
-                                try {
-                                    msgsArray = response.getJSONArray("retrievedMsgs");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                msgsArray = response;//.getJSONArray("retrievedMsgs");
 
                                 for (int i = 0; i < msgsArray.length(); i++) {
                                     try {
@@ -139,7 +136,7 @@ public class ChatActivity extends AppCompatActivity {
                 });
 
         // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest);
+        queue.add(jsonArrayRequest);
 
         // connect socket client to the server
         try {

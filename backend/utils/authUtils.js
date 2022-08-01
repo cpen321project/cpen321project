@@ -14,6 +14,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool({
     ClientId: CLIENTID
 });
 
+
 //AWS cognito generates two pairs of RSA keys (a public and local key) for each userpool,
 // the public key available at the following URL, and the local key is generated when user logs in
 const url = COGNITO_ISSUER + '/.well-known/jwks.json'
@@ -53,7 +54,7 @@ exports.signUserUp = (email, password, username) => {
         cognito.signUp(cognitoParams, function (err, res) {
             if (err) {
                 reject(err)    // Example error codes: InvalidPasswordException, InvalidParameterException (invalid email address)
-                return 
+                return
             }
             resolve(res.UserSub)
         })

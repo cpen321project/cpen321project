@@ -63,8 +63,8 @@ public class ViewBlockedProfile extends AppCompatActivity {
         layoutCourseOther = findViewById(R.id.other_courses_taken_layout);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://34.130.14.116:3010/getuserprofile/"
-                + "0" + "/" + userID + "/" + LoginPage.accessToken;
+        String urlOther = "http://10.0.2.2:3010/getuserprofile/"
+                + userID + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
                 null,

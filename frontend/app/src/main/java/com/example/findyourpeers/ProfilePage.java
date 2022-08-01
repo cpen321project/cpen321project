@@ -34,16 +34,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
+    final private String TAG = "ProfilePage";
     public LinearLayout layoutCourseButton;
+    public String token;
     private TextView displayNameTV;
     private TextView coopTV;
     private TextView yearTV;
     private String displayName;
     private ArrayList<String> courseListAL;
-    final private String TAG = "ProfilePage";
     private ImageView editBtn;
-
-    public String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class ProfilePage extends AppCompatActivity {
         String userID = intentProfile.getExtras().getString("userID");
         String username = intentProfile.getExtras().getString("username");
         String accessToken = LoginPage.accessToken;
-        Log.d(TAG, "accessToken in ProfilePage: " +  accessToken);
+        Log.d(TAG, "accessToken in ProfilePage: " + accessToken);
 
         courseListAL = new ArrayList<>();
 
@@ -100,7 +99,8 @@ public class ProfilePage extends AppCompatActivity {
                         forumQuestionPageIntent.putExtra("courseList", courseListAL);
                         startActivity(forumQuestionPageIntent);
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
@@ -257,24 +257,34 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = Urls.URL + "deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
+        Log.d(TAG, "coursenameNoSpace: " + coursenameNoSpace);
+        Log.d(TAG, "userID: " + userID);
+        Log.d(TAG, "LoginPage.accessToken: " + LoginPage.accessToken);
+
+        String urlUserToCourse = Urls.URL + "deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" + LoginPage.accessToken;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
-                        Toast.makeText(ProfilePage.this, "user deleted from course", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this, "User deleted from course", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // error.
-                        Toast.makeText(ProfilePage.this,
-                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
-                        startActivity((loginIntent));
+                        String errorString = new String(error.networkResponse.data);
+                        Log.d(TAG, "deleteuserfromcourse errorString: " + errorString);
+                        if (errorString.equals("Token not validated")) {
+                            Toast.makeText(ProfilePage.this,
+                                    "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                            Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                            startActivity((loginIntent));
+                        } else {
+                            Toast.makeText(ProfilePage.this,
+                                    "deleteuserfromcourse error", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
@@ -303,10 +313,17 @@ public class ProfilePage extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfilePage.this,
-                        "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
-                startActivity((loginIntent));
+                String errorString = new String(error.networkResponse.data);
+                Log.d(TAG, "deletecoursefromuser errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(ProfilePage.this,
+                            "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(ProfilePage.this,
+                            "deletecoursefromuser error", Toast.LENGTH_LONG).show();
+                }
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -329,7 +346,7 @@ public class ProfilePage extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String url = Urls.URL +  "newRegistrationToken";
+        String url = Urls.URL + "newRegistrationToken";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
                 new Response.Listener<JSONObject>() {
                     @Override
