@@ -206,6 +206,28 @@ describe("userStore tests", () => {
         jest.setTimeout(30000);
     })
 
+    it("tests getUserProfile with valid userID not in database", async () => {
+        let otherUserID = "0"
+        let userID = "validUserID100"
+        let jwt = "validJWT"
+
+        // await userCollection.insertOne({
+        //     displayName: "GUP test valid",
+        //     userID,
+        //     coopStatus: "Yes",
+        //     yearStanding: "1",
+        //     registrationToken: "regToken",
+        //     courselist: [],
+        //     blockedUsers: [],
+        // })
+
+        await request(app).get("/getuserprofile/" + otherUserID + "/" + userID + "/" + jwt).expect(400)
+
+        //await userCollection.deleteOne({ "userID": userID })
+
+        jest.setTimeout(30000);
+    })
+
     it("tests getUserProfile with empty userID", async () => {
         let otherUserID = "0"
         let userID = ""
@@ -340,6 +362,23 @@ describe("userStore tests", () => {
         jest.setTimeout(30000);
     })
 
+    it("tests create profile with illegal coop status", async () => {
+        let displayName = "yayayay"
+        let userID = "validUserIDICS"
+        let coopStatus = "something"
+        let yearStanding = "1"
+        let registrationToken = "sometoken"
+        await request(app).post("/createprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                registrationToken
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+    })
+
     it("tests create profile with empty registration token", async () => {
         let displayName = "yayayya"
         let userID = "validUserID"
@@ -398,6 +437,24 @@ describe("userStore tests", () => {
         }
     })
 
+    it("tests create profile with null parameters", async () => {
+        let displayName = null
+        let userID = "validUserIDcreate"
+        let coopStatus ="Yes"
+        let yearStanding = "1"
+        let registrationToken = "sometoken"
+        await request(app).post("/createprofile").send({
+            displayName,
+            userID,
+            coopStatus,
+            yearStanding,
+            registrationToken
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+    })
+
     it("tests block with invalid user id", async () => {
         let blockedUserAdd = "userToBeBlocked"
         let userID = "invalidUserID"
@@ -412,6 +469,8 @@ describe("userStore tests", () => {
             .expect(400)
     })
 
+    
+
     it("tests block with null jwt", async () => {
         let blockedUserAdd = "userToBeBlocked"
         let userID = "validUserID"
@@ -424,6 +483,20 @@ describe("userStore tests", () => {
                 jwt
             })
             .expect(400)
+    })
+
+    it("tests block with null parameter(s)", async () => {
+        let blockedUserAdd = null
+        let userID = null
+        let jwt = "invalidJWT"
+
+        await request(app).post("/block")
+            .send({
+                blockedUserAdd,
+                userID,
+                jwt
+            })
+            .expect(404)
     })
 
     it("tests block with non existing user to be blocked", async () => {
@@ -623,6 +696,14 @@ describe("userStore tests", () => {
         await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
     })
 
+    it("tests unblock with null parameter(s)", async () => {
+        let userIDtoDelete = null
+        let userID = null
+        let jwt = "validJWT"
+        console.log("unblock null in test console")
+        await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
+    })
+
 
      it("tests unblock with previously not blocked user", async () => {
         let userIDtoDelete = "userIDtoDelete"
@@ -724,6 +805,8 @@ describe("userStore tests", () => {
         await userCollection.deleteOne({ "userID": userIDtoDelete })
     })
 
+    
+
     it("tests edit profile with illegal display name", async () => {
         let displayName = "$%*^*$##$"
         let userID = "validUserID1"
@@ -803,6 +886,24 @@ describe("userStore tests", () => {
 
         await userCollection.deleteOne({ "userID": userID })
         await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+    it("tests edit profile with invalid coop status ", async () => {
+        let displayName = "dnnotempty"
+        let userID = "validUserID2"
+        let coopStatus = "blabla"
+        let yearStanding = "1"
+        let jwt = "validJWT101010"
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
     })
     
     it("tests edit profile with illegal year standing", async () => {
@@ -1015,6 +1116,27 @@ describe("userStore tests", () => {
         let coopStatus = "Yes"
         let yearStanding = "1"
         let jwt = null
+
+        await request(app).put("/editprofile").send({
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                jwt
+            })
+            .expect(400)
+        jest.setTimeout(30000);
+
+        // await userCollection.deleteOne({ "userID": userID })
+        // await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+    })
+
+    it("tests edit profile with invalid jwt", async () => {
+        let displayName = "yayaya33"
+        let userID = "validUserIDbbc"
+        let coopStatus = "Yes"
+        let yearStanding = "1"
+        let jwt = "invalidJWT50505"
 
         await request(app).put("/editprofile").send({
                 displayName,

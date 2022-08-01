@@ -149,21 +149,21 @@ module.exports = {
 
     },
 
-    getCourseList: async (req, res) => {
-        let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-        if (!tokenIsValid) {
-            console.log("Token not validated")
-            return
-        }
-        await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
-            if (err) {
-                console.error("Error in getCourseList: " + err)
-                res.status(400).send(err)
-            } else {
-                res.status(200).json(resultcourse)
-            }
-        })
-    },
+    // getCourseList: async (req, res) => {
+    //     let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
+    //     if (!tokenIsValid) {
+    //         console.log("Token not validated")
+    //         return
+    //     }
+    //     await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
+    //         if (err) {
+    //             console.error("Error in getCourseList: " + err)
+    //             res.status(400).send(err)
+    //         } else {
+    //             res.status(200).json(resultcourse)
+    //         }
+    //     })
+    // },
 
     createProfile: async (req, res) => {
         // try {
@@ -277,10 +277,10 @@ module.exports = {
         let userID = req.params.userID
         let userIDtoDelete = req.params.userIDtoDelete
 
-        if (!userID || !userIDtoDelete || !jwt) {
-            console.log("Invalid parameters unblock")
-            return res.status(400).json("Invalid parameters unblock")
-        }
+        // if (!userID || !userIDtoDelete) {
+        //     console.log("Invalid parameters unblock")
+        //     return res.status(400).json("Invalid parameters unblock")
+        // }
 
 
         let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)

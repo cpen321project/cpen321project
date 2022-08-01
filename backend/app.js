@@ -25,7 +25,7 @@ module.exports = app
 
 // routes for userStore
 app.get("/getuserprofile/:otherUserID/:userID/:jwt", userStore.getUserProfile)
-app.get("/getcourselist/:userID/:jwt", userStore.getCourseList)
+//app.get("/getcourselist/:userID/:jwt", userStore.getCourseList)
 app.post("/createprofile", userStore.createProfile)
 app.post("/block", userStore.block)
 app.delete("/unblock/:userID/:userIDtoDelete/:jwt", userStore.unblock)
