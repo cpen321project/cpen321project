@@ -24,4 +24,8 @@ module.exports = {
     set userAddedNotification(value) {
         this._userAddedNotification = value;
     },
+    privateMessageNotification: async (senderName, receiverID) => {
+    }, 
+    groupMessageNotification: async (senderName, groupID) => {
+    },
 }

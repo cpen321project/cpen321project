@@ -16,7 +16,7 @@ const { Server } = require("socket.io")
 const io = new Server(server)
 const port = "3010"
 
-const notificationManager  = require("./controllers/notifcationManager.js")
+const notificationManager = require("./controllers/notifcationManager.js")
 const userStore = require('./controllers/userStore.js')
 const courseManager = require('./controllers/courseManager.js')
 const chatEngine = require('./controllers/chatEngine.js')
@@ -29,59 +29,6 @@ const authUtils = require('./utils/authUtils.js')
 server.listen(port, () => {
     console.log('Node app is running on port: ' + port)
 })
-
-// testing the firebase messaging syntax
-// tokss = 'dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA'
-// tokss = []
-// tokss.push('dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA')
-// tokss.push('dSxAWFyfQAaXup74x3Peqb:APA91bHaQVM4dQznOMnETA8AgA_5OsTaiQ3PS3CBQzc8q1_K30SAHsajyzSZQmJ1_SqXWLcnF4Nm6YemNg0tpa4k5PQ1FS9yUkj0JMUTrpIsc8UsdjvREWvX0kNZOGwMGWbmlARct-EA')
-// firebase.testMessageSyntax(tokss);
-
-// app.get('/', (req, res) => {
-//     res.send('Server is running on port: ' + port)
-// })
-//---------------------------------------------------------------------------------------
-
-// // routes for userStore
-// app.get("/getuserprofile/:otherUserID/:userID/:jwt", userStore.getUserProfile)
-// app.get("/getcourselist/:userID/:jwt", userStore.getCourseList)
-// app.post("/createprofile", userStore.createProfile)
-// app.post("/block", userStore.block)
-// app.delete("/unblock/:userID/:userIDtoDelete/:jwt", userStore.unblock)
-// app.post("/signup", userStore.signup)
-// app.post("/confirmsignup", userStore.confirmSignUp)
-// app.post("/login",userStore.login)
-// app.post("/resendconfirmationcode", userStore.resendConfirmationCode)
-// app.get("/getDisplayNameByUserID/:userID", userStore.getDisplayNameByUserID)
-// app.put("/editprofile", userStore.editProfile)
-
-// // routes for courseManager
-// app.get("/heh", (req, res) => {
-//     res.status(200).send({ "heh": "heh"} )
-// })
-
-// app.get("/getstudentlist/:coursename/:jwt/:userID", courseManager.getStudentList)
-// app.post("/addusertocourse", courseManager.addUserToCourse)
-// app.post("/addcoursetouser", courseManager.addCourseToUser)
-// app.delete("/deleteuserfromcourse/:userID/:coursename/:jwt", courseManager.deleteUserFromCourse)
-// app.post("/deletecoursefromuser", courseManager.deleteCourseFromUser)
-
-// // routes for chatEngine
-// app.get('/getConversationByGroupID/:groupID/:userID/:jwt', chatEngine.getConversationByGroupID)
-// app.get('/getPrivateConversationByUserIDs/:senderID/:receiverID/:jwt', chatEngine.getPrivateConversationByUserIDs)
-
-// // routes for forumEngine
-// app.get('/getAllQuestions/:userID/:jwt', forumEngine.getAllQuestions)
-// app.get('/getAllQuestionsForATopic/:topic/:userID/:jwt', forumEngine.getAllQuestionsForATopic)
-// app.get('/getAllQuestionsFromAUser/:userID/:jwt', forumEngine.getAllQuestionsFromAUser)
-// app.get('/getAllAnswersForAQuestion/:questionID/:userID/:jwt', forumEngine.getAllAnswersForAQuestion)
-// app.post("/postQuestion", forumEngine.postQuestion)
-// app.post("/postAnswer", forumEngine.postAnswer)
-// app.put("/editQuestion", forumEngine.editQuestion)
-// app.put("/editAnswer", forumEngine.editAnswer)
-
-// // route for firebase
-// app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
 
 let usersSockets = {}
 // socketio connection - for real time sending and receiving messages
@@ -96,7 +43,7 @@ io.on('connection', (socket) => {
         jwtFromGroup = jwt
         cachedUserID = userID
         let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenIsValid) { 
+        if (!tokenIsValid) {
             console.log("Token not validated")
             return
         }
@@ -107,12 +54,12 @@ io.on('connection', (socket) => {
     socket.on('groupMessage', async (groupID, senderID, senderName, messageContent) => {
         console.log("----------------groupMessage----------------")
         let tokenIsValid = await authUtils.validateAccessToken(jwtFromGroup, cachedUserID)
-        if (!tokenIsValid) { 
+        if (!tokenIsValid) {
             console.log("Token not validated")
             return
         }
         console.log(senderName + " : " + messageContent)
-        
+
         // save message to database 
         chatEngine.saveMessageToDB(groupID, senderID, senderName, messageContent)
         notificationManager.groupMessageNotification(senderName, groupID);
@@ -128,24 +75,41 @@ io.on('connection', (socket) => {
 
     socket.on('joinPrivateChat', async function (displayName, userID, jwt) {
         console.log("----------------joinPrivateChat----------------")
+        if (!displayName) {
+            console.log("Bad displayName")
+            return
+        }
+
         jwtFromPrivate = jwt
         cachedUserID = userID
+
         let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)
-        if (!tokenIsValid) { 
+        global.testTokenIsValid = tokenIsValid
+        if (!tokenIsValid) {
             console.log("Token not validated")
             return
         }
+
         console.log("Inside joinPrivateChat:")
         usersSockets[displayName] = socket.id
         console.log(displayName + " : initiated a private chat")
         console.log("usersSockets[displayName]: " + usersSockets[displayName])
-        // socket.join(groupID)
+        return
     })
 
     socket.on('privateMessage', async (senderID, receiverID, messageContent, isBlocked) => {
         console.log("----------------privateMessage----------------")
+
+        if (!senderID || !receiverID || !messageContent || isBlocked == null) {
+            console.log(senderID)
+            console.log(receiverID)
+            console.log(messageContent)
+            console.log(isBlocked)
+            console.log("Invalid parameters")
+            return
+        }
         let tokenIsValid = await authUtils.validateAccessToken(jwtFromPrivate, senderID)
-        if (!tokenIsValid) { 
+        if (!tokenIsValid) {
             console.log("Token not validated")
             return
         }
@@ -161,7 +125,7 @@ io.on('connection', (socket) => {
                 receiverName = await userStore.getDisplayNameByUserIDfromDB(receiverID);
                 console.log("senderName: " + senderName)
                 console.log("receiverName: " + receiverName)
-            } catch(err) {
+            } catch (err) {
                 console.log("err: " + err)
             }
 
@@ -182,16 +146,13 @@ io.on('connection', (socket) => {
                 // this only shows to other user 
                 socket.to(receiverSocketID).emit("privateMessage", message)
             } else {
-                // msg is shown to the user itself on the frontend
-                console.log("Other user is not joined, do not emit message: ")
+                console.log("Other user is not joined, do not emit message")
                 // send notif if other user does not have the private chat open 
                 notificationManager.privateMessageNotification(senderName, receiverID);
-                // console.log("Other user is not joined, emit msg to self: ")
-                // socket.emit("privateMessage", message)
             }
-            console.log("-----------------End of privateMessage-----------------")
         } else {
             console.log("Sender has been blocked, message not sent")
+            return
         }
     })
 
@@ -199,3 +160,6 @@ io.on('connection', (socket) => {
         console.log("a user disconnected")
     })
 })
+
+
+module.exports = io
