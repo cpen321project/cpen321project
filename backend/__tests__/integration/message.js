@@ -17,7 +17,7 @@ const Message = require('../../models/Message.js')
 // AWS Cognito only allows 50 new signups a day, hence we have to mock these 
 jest.mock("../../controllers/notifcationManager")
 jest.mock("../../utils/authUtils")
-jest.mock('../../controllers/userStore')
+// jest.mock('../../controllers/userStore')
 
 describe("private message and group message use case tests", () => {
 

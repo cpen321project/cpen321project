@@ -1,11 +1,3 @@
-/*  Module under test: Courses
-    Submodules: 
-        - courseManager
-    Submodules that courseManager depends on:
-        - notificationManager
-        - authUtils
-*/
-
 const app = require("../../app")
 const request = require("supertest")
 var mongoose = require('mongoose')

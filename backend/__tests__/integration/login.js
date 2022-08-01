@@ -2,8 +2,8 @@ const app = require("../../app")
 const request = require("supertest");
 var mongoose = require('mongoose')
 
-jest.mock("../../controllers/chatEngine")
-jest.mock("../../controllers/forumEngine")
+// jest.mock("../../controllers/chatEngine")
+// jest.mock("../../controllers/forumEngine")
 jest.mock("../../utils/authUtils")
 //const { getDisplayNameByUserIDfromDB } = require("../controllers/userStore")
 
