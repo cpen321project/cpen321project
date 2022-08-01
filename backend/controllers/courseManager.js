@@ -120,8 +120,10 @@ module.exports = {
         await dbCourse.collection(coursename).updateOne({userID}, {$set : update}, function(err, resultProfileUpdated){
             if (err) {
                 console.log("err: " + err)
+                return false;
             } else {
                 console.log("resultProfileUpdated: " + resultProfileUpdated)
+                return true;
 
             }
         })
