@@ -98,7 +98,7 @@ public class PrivateChatActivity extends AppCompatActivity {
         SecretKey finalKey = key;
 
 
-        String serverIP = "34.130.14.116";
+        String serverIP = "10.0.2.2";
 
         RequestQueue queue = Volley.newRequestQueue(this);
         // getPrivateConversationByUserIDs
@@ -263,6 +263,8 @@ public class PrivateChatActivity extends AppCompatActivity {
                             // only show the message if we're currently talking to that person
                             if (nickname.equals(receiverName) ) {
                                 String message = data.getString("message");
+                                Log.d("show up on the screen", message);
+
                                 String decryptedMsg = Crypto.decrypt(message, finalKey);
 
                                 Message m = new Message(nickname, decryptedMsg);

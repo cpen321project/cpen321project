@@ -38,6 +38,7 @@ public class Crypto {
     }
 
     public static String decrypt(String cipherText, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException {
+        Log.d("decrypting a message", cipherText);
         if (cipherText == null)
             return " ";
         cipherText.replace('=', ' ');
