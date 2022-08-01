@@ -1,4 +1,9 @@
-var mongoUtil = require('./mongoUtil.js');
+require("./config/mongo.js")
+const { MongoClient } = require("mongodb")
+const uri = "mongodb://localhost:27017"
+const client = new MongoClient(uri)
+client.connect()
+global.client = client
 
 const express = require('express')
 const app = express();
@@ -10,17 +15,14 @@ const chatEngine = require('./controllers/chatEngine.js')
 const forumEngine = require('./controllers/forumEngine.js')
 const authUtils = require('./utils/authUtils.js')
 
-mongoUtil.connectToServer( function( err, client ) {
-  if (err) console.log(err);
-
-app.use(express.json())
-
-//module.exports = { app, client}
-module.exports = { app }
-
 app.get('/', (req, res) => {
     res.status(200).send('Server is running on port 3010')
 })
+app.use(express.json())
+
+// module.exports = { app, client }
+module.exports = app
+
 // routes for userStore
 app.get("/getuserprofile/:otherUserID/:userID/:jwt", userStore.getUserProfile)
 app.get("/getcourselist/:userID/:jwt", userStore.getCourseList)
@@ -57,11 +59,3 @@ app.put("/editAnswer", forumEngine.editAnswer)
 
 // route for firebase
 app.post("/newRegistrationToken", notificationManager.newRegistrationToken)
-
-} );
-
-
-
-
-
-

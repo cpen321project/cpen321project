@@ -1,18 +1,18 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Button;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,30 +34,25 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ProfilePage extends AppCompatActivity {
+    final private String TAG = "ProfilePage";
     public LinearLayout layoutCourseButton;
+    public String token;
     private TextView displayNameTV;
     private TextView coopTV;
     private TextView yearTV;
-    public static String displayName;
-    public static ArrayList<String> courseListAL;
-    final private String TAG = "ProfilePage";
+    private String displayName;
+    private ArrayList<String> courseListAL;
     private ImageView editBtn;
-
-
-    public String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
-
-        String userID =   LoginPage.userID; //intentProfile.getExtras().getString("userID");
-        String username =  LoginPage.username;   //intentProfile.getExtras().getString("username");
-
-
+        String userID = intentProfile.getExtras().getString("userID");
+        String username = intentProfile.getExtras().getString("username");
         String accessToken = LoginPage.accessToken;
-        Log.d(TAG, "accessToken in ProfilePage: " +  accessToken);
+        Log.d(TAG, "accessToken in ProfilePage: " + accessToken);
 
         courseListAL = new ArrayList<>();
 
@@ -73,7 +68,7 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent editProfileIntent = new Intent(ProfilePage.this, EditProfile.class);
                 editProfileIntent.putExtra("userID", userID);
-//                editProfileIntent.putExtra("username", username);
+                //editProfileIntent.putExtra("username", username);
                 editProfileIntent.putExtra("courselist", courseListAL);
                 startActivity(editProfileIntent);
             }
@@ -104,13 +99,14 @@ public class ProfilePage extends AppCompatActivity {
                         forumQuestionPageIntent.putExtra("courseList", courseListAL);
                         startActivity(forumQuestionPageIntent);
                         return true;
-                    default: return false;
+                    default:
+                        return false;
                 }
             }
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://34.130.14.116:3010/getuserprofile/"
+        String urltest = "http://10.0.2.2:3010/getuserprofile/"
                 + "0" + "/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
@@ -195,18 +191,14 @@ public class ProfilePage extends AppCompatActivity {
                             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                             return;
                         }
-                        else   {
-                            token = task.getResult().toString();
-                            Log.d(TAG, token);
-//                            postDataUsingVolley(userID);
-                        }
 
                         // Get new FCM registration token
-
+                        token = task.getResult().toString();
 
                         // Log and toast
 //                        String msg = getString(R.string.msg_token_fmt, token);
-
+                        Log.d(TAG, token);
+                        postDataUsingVolley(userID);
 //                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -265,24 +257,34 @@ public class ProfilePage extends AppCompatActivity {
         String coursenameNoSpace = courseNameSingle.replaceAll(" ", "");
 
         // Enter the correct url for your api service site
-        String urlUserToCourse = Urls.URL + "deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" +LoginPage.accessToken;
+        Log.d(TAG, "coursenameNoSpace: " + coursenameNoSpace);
+        Log.d(TAG, "userID: " + userID);
+        Log.d(TAG, "LoginPage.accessToken: " + LoginPage.accessToken);
+
+        String urlUserToCourse = Urls.URL + "deleteuserfromcourse" + "/" + userID + "/" + coursenameNoSpace + "/" + LoginPage.accessToken;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, urlUserToCourse,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
-                        Toast.makeText(ProfilePage.this, "user deleted from course", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this, "User deleted from course", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // error.
-                        Toast.makeText(ProfilePage.this,
-                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
-                        startActivity((loginIntent));
+                        String errorString = new String(error.networkResponse.data);
+                        Log.d(TAG, "deleteuserfromcourse errorString: " + errorString);
+                        if (errorString.equals("Token not validated")) {
+                            Toast.makeText(ProfilePage.this,
+                                    "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                            Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                            startActivity((loginIntent));
+                        } else {
+                            Toast.makeText(ProfilePage.this,
+                                    "deleteuserfromcourse error", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
@@ -301,7 +303,7 @@ public class ProfilePage extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://34.130.14.116:3010/deletecoursefromuser";
+        String url = "http://10.0.2.2:3010/deletecoursefromuser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, courseDelete,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -311,47 +313,54 @@ public class ProfilePage extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfilePage.this,
-                        "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
-                startActivity((loginIntent));
+                String errorString = new String(error.networkResponse.data);
+                Log.d(TAG, "deletecoursefromuser errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(ProfilePage.this,
+                            "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(ProfilePage.this,
+                            "deletecoursefromuser error", Toast.LENGTH_LONG).show();
+                }
             }
         });
         requestQueue.add(jsonObjectRequest);
     }
 
-//    public void postDataUsingVolley(String userID) {
-//        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//
-//        JSONObject newToken = new JSONObject();
-//        try {
-//            //input your API parameters
-//            newToken.put("userID", userID);
-//            newToken.put("registrationToken", token);
-//            newToken.put("jwt", LoginPage.accessToken);
-//            Log.d(TAG, "trying to post the regToken");
-//            Log.d(TAG, userID);
-//            Log.d(TAG, token);
-//            Log.d(TAG, LoginPage.accessToken);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        // Enter the correct url for your api service site
-//        String url = Urls.URL +  "newRegistrationToken";
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-////                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
-//                        Log.d(TAG, "successfully updated token for firebase");
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d(TAG, "Was not able to update firebase token on backend");
-//            }
-//        });
-//        requestQueue.add(jsonObjectRequest);
-//
-//    }
+    public void postDataUsingVolley(String userID) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+        JSONObject newToken = new JSONObject();
+        try {
+            //input your API parameters
+            newToken.put("userID", userID);
+            newToken.put("registrationToken", token);
+            newToken.put("jwt", LoginPage.accessToken);
+            Log.d(TAG, "trying to post the regToken");
+            Log.d(TAG, userID);
+            Log.d(TAG, token);
+            Log.d(TAG, LoginPage.accessToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Enter the correct url for your api service site
+        String url = Urls.URL + "newRegistrationToken";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+//                        Toast.makeText(CreateProfile.this, "Profile created", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "successfully updated token for firebase");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Was not able to update firebase token on backend");
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+
+    }
 }

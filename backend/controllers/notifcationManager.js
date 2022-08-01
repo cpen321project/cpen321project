@@ -4,12 +4,16 @@ const authUtils = require('../utils/authUtils.js')
 
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });     
 
-const mongoUtil = require('../mongoUtil.js');
-let dbUser, dbCourse, userCollection
+// const {MongoClient} = require("mongodb");
+// const uri = "mongodb://localhost:27017"
+// const client = new MongoClient(uri)
+// client.connect()
 
-dbUser = mongoUtil.getDbUser;
-dbCourse = mongoUtil.getDbCourse;
-userCollection = mongoUtil.getUserCollection;
+let dbUser, userCollection, dbCourse
+
+dbUser = client.db("user")
+dbCourse = client.db("course")
+userCollection = dbUser.collection("userCollection")
 
 
 module.exports = {

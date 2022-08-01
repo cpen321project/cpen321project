@@ -227,7 +227,8 @@ public class BrowseCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(BrowseCourse.this, "user side failed", Toast.LENGTH_SHORT).show();
+                Log.d("BrowseCourse", "addusertocourse error: " + error.getMessage());
+//                Toast.makeText(BrowseCourse.this, "user side failed", Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonObjectRequest2);
@@ -256,6 +257,7 @@ public class BrowseCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d("BrowseCourse", "addcoursetouser error: " + error.getMessage());
                 Toast.makeText(BrowseCourse.this, "course side failed", Toast.LENGTH_SHORT).show();
             }
         });

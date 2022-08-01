@@ -24,30 +24,54 @@ module.exports = {
     },
 
     getConversationByGroupID: async (req, res) => {
+        console.log("-------------getConversationByGroupID-------------")
+        let groupID = req.params.groupID
+        let userID = req.params.userID
+        let jwt = req.params.jwt
+
+        if (!groupID || !userID || !jwt) {
+            console.log("Invalid parameters")
+            return res.status(404).json("Invalid parameters")
+        }
+
         let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenValidated) {
-            res.status(404)
-            return
+            console.log("Token not validated")
+            return res.status(400)
         }
-        const groupID = req.params.groupID
+
         // console.log("req.params.groupID: " + req.params.groupID)
         console.log("chatEngine: trying to get convo at groupID: " + groupID)
 
-        Message
+        // Message
+        //     .find({ groupID })
+        //     .select({
+        //         _id: 0,
+        //     })
+        //     .sort({ createdAt: 'asc' })
+        //     .exec((err, retrievedMsgs) => {
+        //         if (err) {
+        //             console.log("chatEngine: Error in getConversationByGroupID: " + err)
+        //             return res.status(400).send(err)
+        //         } else {
+        //             // console.log("chatEngine: retrievedConvo: " + retrievedMsgs)
+        //             return res.status(200).send({ retrievedMsgs })
+        //         }
+        //     })
+
+        let retrievedMessages = Message
             .find({ groupID })
             .select({
                 _id: 0,
             })
             .sort({ createdAt: 'asc' })
-            .exec((err, retrievedMsgs) => {
-                if (err) {
-                    console.log("chatEngine: Error in getConversationByGroupID: " + err)
-                    return res.status(400).send(err)
-                } else {
-                    // console.log("chatEngine: retrievedConvo: " + retrievedMsgs)
-                    return res.status(200).send({ retrievedMsgs })
-                }
-            })
+        if (retrievedMessages) {
+            console.log("succesfully retrieved messages")
+            // return res.status(200).send({ retrievedMessages })
+            return res.status(200).json(retrievedMessages)
+        } else {
+            res.status(500).json({ success: false, err })
+        }
 
     },
 
@@ -72,13 +96,21 @@ module.exports = {
     },
 
     getPrivateConversationByUserIDs: async (req, res) => {
+        console.log("-------------getPrivateConversationByUserIDs-------------")
+        let senderID = req.params.senderID
+        let receiverID = req.params.receiverID
+        let jwt = req.params.jwt
+
+        if (!senderID || senderID == null || !receiverID || !jwt) {
+            console.log("Invalid parameters")
+            return res.status(404).json("Invalid parameters")
+        }
+
         let tokenValidated = await authUtils.validateAccessToken(req.params.jwt, req.params.senderID)
         if (!tokenValidated) {
-            res.status(404)
-            return
+            console.log("Token not validated")
+            return res.status(400)
         }
-        const senderID = req.params.senderID
-        const receiverID = req.params.receiverID
 
         console.log("chatEngine: getPrivateConversationByUserIDs: " + senderID + " -> " + receiverID)
 
@@ -87,7 +119,39 @@ module.exports = {
         console.log("senderName: " + senderName)
         console.log("receiverName: " + receiverName)
 
-        PrivateMessage
+        // await PrivateMessage
+        //     .find({
+        //         $or: [
+        //             {
+        //                 senderID,
+        //                 receiverID
+        //             },
+        //             {
+        //                 'senderID': receiverID,
+        //                 'receiverID': senderID
+        //             }
+        //         ]
+        //     })
+        //     .select({
+        //         _id: 0,
+        //         senderID: 0,
+        //         receiverID: 0,
+        //     })
+        //     .sort({ createdAt: 'asc' })
+        //     .exec((err, retrievedMsgs) => {
+        //         if (err) {
+        //             console.log("chatEngine: Error in getPrivateConversationByUserIDs: " + err)
+        //             res.status(500).json({ success: false, err })
+        //             return
+        //         } else {
+        //             // console.log("chatEngine: retrievedConvo: " + retrievedMsgs)
+        //             // console.log("succesfully retrieved messages")
+        //             // res.status(200).send({ retrievedMsgs })
+        //             res.status(200).json(retrievedMsgs)
+        //         }
+        //     })
+
+        let retrievedMessages = await PrivateMessage
             .find({
                 $or: [
                     {
@@ -106,15 +170,14 @@ module.exports = {
                 receiverID: 0,
             })
             .sort({ createdAt: 'asc' })
-            .exec((err, retrievedMsgs) => {
-                if (err) {
-                    console.log("chatEngine: Error in getPrivateConversationByUserIDs: " + err)
-                    res.status(500).json({ success: false, error })
-                } else {
-                    // console.log("chatEngine: retrievedConvo: " + retrievedMsgs)
-                    res.status(200).send({ retrievedMsgs })
-                }
-            })
+
+        if (retrievedMessages) {
+            console.log("succesfully retrieved messages")
+            // return res.status(200).send({ retrievedMessages })
+            return res.status(200).json(retrievedMessages)
+        } else {
+            res.status(500).json({ success: false, err })
+        }
     },
 
     updateUserDisplayNameInGroupChats: async (userID, newDisplayName) => {
