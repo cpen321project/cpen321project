@@ -56,7 +56,7 @@ public class CreateProfileTest {
 
 
                 @Test
-    public void createProfileTest() {
+    public void createProfileTest() throws InterruptedException {
         ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.display_name_input),
                         childAtPosition(
@@ -127,7 +127,9 @@ public class CreateProfileTest {
                         isDisplayed()));
         materialButton6.perform(click());
 
-        ViewInteraction textView = onView(
+                    Thread.sleep(2000);
+
+                    ViewInteraction textView = onView(
                 allOf(withId(R.id.textView_displayname), withText("Display name: John"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
