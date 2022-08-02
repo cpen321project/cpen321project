@@ -54,7 +54,6 @@ public class CreateProfileTest {
                     Intent result = new Intent(targetContext, CreateProfile.class);
                     result.putExtra("username", "john");
                     result.putExtra("userID", "827105fd-c6f8-4bf8-a2a2-a1dc683ddcc9");
-                    result.putExtra("password", "John123??");
                     return result;
                 }
             };
