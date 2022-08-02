@@ -1,18 +1,10 @@
-/*  Module under test: Courses
-    Submodules: 
-        - courseManager
-    Submodules that courseManager depends on:
-        - notificationManager
-        - authUtils
-*/
-
-const app = require("../app")
+const app = require("../../app")
 const request = require("supertest")
 var mongoose = require('mongoose')
 
-const courseManager = require("../controllers/courseManager")
-jest.mock("../controllers/notifcationManager")
-jest.mock("../utils/authUtils")
+const courseManager = require("../../controllers/courseManager")
+jest.mock("../../controllers/notifcationManager")
+jest.mock("../../utils/authUtils")
 
 beforeAll(async () => {
     dbUser = await client.db("user")

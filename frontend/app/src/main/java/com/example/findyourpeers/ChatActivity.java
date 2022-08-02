@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -67,27 +68,6 @@ public class ChatActivity extends AppCompatActivity {
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
 
-        // https://stackoverflow.com/questions/34102741/recyclerview-not-scrolling-to-end-when-keyboard-opens
-//        if (Build.VERSION.SDK_INT >= 11) {
-//            myRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//                @Override
-//                public void onLayoutChange(View v,
-//                                           int left, int top, int right, int bottom,
-//                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                    if (bottom < oldBottom) {
-//                        myRecyclerView.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (myRecyclerView.getAdapter().getItemCount() > 1)
-//                                myRecyclerView.smoothScrollToPosition(
-//                                        myRecyclerView.getAdapter().getItemCount() - 1);
-//                            }
-//                        }, 100);
-//                    }
-//                }
-//            });
-//        }
-
         String serverIP = "34.130.14.116";
 
         // Instantiate the RequestQueue.
@@ -96,18 +76,14 @@ public class ChatActivity extends AppCompatActivity {
                 "/" + userID + "/" + LoginPage.accessToken;
 
         // Request a string response from the provided URL.
-        JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.GET, url, null,
-                        new Response.Listener<JSONObject>() {
+        JsonArrayRequest jsonArrayRequest =
+                new JsonArrayRequest(Request.Method.GET, url, null,
+                        new Response.Listener<JSONArray>() {
                             @Override
-                            public void onResponse(JSONObject response) {
+                            public void onResponse(JSONArray response) {
 //                        Log.d("ChatActivity", "Response: " + response);
                                 JSONArray msgsArray = new JSONArray();
-                                try {
-                                    msgsArray = response.getJSONArray("retrievedMsgs");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                msgsArray = response;//.getJSONArray("retrievedMsgs");
 
                                 for (int i = 0; i < msgsArray.length(); i++) {
                                     try {
@@ -139,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
                 });
 
         // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest);
+        queue.add(jsonArrayRequest);
 
         // connect socket client to the server
         try {

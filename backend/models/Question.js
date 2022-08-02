@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { v4: uuidv4 } = require("uuid")
-var forumDB = mongoose.createConnection('mongodb://localhost:27017/forum');
+const forumDB = mongoose.createConnection('mongodb://localhost:27017/forum');
 
 const questionSchema = new mongoose.Schema(
     {
@@ -21,4 +21,5 @@ const questionSchema = new mongoose.Schema(
 )
 
 module.exports = forumDB.model("Question", questionSchema)
+module.exports.forumDB = forumDB
 
