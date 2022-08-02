@@ -15,6 +15,7 @@ public class ToastMatcher extends TypeSafeMatcher<Root> {
             IBinder windowToken = root.getDecorView().getWindowToken();
             IBinder appToken = root.getDecorView().getApplicationWindowToken();
             if (windowToken == appToken) {
+                return true;
                 //means this window isn't contained by any other windows.
             }
         }
@@ -25,4 +26,5 @@ public class ToastMatcher extends TypeSafeMatcher<Root> {
     public void describeTo(org.hamcrest.Description description) {
         description.appendText("is toast");
     }
+
 }

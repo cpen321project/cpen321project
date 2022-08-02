@@ -1,28 +1,33 @@
 package com.example.findyourpeers;
 
 
+import static android.service.autofill.Validators.not;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -30,10 +35,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.AllOf;
+import org.hamcrest.core.Is;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +52,11 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class CreateProfileTest {
-                @Rule
+
+
+
+
+    @Rule
                 public ActivityTestRule<CreateProfile> mActivityRule =
                         new ActivityTestRule<CreateProfile>(CreateProfile.class) {
                             @Override
@@ -77,6 +92,14 @@ public class CreateProfileTest {
                         isDisplayed()));
         materialButton4.perform(click());
 
+//        Thread.sleep(1000);
+//                    onView(withText("Sign up failed"))
+//                            .inRoot(withDecorView(not(decorView)))// Here we use decorView
+//                            .check(matches(isDisplayed()))
+
+        onView(withText("Sign up failed")).inRoot(new ToastMatcher())
+                .check(matches(isDisplayed()));
+
         ViewInteraction appCompatEditText6 = onView(
                 allOf(withId(R.id.display_name_input),
                         childAtPosition(
@@ -96,6 +119,8 @@ public class CreateProfileTest {
                                 6),
                         isDisplayed()));
         materialButton5.perform(click());
+
+        Thread.sleep(2000);
 
         ViewInteraction appCompatEditText7 = onView(
                 allOf(withId(R.id.username_login),
@@ -127,7 +152,7 @@ public class CreateProfileTest {
                         isDisplayed()));
         materialButton6.perform(click());
 
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
 
                     ViewInteraction textView = onView(
                 allOf(withId(R.id.textView_displayname), withText("Display name: John"),
