@@ -96,7 +96,7 @@ public class ViewOtherProfile extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urlOther = "http://34.130.14.116:3010/getuserprofile/"
+        String urlOther = Urls.URL + "getuserprofile/"
                 + userID + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         // Initialize a new JsonArrayRequest instance
@@ -183,7 +183,7 @@ public class ViewOtherProfile extends AppCompatActivity {
             Toast.makeText(ViewOtherProfile.this, "You cannot block yourself",
                     Toast.LENGTH_SHORT).show();
         } else {
-            String urlCurrentUser = "http://34.130.14.116:3010/getuserprofile/"
+            String urlCurrentUser = Urls.URL + "getuserprofile/"
                     + "0" + "/" + currentUserID + "/" + LoginPage.accessToken;
 
             JsonArrayRequest jsonArrayRequest2 =
@@ -265,7 +265,7 @@ public class ViewOtherProfile extends AppCompatActivity {
     }
 
     private void makeBlockUserRequest(String currentUserID, String userID, RequestQueue requestQueue) {
-        String url = "http://34.130.14.116:3010/block";
+        String url = Urls.URL + "block";
         JSONObject blockObj = new JSONObject();
         try {
             //input your API parameters

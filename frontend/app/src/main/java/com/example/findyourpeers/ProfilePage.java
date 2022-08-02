@@ -1,18 +1,18 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,9 +40,10 @@ public class ProfilePage extends AppCompatActivity {
     private TextView displayNameTV;
     private TextView coopTV;
     private TextView yearTV;
-    private String displayName;
+    public static String displayName;
     private ArrayList<String> courseListAL;
     private ImageView editBtn;
+    public Integer courseButtonCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,7 @@ public class ProfilePage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://34.130.14.116:3010/getuserprofile/"
+        String urltest = "http://10.0.2.2:3010/getuserprofile/"
                 + "0" + "/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
@@ -191,14 +192,15 @@ public class ProfilePage extends AppCompatActivity {
                             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                             return;
                         }
-
-                        // Get new FCM registration token
-                        token = task.getResult().toString();
-
+                        else   {
+                            token = task.getResult().toString();
+                            Log.d(TAG, token);
+                            postDataUsingVolley(userID);
+                        }
                         // Log and toast
 //                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, token);
-                        postDataUsingVolley(userID);
+//                        Log.d(TAG, token);
+//                        postDataUsingVolley(userID);
 //                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -210,6 +212,9 @@ public class ProfilePage extends AppCompatActivity {
 
         Button courseBtn = (Button) courseButtonView.findViewById(R.id.coursename_button);
         courseBtn.setText(courseNameSingle);
+        courseBtn.setTag("button-" + courseButtonCounter);
+        //Log.d(TAG, courseNameSingle);
+        courseButtonCounter++;
         courseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,6 +249,7 @@ public class ProfilePage extends AppCompatActivity {
                 removeView(courseButtonView);
             }
         });
+        delCourseBtn.setTag("cross-" + courseButtonCounter);
 
         layoutCourseButton.addView(courseButtonView);
     }
@@ -303,7 +309,7 @@ public class ProfilePage extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://34.130.14.116:3010/deletecoursefromuser";
+        String url = "http://10.0.2.2:3010/deletecoursefromuser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, courseDelete,
                 new Response.Listener<JSONObject>() {
                     @Override

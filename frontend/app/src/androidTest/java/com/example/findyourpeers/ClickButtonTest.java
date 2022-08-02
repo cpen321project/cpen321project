@@ -42,7 +42,7 @@ public class ClickButtonTest {
                 .perform(click());
 
         // check this Toast is showed up
-        onView(withText("Missing required parameter USERNAME"))
+        onView(withText("Login Failed"))
                 .inRoot(withDecorView(not(decorView)))
                 .check(matches(isDisplayed()));
     }

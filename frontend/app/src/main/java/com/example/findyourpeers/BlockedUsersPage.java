@@ -50,7 +50,7 @@ public class BlockedUsersPage extends AppCompatActivity {
         layoutStudentButton = findViewById(R.id.layout_student_list);
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://34.130.14.116:3010/getuserprofile/"
+        String urltest = Urls.URL + "getuserprofile/"
                 +"0" + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
@@ -69,7 +69,7 @@ public class BlockedUsersPage extends AppCompatActivity {
                                 String nextBlockedUserID = blockedUsersJSONArray.getString(i);
                                 Log.d(TAG, "nextBlockedUserID: " + nextBlockedUserID);
                                 blockedUserIDs.add(nextBlockedUserID);
-                                makeDisplayNameGetRequest(requestQueue, nextBlockedUserID);
+                                makeDisplayNameGetRequest(requestQueue2, nextBlockedUserID);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -107,48 +107,36 @@ public class BlockedUsersPage extends AppCompatActivity {
             }
         });
         layoutStudentButton.addView(studentButtonView);
-        Log.d(TAG, "added student button");
     }
 
     private void makeDisplayNameGetRequest(RequestQueue requestQueue, String thisUserID) {
-        RequestQueue newRequestQueue =
-                Volley.newRequestQueue(this);
-        String requestUrl = "http://34.130.14.116:3010/getDisplayNameByUserID/" + thisUserID;
-        Log.d(TAG, "requestUrl: " + requestUrl);
-
-        Log.d(TAG, "Inside makeDisplayNameGetRequest, thisUserID: " + thisUserID);
-
+        String requestUrl = Urls.URL + "getDisplayNameByUserID/" + thisUserID;
         JsonObjectRequest displayNameRequest = new JsonObjectRequest(Request.Method.GET, requestUrl,
                 null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "Received some response" + response.toString());
                 String retrievedDisplayName = null;
                 try {
                     retrievedDisplayName = response.getString("retrievedDisplayName");
-                    Log.d(TAG, "Retrieved display name: " + retrievedDisplayName);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 Log.d(TAG, "Retrieved display name: " + retrievedDisplayName);
                 blockedUserNames.put(thisUserID, retrievedDisplayName);
                 addStudentButton(retrievedDisplayName, thisUserID);
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error.getMessage(): " + error.getMessage());
-                Log.d(TAG, "Error: " + error);
-
                 if (error.networkResponse != null) {
                     String body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
                     Log.d(TAG, "Error: " + body);
                 }
-
             }
         }
         );
-        newRequestQueue.add(displayNameRequest);
+        requestQueue.add(displayNameRequest);
     }
 
 }

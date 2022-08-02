@@ -223,7 +223,7 @@ public class ForumAnswersPage extends AppCompatActivity {
         Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/postAnswer/";
+        String url = Urls.URL + "postAnswer/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, answerToPost,
                 new Response.Listener<JSONObject>() {
@@ -248,7 +248,7 @@ public class ForumAnswersPage extends AppCompatActivity {
 
     private void makeGetAllAnswersForAQuestionRequest(String questionID, String userID, String accessToken) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/getAllAnswersForAQuestion/"
+        String url = Urls.URL + "getAllAnswersForAQuestion/"
                 + questionID + "/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url,
@@ -396,7 +396,7 @@ public class ForumAnswersPage extends AppCompatActivity {
         Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/editAnswer/";
+        String url = Urls.URL + "editAnswer/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, answerToEdit,
                 new Response.Listener<JSONObject>() {

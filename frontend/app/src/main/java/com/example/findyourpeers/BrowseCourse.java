@@ -1,8 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,8 +38,8 @@ import java.util.ArrayList;
 
 public class BrowseCourse extends AppCompatActivity {
 
-    public String userID;
-    public String displayName;
+    public String userID = LoginPage.userID;
+    public String displayName = ProfilePage.displayName;
     public LinearLayout layoutCourseList;
     private ArrayList<String> studentCourseList;
 
@@ -190,6 +190,7 @@ public class BrowseCourse extends AppCompatActivity {
                                 }
                             }
                         });
+
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -217,7 +218,7 @@ public class BrowseCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlUserToCourse = "http://34.130.14.116:3010/addusertocourse";
+        String urlUserToCourse = Urls.URL + "addusertocourse";
         JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, urlUserToCourse, usertoadd,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -247,7 +248,7 @@ public class BrowseCourse extends AppCompatActivity {
             e.printStackTrace();
         }
         // Enter the correct url for your api service site
-        String urlCourseToUser = "http://34.130.14.116:3010/addcoursetouser";
+        String urlCourseToUser = Urls.URL + "addcoursetouser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, urlCourseToUser, coursetoadd,
                 new Response.Listener<JSONObject>() {
                     @Override

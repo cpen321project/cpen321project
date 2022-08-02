@@ -294,7 +294,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
         }
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/postQuestion/";
+        String url = Urls.URL + "postQuestion/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, questionToPost,
                 new Response.Listener<JSONObject>() {
@@ -319,7 +319,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
     private void makeGetOnlyUserQuestionsRequest(String accessToken) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/getAllQuestionsFromAUser/" + userID + "/" + accessToken;
+        String url = Urls.URL + "getAllQuestionsFromAUser/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url,
                 null,
@@ -366,7 +366,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
     private void makeGetAllQuestionsRequest(String accessToken) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/getAllQuestions/" + userID + "/" + accessToken;
+        String url = Urls.URL + "getAllQuestions/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url,
                 null,
@@ -413,7 +413,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
 
     private void makeGetQuestionsByTopicRequest(String topic, String accessToken) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/getAllQuestionsForATopic/" + topic
+        String url = Urls.URL + "getAllQuestionsForATopic/" + topic
                 + "/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url,
@@ -581,7 +581,7 @@ public class ForumQuestionsPage extends AppCompatActivity {
         Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://34.130.14.116:3010/editQuestion/";
+        String url = Urls.URL + "editQuestion/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, questionToEdit,
                 new Response.Listener<JSONObject>() {

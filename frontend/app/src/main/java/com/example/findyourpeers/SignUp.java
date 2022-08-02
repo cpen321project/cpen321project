@@ -26,6 +26,7 @@ public class SignUp extends AppCompatActivity {
     private EditText emailSU;
     private EditText usernameSU;
     private EditText passwordSU;
+    private static String TAG = "SignUp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(SignUp.this, "Sending credentials failed: " + error, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, String.valueOf(error));
 //                Toast.makeText(SignUp.this, "Sending credentials failed", Toast.LENGTH_SHORT).show();
             }
         });
