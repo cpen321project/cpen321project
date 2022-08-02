@@ -41,23 +41,21 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class CreateProfileTest {
+                @Rule
+                public ActivityTestRule<CreateProfile> mActivityRule =
+                        new ActivityTestRule<CreateProfile>(CreateProfile.class) {
+                            @Override
+                            protected Intent getActivityIntent() {
+                                Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+                                Intent result = new Intent(targetContext, CreateProfile.class);
+                                result.putExtra("username", "john");
+                                result.putExtra("userID", "827105fd-c6f8-4bf8-a2a2-a1dc683ddcc9");
+                                return result;
+                            }
+                        };
 
-    @Rule
-    public ActivityScenarioRule<CreateProfile> mActivityScenarioRule =
-            new ActivityScenarioRule<>(CreateProfile.class);
-    @Rule
-    public ActivityTestRule<CreateProfile> mActivityRule =
-            new ActivityTestRule<CreateProfile>(CreateProfile.class) {
-                @Override
-                protected Intent getActivityIntent() {
-                    Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-                    Intent result = new Intent(targetContext, CreateProfile.class);
-                    result.putExtra("username", "john");
-                    result.putExtra("userID", "827105fd-c6f8-4bf8-a2a2-a1dc683ddcc9");
-                    return result;
-                }
-            };
-    @Test
+
+                @Test
     public void createProfileTest() {
         ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.display_name_input),
