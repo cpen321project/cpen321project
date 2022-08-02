@@ -8,6 +8,10 @@ const authUtils = require('../utils/authUtils.js')
         - getAllQuestionsForATopic(topic, userID, jwt)
         - getAllQuestionsFromAUser(userID, jwt)
         - getAllAnswersForAQuestion(questionID, userID, jwt)
+        - postQuestion(topic, askerID, askerName, questionContent, isAskedAnonymously, isAskedAnonymously, jwt)
+        - postAnswer(questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymously, jwt)
+        - editQuestion(questionID, askerID, askerName, questionContent, jwt)
+        - editAnswer(answerID, answererID, answererName, answerContent, jwt)
 */
 module.exports = {
     saveQuestionToDB: (topic, askerID, askerName, questionContent, isAskedAnonymously) => {
