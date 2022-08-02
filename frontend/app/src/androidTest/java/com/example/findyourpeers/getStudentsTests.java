@@ -36,9 +36,9 @@ public class getStudentsTests {
     public void getStudentTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("john"));
+                .perform(typeText("ronydhir7"));
         onView(withId(R.id.password_login))
-                .perform(typeText("John123??"));
+                .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursename_buttons_layout")), 6000);

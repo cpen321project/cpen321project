@@ -41,9 +41,9 @@ public class BrowseCourseTest {
     public void browseCoursePageTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("john"));
+                .perform(typeText("ronydhir7"));
         onView(withId(R.id.password_login))
-                .perform(typeText("John123??"));
+                .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/find_course_button")),5000);
@@ -68,9 +68,9 @@ public class BrowseCourseTest {
     public void browseCoursePageCancelTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("john"));
+                .perform(typeText("ronydhir"));
         onView(withId(R.id.password_login))
-                .perform(typeText("John123??"));
+                .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/find_course_button")),5000);
@@ -95,9 +95,9 @@ public class BrowseCourseTest {
     public void browseCourseRandomText() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("john"));
+                .perform(typeText("ronydhir7"));
         onView(withId(R.id.password_login))
-                .perform(typeText("John123??"));
+                .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/find_course_button")),5000);
