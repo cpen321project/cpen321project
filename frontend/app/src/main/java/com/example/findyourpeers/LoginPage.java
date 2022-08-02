@@ -40,21 +40,6 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-
-        unameET= findViewById(R.id.username_login);
-        passwordET= findViewById(R.id.password_login);
-
-        Button loginBtn = findViewById(R.id.button_login);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String unameStr= unameET.getText().toString();
-                String passwordStr = passwordET.getText().toString();
-                postLoginData(unameStr,passwordStr);
-
-            }
-        });
-
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -78,6 +63,23 @@ public class LoginPage extends AppCompatActivity {
 //                        Toast.makeText(com.example.findyourpeers.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
+
+        unameET= findViewById(R.id.username_login);
+        passwordET= findViewById(R.id.password_login);
+
+        Button loginBtn = findViewById(R.id.button_login);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String unameStr= unameET.getText().toString();
+                String passwordStr = passwordET.getText().toString();
+                postLoginData(unameStr,passwordStr);
+
+            }
+        });
+
 
 
 
