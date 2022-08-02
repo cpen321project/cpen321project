@@ -45,7 +45,7 @@ public class CreateProfileTest {
                             protected Intent getActivityIntent() {
                                 Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
                                 Intent result = new Intent(targetContext, CreateProfile.class);
-                                result.putExtra("username", "ronydhir7");
+                                result.putExtra("username", "ronydhir9");
                                 result.putExtra("userID", "a321c492-7ec9-4a02-b030-c4272084ce5f");
                                 return result;
                             }

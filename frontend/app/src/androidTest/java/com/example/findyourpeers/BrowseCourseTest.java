@@ -41,7 +41,7 @@ public class BrowseCourseTest {
     public void browseCoursePageTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("ronydhir7"));
+                .perform(typeText("ronydhir9"));
         onView(withId(R.id.password_login))
                 .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
@@ -68,7 +68,7 @@ public class BrowseCourseTest {
     public void browseCoursePageCancelTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("ronydhir"));
+                .perform(typeText("ronydhir9"));
         onView(withId(R.id.password_login))
                 .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
@@ -95,7 +95,7 @@ public class BrowseCourseTest {
     public void browseCourseRandomText() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("ronydhir7"));
+                .perform(typeText("ronydhir9"));
         onView(withId(R.id.password_login))
                 .perform(typeText("Dhir123!"));
         onView(withId(R.id.button_login))
