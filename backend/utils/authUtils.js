@@ -4,10 +4,11 @@ const jwkToPem = require('jwk-to-pem')
 const crypto = require('crypto')
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js')
 
-const AWS_ACCESS_KEY_ID = "AKIA4YSA6A6DFAOYM7U3"//"AKIATNLYKFHXVBMV5DOO"
+
+const AWS_ACCESS_KEY_ID = "AKIAV5LKEBZTW5LR5BRX" // "AKIA4YSA6A6DFAOYM7U3"//"AKIATNLYKFHXVBMV5DOO"
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
-const USERPOOLID = "us-west-2_rmLw5ym1e"//us-west-2_LJltK6RSZ"
-const CLIENTID = "tqre75iiboauf7t26amf9cda2"//"7docu6553pf9vi5ipv1ig1huns"
+const USERPOOLID = "us-west-2_1vNfplMQN" //"us-west-2_rmLw5ym1e"//us-west-2_LJltK6RSZ"
+const CLIENTID = "man4ddlj357j9l7kf8cqfhut5"// "tqre75iiboauf7t26amf9cda2"//"7docu6553pf9vi5ipv1ig1huns"
 const COGNITO_ISSUER = `https://cognito-idp.us-west-2.amazonaws.com/${USERPOOLID}`
 const userPool = new AmazonCognitoIdentity.CognitoUserPool({
     UserPoolId: USERPOOLID,
