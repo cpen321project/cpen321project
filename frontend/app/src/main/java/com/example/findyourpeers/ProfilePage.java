@@ -107,7 +107,7 @@ public class ProfilePage extends AppCompatActivity {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String urltest = "http://10.0.2.2:3010/getuserprofile/"
+        String urltest = Urls.URL + "getuserprofile/"
                 + "0" + "/" + userID + "/" + accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
@@ -309,7 +309,7 @@ public class ProfilePage extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.0.2.2:3010/deletecoursefromuser";
+        String url = Urls.URL + "deletecoursefromuser";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, courseDelete,
                 new Response.Listener<JSONObject>() {
                     @Override
