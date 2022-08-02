@@ -213,6 +213,7 @@ public class ProfilePage extends AppCompatActivity {
         Button courseBtn = (Button) courseButtonView.findViewById(R.id.coursename_button);
         courseBtn.setText(courseNameSingle);
         courseBtn.setTag("button-" + courseButtonCounter);
+        //Log.d(TAG, courseNameSingle);
         courseButtonCounter++;
         courseBtn.setOnClickListener(new View.OnClickListener() {
             @Override

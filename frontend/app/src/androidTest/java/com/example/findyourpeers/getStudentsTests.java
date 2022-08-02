@@ -36,9 +36,9 @@ public class getStudentsTests {
     public void getStudentTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("ronydhir"));
+                .perform(typeText("john"));
         onView(withId(R.id.password_login))
-                .perform(typeText("Dhir123!"));
+                .perform(typeText("John123??"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursename_buttons_layout")), 6000);
@@ -47,7 +47,7 @@ public class getStudentsTests {
         device.pressBack();
         onView(allOf(withTagValue(is((Object) "button-1")), isDisplayed())).perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/studentname_button_layout")), 5000);
-        onView(allOf(withTagValue(is((Object) "button-1")), isDisplayed())).perform(click());
+        onView(allOf(withTagValue(is((Object) "button-0")), isDisplayed())).perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/otherDisplayNameTV")), 5000);
 
     }

@@ -152,7 +152,7 @@ public class CreateProfileTest {
                         isDisplayed()));
         materialButton6.perform(click());
 
-                    Thread.sleep(3000);
+                    Thread.sleep(4000);
 
                     ViewInteraction textView = onView(
                 allOf(withId(R.id.textView_displayname), withText("Display name: John"),
