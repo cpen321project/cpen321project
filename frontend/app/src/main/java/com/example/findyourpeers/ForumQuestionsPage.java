@@ -292,14 +292,6 @@ public class ForumQuestionsPage extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "-----------------------");
-        Log.d(TAG, selectedTopic);
-        Log.d(TAG, userID);
-        Log.d(TAG, userName);
-        Log.d(TAG, questionContent);
-        Log.d(TAG, isAskedAnonymously.toString());
-        Log.d(TAG, accessToken);
-        Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = "http://34.130.14.116:3010/postQuestion/";
