@@ -1,5 +1,5 @@
-const app = require("../../app")
-const { MongoClient } = require("mongodb")
+require("../../app")
+require("mongodb")
 var mongoose = require('mongoose')
 const ioClient = require('socket.io-client')
 // const ioServer = require('../../server')
@@ -351,7 +351,7 @@ describe("private message and group message use case tests", () => {
             expect(res.status).toBe(200)
 
             // delete the message 
-            let senderID = userID
+            
             await Message.deleteMany({ groupID });
 
             // await Message.find({ groupID, senderID }).deleteMany().exec();

@@ -29,7 +29,7 @@ describe("userStore tests", () => {
         let password = "password"
         let username = "$%*^*$##$"
 
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -38,7 +38,7 @@ describe("userStore tests", () => {
         let email = "email"
         let password = "password"
         let username = ""
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -47,7 +47,7 @@ describe("userStore tests", () => {
         let email = "email"
         let password = "password"
         let username = "Abc,,"
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -56,7 +56,7 @@ describe("userStore tests", () => {
         let email = "johndoe@hjhmail.com"
         let password = "validPassword123!!!"
         let username = "johndoe"
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(200)
         jest.setTimeout(30000);
     })
@@ -65,7 +65,7 @@ describe("userStore tests", () => {
         let email = "a@my.com"
         let password = "validPassword123!!!"
         let username = "johndoe"
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -74,7 +74,7 @@ describe("userStore tests", () => {
         let email = "aaaaaaaaaaaa"
         let password = "validPassword123!!!"
         let username = "johndoe"
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -84,7 +84,7 @@ describe("userStore tests", () => {
         let email = "johndoe2@hjhmail.com"
         let password = "1UxneO3fjy6ncgth2dPlxIHYwb6X3XXdzKnuvDNJy1OZLkrmoRhTM9Ab1ROpWWOK9seaLdRI3dxc4zDCiJPbhMGFDe8mhx91JiWfnuem6psrmwF45HpNhmparqFoh9lpb2gmAObBO9JwkZ0p5himtnXH1vTVFoqb77KhehXUUGgFh3TEGVSNkjBXeS63H598NA8liJymgqzSzi9pnTdRhr8JAxIrWyRlInb9UMIc0BdzGJ757GGSjzMgdzYfk4qhf"
         let username = "johndoe"
-        let body = { email: email, password: password, username: username };
+        let body = { email, password, username };
         await request(app).post("/signup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -92,7 +92,7 @@ describe("userStore tests", () => {
     it("tests confirmSignUp code mismatch", async () => {
         let username = "johndoe"
         let confirmationCode = "mismatchCode"
-        let body = { username: username, confirmationCode: confirmationCode };
+        let body = { username, confirmationCode };
         await request(app).post("/confirmsignup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -100,7 +100,7 @@ describe("userStore tests", () => {
     it("tests confirmSignUp code expired", async () => {
         let username = "johndoe"
         let confirmationCode = "expiredCode"
-        let body = { username: username, confirmationCode: confirmationCode };
+        let body = { username, confirmationCode };
         await request(app).post("/confirmsignup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -108,7 +108,7 @@ describe("userStore tests", () => {
     it("tests confirmSignUp username dne", async () => {
         let username = "notExist"
         let confirmationCode = "validCode"
-        let body = { username: username, confirmationCode: confirmationCode };
+        let body = { username, confirmationCode };
         await request(app).post("/confirmsignup").send(body).expect(400)
         jest.setTimeout(30000);
     })
@@ -116,7 +116,7 @@ describe("userStore tests", () => {
     it("tests confirmSignUp valid", async () => {
         let username = "johndoe"
         let confirmationCode = "validCode"
-        let body = { username: username, confirmationCode: confirmationCode };
+        let body = { username, confirmationCode };
         await request(app).post("/confirmsignup").send(body).expect(200)
         jest.setTimeout(30000);
     })
@@ -169,7 +169,7 @@ describe("userStore tests", () => {
 
         await request(app).get("/getuserprofile/" + otherUserID + "/" + userID + "/" + jwt).expect(200)
 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         jest.setTimeout(30000);
     })
@@ -360,7 +360,7 @@ describe("userStore tests", () => {
         jest.setTimeout(30000);
 
         try {
-            await userCollection.remove({ userID: userID })
+            await userCollection.remove({ userID })
         } catch (err) {
             // collection DNE, don't drop
         }
@@ -374,22 +374,22 @@ describe("userStore tests", () => {
         let jwt = "validJWT1"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -401,8 +401,8 @@ describe("userStore tests", () => {
         })
             .expect(400)
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
 
         jest.setTimeout(30000);
     })
@@ -415,22 +415,22 @@ describe("userStore tests", () => {
         let jwt = "validJWT2"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -443,8 +443,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
     it("tests edit profile with illegal year standing", async () => {
@@ -455,22 +455,22 @@ describe("userStore tests", () => {
         let jwt = "validJWT3"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -483,8 +483,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
     it("tests edit profile with empty year standing", async () => {
@@ -495,22 +495,22 @@ describe("userStore tests", () => {
         let jwt = "validJWT4"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -523,8 +523,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
     it("tests edit profile with empty coop status", async () => {
@@ -535,22 +535,22 @@ describe("userStore tests", () => {
         let jwt = "validJWT5"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -563,8 +563,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
 
@@ -576,22 +576,22 @@ describe("userStore tests", () => {
         let jwt = "validJWTaa"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -604,8 +604,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
 
@@ -617,24 +617,24 @@ describe("userStore tests", () => {
         let jwt = "validJWT6"
 
         // delete user if it exists 
-        //await userCollection.deleteOne({ "userID": userID })
+        //await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: [],
             blockedUsers: [],
         })
 
-        await userCollection.updateOne({ "userID": userID }, { $push: { "courselist": "INDO 100" } })
+        await userCollection.updateOne({ userID }, { $push: { "courselist": "INDO 100" } })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -644,11 +644,11 @@ describe("userStore tests", () => {
             yearStanding,
             jwt
         })
-            .expect(200).then(userCollection.deleteOne({ "userID": userID })).then(dbCourse.collection("INDO 100").deleteOne({ "userID": userID }))
+            .expect(200).then(userCollection.deleteOne({ userID })).then(dbCourse.collection("INDO 100").deleteOne({ userID }))
         jest.setTimeout(30000);
 
-        //await userCollection.deleteOne({ "userID": userID })
-        //await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        //await userCollection.deleteOne({ userID })
+        //await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
     it("tests edit profile with null jwt", async () => {
@@ -668,8 +668,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        // await userCollection.deleteOne({ "userID": userID })
-        // await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        // await userCollection.deleteOne({ userID })
+        // await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
     it("tests edit profile with empty jwt", async () => {
@@ -680,22 +680,22 @@ describe("userStore tests", () => {
         let jwt = ""
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -708,8 +708,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
 
@@ -721,22 +721,22 @@ describe("userStore tests", () => {
         let jwt = "invalidJWT"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
-            displayName: displayName,
+            displayName,
             userID,
-            coopStatus: coopStatus,
-            yearStanding: yearStanding,
+            coopStatus,
+            yearStanding,
             registrationToken: "regToken",
             courselist: ["INDO 100"],
             blockedUsers: [],
         })
 
         await dbCourse.collection("INDO 100").insertOne({
-            displayName: displayName,
-            userID: userID,
+            displayName,
+            userID,
         })
 
         await request(app).put("/editprofile").send({
@@ -749,8 +749,8 @@ describe("userStore tests", () => {
             .expect(400)
         jest.setTimeout(30000);
 
-        await userCollection.deleteOne({ "userID": userID })
-        await dbCourse.collection("INDO 100").deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
+        await dbCourse.collection("INDO 100").deleteOne({ userID })
     })
 
 

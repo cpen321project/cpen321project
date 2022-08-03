@@ -4,18 +4,6 @@ module.exports = {
         console.log("retrievedDisplayName: " + retrievedDisplayName)
         res.status(200).json({ retrievedDisplayName })
     },
-    getDisplayNameByUserIDfromDB: (userID) => {
-        console.log("----------------getDisplayNameByUserIDfromDB------------------")
-        console.log("userID: " + userID)
-
-        if (userID === "validUserID") {
-            return "displayName1"
-        } else if (userID === "receiverID") {
-            return "displayName2"
-        } else {
-            return "defaultDisplayName"
-        }
-    },
     signup: async (req, res) => {
         return res.status(200)
     },
@@ -41,9 +29,6 @@ module.exports = {
         return res.status(200)
     },
     unblock: async (req, res) => {
-        return res.status(200)
-    },
-    getDisplayNameByUserID: async (req, res) => {
         return res.status(200)
     },
     editProfile: async (req, res) => {

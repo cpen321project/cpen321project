@@ -71,22 +71,26 @@ describe("userStore tests", () => {
         let userID = "validUserID"
         let jwt = "validJWT"
 
+        // delete user if it exists 
          // delete user if it exists 
-         await userCollection.deleteOne({ "userID": userID })
+        // delete user if it exists 
+         // delete user if it exists 
+        // delete user if it exists 
+        await userCollection.deleteOne({ userID })
 
-         // add new user
-         await userCollection.insertOne({
-             displayName: "sample DN",
-             userID,
-             coopStatus: "Yes",
-             yearStanding: "1",
-             registrationToken: "regToken",
-             courselist: [],
-             blockedUsers: [],
-         })
+        // add new user
+        await userCollection.insertOne({
+            displayName: "sample DN",
+            userID,
+            coopStatus: "Yes",
+            yearStanding: "1",
+            registrationToken: "regToken",
+            courselist: [],
+            blockedUsers: [],
+        })
 
-         //add new blocked user
-         await userCollection.insertOne({
+        //add new blocked user
+        await userCollection.insertOne({
             displayName: "sample DN",
             userID: blockedUserAdd,
             coopStatus: "Yes",
@@ -95,25 +99,25 @@ describe("userStore tests", () => {
             courselist: [],
             blockedUsers: [],
         })
- 
-         // add the blockedUserAdd to the user
-         await userCollection.updateOne(
-             { "userID": userID },
-             { $push: { "blockedUsers": blockedUserAdd } }
-         )
- 
-         await request(app).post("/block")
+
+        // add the blockedUserAdd to the user
+        await userCollection.updateOne(
+            { userID },
+            { $push: { "blockedUsers": blockedUserAdd } }
+        )
+
+        await request(app).post("/block")
             .send({
                 blockedUserAdd,
                 userID,
                 jwt
             })
             .expect(400)
- 
-         // delete user
-         await userCollection.deleteOne({ "userID": userID })
-         await userCollection.deleteOne({ "userID": blockedUserAdd })
-        
+
+        // delete user
+        await userCollection.deleteOne({ userID })
+        await userCollection.deleteOne({ "userID": blockedUserAdd })
+
     })
 
     it("tests block with empty jwt", async () => {
@@ -157,7 +161,7 @@ describe("userStore tests", () => {
             })
             .expect(400)
     })
-    
+
 
     it("tests block with valid blockedUserAdd not blocked before", async () => {
         let blockedUserAdd = "userToBeBlocked"
@@ -165,7 +169,7 @@ describe("userStore tests", () => {
         let jwt = "validJWT"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
@@ -197,7 +201,7 @@ describe("userStore tests", () => {
             .expect(200)
 
         // delete user
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
         await userCollection.deleteOne({ "userID": blockedUserAdd })
     })
 
@@ -218,27 +222,31 @@ describe("userStore tests", () => {
     })
 
 
-     it("tests unblock with previously not blocked user", async () => {
+    it("tests unblock with previously not blocked user", async () => {
         let userIDtoDelete = "userIDtoDelete"
         let userID = "validUserID"
         let jwt = "validJWT"
 
+        // delete user if it exists 
          // delete user if it exists 
-         await userCollection.deleteOne({ "userID": userID })
+        // delete user if it exists 
+         // delete user if it exists 
+        // delete user if it exists 
+        await userCollection.deleteOne({ userID })
 
-         // add new user
-         await userCollection.insertOne({
-             displayName: "sample DN",
-             userID,
-             coopStatus: "Yes",
-             yearStanding: "1",
-             registrationToken: "regToken",
-             courselist: [],
-             blockedUsers: [],
-         })
+        // add new user
+        await userCollection.insertOne({
+            displayName: "sample DN",
+            userID,
+            coopStatus: "Yes",
+            yearStanding: "1",
+            registrationToken: "regToken",
+            courselist: [],
+            blockedUsers: [],
+        })
 
-         //add new blocked user
-         await userCollection.insertOne({
+        //add new blocked user
+        await userCollection.insertOne({
             displayName: "sample DN 2",
             userID: userIDtoDelete,
             coopStatus: "Yes",
@@ -247,13 +255,13 @@ describe("userStore tests", () => {
             courselist: [],
             blockedUsers: [],
         })
- 
+
         await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
- 
-         // delete user
-         await userCollection.deleteOne({ "userID": userID })
-         await userCollection.deleteOne({ "userID": userIDtoDelete })
-        
+
+        // delete user
+        await userCollection.deleteOne({ userID })
+        await userCollection.deleteOne({ "userID": userIDtoDelete })
+
     })
 
     it("tests unblock with  null jwt", async () => {
@@ -280,13 +288,13 @@ describe("userStore tests", () => {
         await request(app).delete("/unblock/" + userID + "/" + userIDtoDelete + "/" + jwt).expect(400)
     })
 
-     it("tests unblock with valid userIDtoDelete being blocked before", async () => {
+    it("tests unblock with valid userIDtoDelete being blocked before", async () => {
         let userIDtoDelete = "userIDtoDelete"
         let userID = "validUserID"
         let jwt = "validJWT"
 
         // delete user if it exists 
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
 
         // add new user
         await userCollection.insertOne({
@@ -314,7 +322,7 @@ describe("userStore tests", () => {
 
 
         // delete user
-        await userCollection.deleteOne({ "userID": userID })
+        await userCollection.deleteOne({ userID })
         await userCollection.deleteOne({ "userID": userIDtoDelete })
     })
 

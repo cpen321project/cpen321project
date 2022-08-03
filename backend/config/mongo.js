@@ -20,7 +20,7 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('reconnected', () => {
     console.log('Mongo has reconnected')
 })
-mongoose.connection.on('error', error => {
+mongoose.connection.on('error', () => {
     // console.log('Mongo connection has an error', error)
     mongoose.disconnect()
 })

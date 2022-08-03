@@ -1,15 +1,5 @@
-// require("./config/mongo.js")
-// const { MongoClient } = require("mongodb")
-// const uri = "mongodb://localhost:27017"
-// const client = new MongoClient(uri)
-// client.connect()
-
-// const express = require('express')
-// const { app, client } = require("./app.js")
 const app = require("./app.js")
-
 const http = require('http')
-// const app = express()
 
 const server = http.createServer(app)
 const { Server } = require("socket.io")
@@ -17,13 +7,9 @@ const io = new Server(server)
 const port = "3010"
 
 const notificationManager = require("./controllers/notifcationManager.js")
-const userStore = require('./controllers/userStore.js')
-const courseManager = require('./controllers/courseManager.js')
 const chatEngine = require('./controllers/chatEngine.js')
-const forumEngine = require('./controllers/forumEngine.js')
 const authUtils = require('./utils/authUtils.js')
 
-// app.use(express.json())
 
 //---------------------------------------------------------------------------------------
 server.listen(port, () => {
@@ -160,6 +146,5 @@ io.on('connection', (socket) => {
         console.log("a user disconnected")
     })
 })
-
 
 module.exports = io

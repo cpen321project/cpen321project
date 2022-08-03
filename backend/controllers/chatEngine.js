@@ -1,6 +1,5 @@
 const Message = require('../models/Message.js')
 const PrivateMessage = require('../models/PrivateMessage.js')
-const userStore = require('./userStore.js')
 const authUtils = require("../utils/authUtils.js")
 
 module.exports = {

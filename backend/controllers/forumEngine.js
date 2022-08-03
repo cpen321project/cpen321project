@@ -19,8 +19,8 @@ module.exports = {
             {
                 topic,
                 askerID,
-                askerName, 
-                questionContent, 
+                askerName,
+                questionContent,
                 isAskedAnonymously
             }
         )
@@ -28,11 +28,11 @@ module.exports = {
         questionToSaveToDB.save(function (err) {
             if (err) {
                 console.log("saveQuestionToDB: Error saving question to database: " + err)
-                throw err
+                return err
             }
             console.log("saveQuestionToDB: Question saved to database")
         })
-    }, 
+    },
 
     saveAnswerToDB: (questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymously) => {
         let answerToSaveToDB = Answer(
@@ -40,8 +40,8 @@ module.exports = {
                 questionID,
                 topic,
                 answererID,
-                answererName, 
-                answerContent, 
+                answererName,
+                answerContent,
                 isAnsweredAnonymously
             }
         )
@@ -53,7 +53,7 @@ module.exports = {
             }
             console.log("saveAnswerToDB: Answer saved to database")
         })
-    }, 
+    },
 
     getAllQuestions: async (req, res) => {
         console.log("----------------getAllQuestions----------------")
@@ -67,7 +67,7 @@ module.exports = {
 
         Question
             .find()
-            .sort({ createdAt: -1 }) 
+            .sort({ createdAt: -1 })
             .exec((err, retrievedQs) => {
                 if (err) {
                     console.log("Error fetching from database: " + err)
@@ -77,8 +77,8 @@ module.exports = {
                     console.log("retrievedQs: " + retrievedQs)
                     return res.status(200).send(retrievedQs)
                 }
-            })  
-    }, 
+            })
+    },
 
     getAllQuestionsForATopic: async (req, res) => {
         console.log("----------------getAllQuestionsForATopic----------------")
@@ -102,8 +102,8 @@ module.exports = {
                     console.log("retrievedQs: " + retrievedQs)
                     return res.status(200).send(retrievedQs)
                 }
-            })  
-    }, 
+            })
+    },
 
     getAllQuestionsFromAUser: async (req, res) => {
         console.log("----------------getAllQuestionsFromAUser----------------")
@@ -118,7 +118,7 @@ module.exports = {
 
         Question
             .find({ askerID: userID })
-            .sort({ createdAt: -1 }) 
+            .sort({ createdAt: -1 })
             .exec((err, retrievedQs) => {
                 if (err) {
                     console.log("Error fetching from database: " + err)
@@ -127,8 +127,8 @@ module.exports = {
                     console.log("retrievedQs: " + retrievedQs)
                     return res.status(200).send(retrievedQs)
                 }
-            })  
-    }, 
+            })
+    },
 
     getAllAnswersForAQuestion: async (req, res) => {
         console.log("----------------getAllAnswersForAQuestion----------------")
@@ -143,7 +143,7 @@ module.exports = {
 
         Answer
             .find({ questionID })
-            .sort({ createdAt: 'asc' }) 
+            .sort({ createdAt: 'asc' })
             .exec((err, retrievedAnswers) => {
                 if (err) {
                     console.log("Error fetching from database: " + err)
@@ -152,8 +152,8 @@ module.exports = {
                     console.log("retrievedAnswers: " + retrievedAnswers)
                     return res.status(200).send(retrievedAnswers)
                 }
-            })  
-    }, 
+            })
+    },
 
     postQuestion: async (req, res) => {
         console.log("--------------postQuestion--------------")
@@ -165,12 +165,12 @@ module.exports = {
         let jwt = req.body.jwt
 
         // check for null, undefined, 0, NaN, false, or empty string, and check boolean is boolean
-        if (!topic || !askerID || !askerName || !questionContent || typeof isAskedAnonymously !== "boolean" || !jwt ) {
+        if (!topic || !askerID || !askerName || !questionContent || typeof isAskedAnonymously !== "boolean" || !jwt) {
             console.log("Invalid body parameter(s).")
             return res.status(400).send({ response: "Invalid body parameter(s)." });
         }
 
-        if (topic === ""|| askerID === "" || askerName === "" || questionContent === "" || isAskedAnonymously === "" || jwt === "" ) {
+        if (topic === "" || askerID === "" || askerName === "" || questionContent === "" || isAskedAnonymously === "" || jwt === "") {
             console.log("empty body parameter(s).")
             return res.status(400).send({ response: "Invalid body parameter(s)." });
         }
@@ -182,16 +182,12 @@ module.exports = {
         }
 
         console.log(askerName + " : " + questionContent)
-        console.log("isAskedAnonymously: " + isAskedAnonymously) 
+        console.log("isAskedAnonymously: " + isAskedAnonymously)
 
-        try {
-            module.exports.saveQuestionToDB(topic, askerID, askerName, questionContent, isAskedAnonymously)
-            res.status(200).send({ response: "Question posted successfuly" })
-            return;
-        } catch (err) {
-            console.log("err: " + err)
-        }
-    }, 
+
+        module.exports.saveQuestionToDB(topic, askerID, askerName, questionContent, isAskedAnonymously)
+        res.status(200).send({ response: "Question posted successfuly" })
+    },
 
     postAnswer: async (req, res) => {
         console.log("--------------postAnswer--------------")
@@ -204,12 +200,12 @@ module.exports = {
         let jwt = req.body.jwt
 
         // check for null, undefined, 0, NaN, false, or empty string, and check boolean is boolean
-        if (!questionID || !topic || !answererID || !answererName || !answerContent || typeof isAnsweredAnonymously !== "boolean" || !jwt ) {
+        if (!questionID || !topic || !answererID || !answererName || !answerContent || typeof isAnsweredAnonymously !== "boolean" || !jwt) {
             console.log("Invalid body parameter(s).")
             return res.status(400).json("Invalid body parameter(s)")
         }
 
-        if (questionID === "" || topic === ""|| answererID === "" || answererName === "" || answerContent === "" || isAnsweredAnonymously === "" || jwt === "" ) {
+        if (questionID === "" || topic === "" || answererID === "" || answererName === "" || answerContent === "" || isAnsweredAnonymously === "" || jwt === "") {
             console.log("empty body parameter(s).")
             return res.status(400).json("empty body parameter(s)")
         }
@@ -221,14 +217,10 @@ module.exports = {
         }
 
         console.log(answererName + " : " + answerContent)
-        
-        try {
-            module.exports.saveAnswerToDB(questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymously)
-            res.status(200).send({ response: "Question posted successfuly" })
-        } catch (err) {
-            res.status(400).send(err)
-        }
-    }, 
+
+        module.exports.saveAnswerToDB(questionID, topic, answererID, answererName, answerContent, isAnsweredAnonymously)
+        res.status(200).send({ response: "Question posted successfuly" })
+    },
 
     editQuestion: async (req, res) => {
         console.log("--------------editQuestion--------------")
@@ -239,7 +231,7 @@ module.exports = {
         let jwt = req.body.jwt
 
         // check for null, undefined, 0, NaN, false, or empty string
-        if (!questionID || !askerID || !askerName || !questionContent || !jwt ) {
+        if (!questionID || !askerID || !askerName || !questionContent || !jwt) {
             console.log("Invalid body parameter(s).")
             return res.status(400).json("Invalid body parameter(s)")
         }
@@ -250,13 +242,13 @@ module.exports = {
             return res.status(404).json("Token not validated")
         }
 
-        console.log("questionID: " + questionID) 
+        console.log("questionID: " + questionID)
         console.log(askerName + " : " + questionContent)
 
         let filter = { _id: questionID }
         let update = { questionContent }
 
-        Question.findOneAndUpdate(filter, update, function(err, resultAfterUpdate) {
+        Question.findOneAndUpdate(filter, update, function (err, resultAfterUpdate) {
             if (err) {
                 console.log("err: " + err)
                 res.status(400).send({ response: "Failed to findOneAndUpdate question" })
@@ -265,7 +257,7 @@ module.exports = {
                 res.status(200).send({ response: "Question updated successfully" })
             }
         })
-    }, 
+    },
 
     editAnswer: async (req, res) => {
         console.log("--------------editAnswer--------------")
@@ -276,13 +268,13 @@ module.exports = {
         let jwt = req.body.jwt
 
         // check for null, undefined, 0, NaN, false, or empty string
-        if (!answerID || !answererID || !answererName || !answerContent || !jwt ) {
+        if (!answerID || !answererID || !answererName || !answerContent || !jwt) {
             console.log("Invalid body parameter(s).")
             res.status(400).send({ response: "Invalid body parameter(s)." })
             return;
         }
 
-        if (answerID === "" || answererID === "" || answererName === "" || answerContent === ""  || jwt === "") {
+        if (answerID === "" || answererID === "" || answererName === "" || answerContent === "" || jwt === "") {
             console.log("empty body parameter(s).")
             res.status(400).send({ response: "empty body parameter(s)." })
             return;
@@ -293,13 +285,13 @@ module.exports = {
             console.log("Token not validated")
             return res.status(404).json("Token not validated")
         }
-        console.log("answerID: " + answerID) 
+        console.log("answerID: " + answerID)
         console.log(answererName + " : " + answerContent)
 
         let filter = { _id: answerID }
         let update = { answerContent }
 
-        Answer.findOneAndUpdate(filter, update, function(err, resultAfterUpdate) {
+        Answer.findOneAndUpdate(filter, update, function (err, resultAfterUpdate) {
             if (err) {
                 console.log("err: " + err)
                 res.status(400).send({ response: "Failed to findOneAndUpdate answer" })
@@ -308,7 +300,7 @@ module.exports = {
                 res.status(200).send({ response: "Answer updated successfully" })
             }
         })
-    }, 
+    },
 
     updateUserDisplayNameInQuestions: async (userID, newDisplayName) => {
         console.log("-------updateUserDisplayNameInQuestions-------")

@@ -18,17 +18,17 @@ async function getDisplayNameByUserIDfromDB(userID) {
         console.log("retrievedUser: " + retrievedUser.displayName)
         return retrievedUser.displayName
     } else {
-        console.log("retrievedUser: not found");
+        console.log("retrievedUser: not found")
     }
 }
 global.getDisplayNameByUserIDfromDB = getDisplayNameByUserIDfromDB
 
 module.exports = {
     signup: async (req, res) => {
-        let email = req.body.email;
-        let password = req.body.password;
-        let username = req.body.username;
-        let signUpResult;
+        let email = req.body.email
+        let password = req.body.password
+        let username = req.body.username
+        let signUpResult
 
         try {
             signUpResult = await authUtils.signUserUp(email, password, username)
@@ -48,9 +48,9 @@ module.exports = {
     },
 
     confirmSignUp: async (req, res) => {
-        let username = req.body.username;
-        let confirmationCode = req.body.confirmationCode;
-        let confirmResult;
+        let username = req.body.username
+        let confirmationCode = req.body.confirmationCode
+        let confirmResult
         try {
             confirmResult = await authUtils.confrimSignUP(username, confirmationCode)
         } catch (error) {
@@ -70,9 +70,9 @@ module.exports = {
     },
 
     login: async (req, res) => {
-        let username = req.body.username;
-        let password = req.body.password;
-        let loginResult;
+        let username = req.body.username
+        let password = req.body.password
+        let loginResult
         try {
             loginResult = await authUtils.login(username, password)
         } catch (error) {
@@ -91,8 +91,8 @@ module.exports = {
     },
 
     resendConfirmationCode: async (req, res) => {
-        let username = req.body.username;
-        let resendResult;
+        let username = req.body.username
+        let resendResult
         try {
             resendResult = await authUtils.resendConfrimationCode(username)
         } catch (error) {
@@ -112,8 +112,8 @@ module.exports = {
 
     getUserProfile: async (req, res) => {
         console.log("--------inside getUserProfile--------")
-        console.log("req.params.userID: " + req.params.userID);
-        console.log("req.params.jwt: " + req.params.jwt);
+        console.log("req.params.userID: " + req.params.userID)
+        console.log("req.params.jwt: " + req.params.jwt)
         let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
         if (!tokenIsValid) {
             console.log("Token not validated")
@@ -122,7 +122,7 @@ module.exports = {
 
         // check if we want to get another user's profile (ie. in student list page)
         let userIDOfProfileToGet = req.params.userID
-        console.log("req.params.otherUserID: " + req.params.otherUserID);
+        console.log("req.params.otherUserID: " + req.params.otherUserID)
         if (req.params.otherUserID != "0") {
             userIDOfProfileToGet = req.params.otherUserID
         }
@@ -149,36 +149,12 @@ module.exports = {
 
     },
 
-    // getCourseList: async (req, res) => {
-    //     let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-    //     if (!tokenIsValid) {
-    //         console.log("Token not validated")
-    //         return
-    //     }
-    //     await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
-    //         if (err) {
-    //             console.error("Error in getCourseList: " + err)
-    //             res.status(400).send(err)
-    //         } else {
-    //             res.status(200).json(resultcourse)
-    //         }
-    //     })
-    // },
-
     createProfile: async (req, res) => {
-        // try {
-        //     await authUtils.validateAccessToken(req.body.jwt, req.body.userID)
-        // }
-        // catch {
-        //     res.status(404)
-        //     return
-        // }
-
-        let displayName = req.body.displayName;
-        let userID = req.body.userID;
-        let coopStatus = req.body.coopStatus;
-        let yearStanding = req.body.yearStanding;
-        let registrationToken = req.body.registrationToken;
+        let displayName = req.body.displayName
+        let userID = req.body.userID
+        let coopStatus = req.body.coopStatus
+        let yearStanding = req.body.yearStanding
+        let registrationToken = req.body.registrationToken
 
         if (displayName === null || userID === null || coopStatus === null || yearStanding === null || registrationToken === null) {
             console.log("null parameter")
@@ -206,15 +182,15 @@ module.exports = {
             return res.status(400).json("year standing invalid")
         }
 
-        var courselistarr = [];
-        var blockeruserarr = [];
+        var courselistarr = []
+        var blockeruserarr = []
         userCollection.insertOne(
             {
-                displayName: displayName,
-                userID: userID,
-                coopStatus: coopStatus,
-                yearStanding: yearStanding,
-                registrationToken: registrationToken,
+                displayName,
+                userID,
+                coopStatus,
+                yearStanding,
+                registrationToken,
                 courselist: courselistarr,
                 blockedUsers: blockeruserarr,
             },
@@ -253,21 +229,21 @@ module.exports = {
             return res.status(400).json("No user exists to be blocked")
         }
 
-        let findResult2 = await userCollection.findOne({ "userID": userID, blockedUsers: blockedUserAdd })
+        let findResult2 = await userCollection.findOne({ userID, blockedUsers: blockedUserAdd })
         if (findResult2) {
             console.log("Already blocked.")
             return res.status(400).json("Already blocked")
         }
 
 
-        userCollection.updateOne({ "userID": userID }, { $push: { "blockedUsers": blockedUserAdd } }, (err, result) => {
+        userCollection.updateOne({ userID }, { $push: { "blockedUsers": blockedUserAdd } }, (err, result) => {
             if (err) {
                 console.error(err)
                 res.status(400).send(err)
             } else {
                 res.status(200).json({ ok: true })
             }
-        });
+        })
 
     },
 
@@ -296,7 +272,7 @@ module.exports = {
             return res.status(400).json("No user exists to be unblocked")
         }
 
-        let findResult2 = await userCollection.findOne({ "userID": userID, blockedUsers: userIDtoDelete })
+        let findResult2 = await userCollection.findOne({ userID, blockedUsers: userIDtoDelete })
         if (!findResult2) {
             console.log("Not blocked previously.")
             return res.status(400).json("Not blocked previously")
@@ -309,7 +285,7 @@ module.exports = {
             } else {
                 res.status(200).json({ ok: true })
             }
-        });
+        })
     },
 
     getDisplayNameByUserID: async function (req, res) {
@@ -380,7 +356,7 @@ module.exports = {
 
         // update userDB
         let filter = { userID }
-        let update = { displayName, coopStatus, yearStanding };
+        let update = { displayName, coopStatus, yearStanding }
         userCollection.findOneAndUpdate(filter, { $set: update }, function (err, resultProfileUpdated) {
             if (err) {
                 console.log("err: " + err)
@@ -392,19 +368,19 @@ module.exports = {
         })
 
         //update courseDB
-        var courses = await userCollection.find({ userID: userID }).project({ courselist: 1, _id: 0 }).toArray();
+        var courses = await userCollection.find({ userID }).project({ courselist: 1, _id: 0 }).toArray()
         //console.log("courselist " + courses[0].courselist)
 
 
         courses[0].courselist.forEach(coursename => {
-            console.log("coursename " + coursename);
+            console.log("coursename " + coursename)
             courseManager.editDisplayNameInCourse(displayName, userID, coursename)
-        });
+        })
 
     }
 }
 
 function containsSpecialChars(str) {
-    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    return specialChars.test(str);
-};
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{}':"\\|,.<>\/?~]/
+    return specialChars.test(str)
+}
