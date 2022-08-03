@@ -101,7 +101,7 @@ module.exports = {
         }
 
         // check if course added already
-        let findResult = await userCollection.findOne({ "userID": userID, courselist: coursename })
+        let findResult = await userCollection.findOne({ userID, courselist: coursename })
         if (findResult) {
             console.log("Already added.")
             return res.status(400).json("Already added")
@@ -181,7 +181,7 @@ module.exports = {
         }
 
         // check if course added to user already
-        let findResult = await userCollection.findOne({ "userID": userID, courselist: coursename })
+        let findResult = await userCollection.findOne({ userID, courselist: coursename })
         if (!findResult) {
             console.log("Course not added before. Not deleted")
             return res.status(400).json("Course not added before. Not deleted")

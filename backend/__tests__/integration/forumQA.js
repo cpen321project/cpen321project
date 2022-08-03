@@ -3,7 +3,7 @@ const request = require("supertest")
 var mongoose = require('mongoose')
 
 const Question = require('../../models/Question.js')
-const Answer = require('../../models/Answer.js')
+require('../../models/Answer.js')
 
 // const notificationManager = require("../../controllers/notifcationManager")
 // const userStore = require('../../controllers/userStore')
@@ -223,7 +223,7 @@ describe("forum tests", () => {
 
         
 
-        Question.findOneAndDelete({questionContent: questionContent}, function(err, resultAfterUpdate) {
+        Question.findOneAndDelete({ questionContent }, function(err, resultAfterUpdate) {
             if (err) {
                 console.log("err(delete): " + err)
             } else {

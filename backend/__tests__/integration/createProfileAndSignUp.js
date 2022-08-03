@@ -123,21 +123,21 @@ describe("userStore tests", () => {
 
     it("tests resend confirmation code valid ", async () => {
         let username = "validRegisteredUser"
-        let body = { username: username };
+        let body = { username };
         await request(app).post("/resendconfirmationcode").send(body).expect(200)
         jest.setTimeout(30000);
     })
 
     it("tests resend confirmation code empty ", async () => {
         let username = ""
-        let body = { username: username };
+        let body = { username };
         await request(app).post("/resendconfirmationcode").send(body).expect(400)
         jest.setTimeout(30000);
     })
 
     it("tests resend confirmation code not registered ", async () => {
         let username = "notRegistered"
-        let body = { username: username };
+        let body = { username };
         await request(app).post("/resendconfirmationcode").send(body).expect(400)
         jest.setTimeout(30000);
     })
