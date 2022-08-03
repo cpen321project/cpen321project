@@ -71,7 +71,7 @@ module.exports = {
         if (insertResult) {
             console.log("addUserToCourse successfully")
             await notificationManager.userAddedNotification(req.body.userID, req.body.coursename)
-            return res.status(200).json("User added successfully")
+            return res.status(200).json({ ok: true })
         } else {
             console.log("Error in addUserToCourse")
             return res.status(400).json("Error in addUserToCourse")

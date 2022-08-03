@@ -9,14 +9,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.Trace;
-
-
 public class MainActivity extends AppCompatActivity {
     public static final String FCM_CHANNEL_ID = "FCM_CHANNEL_ID";
-    private final Trace viewLoadTrace = FirebasePerformance.startTrace("TestActivity-LoadTime");
-
     final static String TAG = "MainActivity";
     public String token;
     /*private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -28,12 +22,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });*/
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel fcmChannel = new NotificationChannel(
@@ -44,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(fcmChannel);
         }
 
-
         Button loginBtn = findViewById(R.id.login_button);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-   
-
         Button signUpButton = findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,19 +53,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(signUpIntent);
             }
         });
-
-//        FirstDrawListener.registerFirstDrawListener(mainView, new FirstDrawListener.OnFirstDrawCallback() {
-//            @Override
-//            public void onDrawingStart() {
-//                // In practice you can also record this event separately
-//            }
-//
-//            @Override
-//            public void onDrawingFinish() {
-//                // This is when the Activity UI is completely drawn on the screen
-//                viewLoadTrace.stop();
-//            }
-//        });
 
     }
 }

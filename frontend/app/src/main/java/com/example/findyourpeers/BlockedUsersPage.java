@@ -51,7 +51,7 @@ public class BlockedUsersPage extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urltest = Urls.URL + "getuserprofile/"
-                +"0" + "/" + currentUserID + "/" + LoginPage.accessToken;
+                + "0" + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urltest,
                 null,
@@ -79,10 +79,17 @@ public class BlockedUsersPage extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(BlockedUsersPage.this,
-                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent(BlockedUsersPage.this, LoginPage.class);
-                        startActivity((loginIntent));
+                        String errorString = new String(error.networkResponse.data);
+                        Log.d(TAG, "getuserprofile errorString: " + errorString);
+                        if (errorString.equals("Token not validated")) {
+                            Toast.makeText(BlockedUsersPage.this,
+                                    "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                            Intent loginIntent = new Intent(BlockedUsersPage.this, LoginPage.class);
+                            startActivity((loginIntent));
+                        } else {
+                            Toast.makeText(BlockedUsersPage.this,
+                                    "getuserprofile error", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );

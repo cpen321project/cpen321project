@@ -45,7 +45,8 @@ public class EnterCode extends AppCompatActivity {
             public void onClick(View v) {
                 String verifCodeStr = verifCode.getText().toString();
                 if (verifCodeStr.isEmpty()) {
-                    Toast.makeText(EnterCode.this, "Please enter verification code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EnterCode.this, "Please enter verification code",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
                 postVerifCodeData(verifCodeStr, usernameStr);
@@ -74,32 +75,37 @@ public class EnterCode extends AppCompatActivity {
         }
         // Enter the correct url for your api service site
         String url = Urls.URL + "resendconfirmationcode";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, resendData,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String success;
-                        String result;
-                        try{
-                            success = response.getString("success");
-                            Log.d("EnterCode", "success? : "+success);
-                            if(success.equals("false")){
-                                result = response.getString("result");
-                                Toast.makeText(EnterCode.this, result, Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, url, resendData,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                String success;
+                                String result;
+                                try {
+                                    success = response.getString("success");
+                                    Log.d("EnterCode", "success? : " + success);
+                                    if (success.equals("false")) {
+                                        result = response.getString("result");
+                                        Toast.makeText(EnterCode.this, result,
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(EnterCode.this,
+                                                "Verification code sent",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(EnterCode.this, "Verification code false", Toast.LENGTH_SHORT).show();
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(EnterCode.this, "Verification code false",
+                                Toast.LENGTH_SHORT).show();
 
-            }
-        });
+                    }
+                });
         requestQueue.add(jsonObjectRequest);
     }
 
@@ -107,13 +113,11 @@ public class EnterCode extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject verifData = new JSONObject();
         try {
-            //input your API parameters
             verifData.put("username", usernameStr);
-            verifData.put("confirmationCode",verifCodeStr);
+            verifData.put("confirmationCode", verifCodeStr);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        // Enter the correct url for your api service site
         String url = Urls.URL + "confirmsignup";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, verifData,
                 new Response.Listener<JSONObject>() {
@@ -121,28 +125,32 @@ public class EnterCode extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         String success;
                         String result;
-                        try{
+                        try {
                             success = response.getString("success");
-                            Log.d("EnterCode", "success? : "+success);
-                            if(success.equals("false")){
+                            Log.d("EnterCode", "success? : " + success);
+                            if (success.equals("false")) {
                                 result = response.getString("result");
-                                Toast.makeText(EnterCode.this, result, Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(EnterCode.this, "Verification code sent", Toast.LENGTH_SHORT).show();
-                                Intent createProfileIntent = new Intent(EnterCode.this, CreateProfile.class);
-                                createProfileIntent.putExtra("email",emailStr);
+                                Toast.makeText(EnterCode.this, result,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(EnterCode.this, "Verification code sent",
+                                        Toast.LENGTH_SHORT).show();
+                                Intent createProfileIntent = new Intent(EnterCode.this,
+                                        CreateProfile.class);
+                                createProfileIntent.putExtra("email", emailStr);
                                 createProfileIntent.putExtra("username", usernameStr);
                                 createProfileIntent.putExtra("userID", userID);
                                 startActivity(createProfileIntent);
                             }
-                        }catch(JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(EnterCode.this, "Verification code false", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EnterCode.this, "Verification code false",
+                        Toast.LENGTH_SHORT).show();
 
             }
         });

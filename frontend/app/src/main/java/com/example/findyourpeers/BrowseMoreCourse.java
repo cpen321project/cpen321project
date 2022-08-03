@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -16,12 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -30,12 +33,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BrowseMoreCourse extends AppCompatActivity {
 
-    private ArrayList<String> studentCourseList;
-    //ArrayList<String> courseList;
     public LinearLayout layoutBMC;
+    private ArrayList<String> studentCourseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +98,6 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        // Do something with response
-                        //mTextView.setText(response.toString());
-
                         // Process the JSON
                         try {
                             for (int i = 0; i < response.length(); i++) {
@@ -140,7 +141,7 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(BrowseMoreCourse.this);
                 builder.setCancelable(true);
                 builder.setTitle("Add Course Confirmation");
-                builder.setMessage("Are you sure to add " + coursename + " to your course list?");
+                builder.setMessage("Are you sure you want to add " + coursename + " to your course list?");
                 builder.setPositiveButton("Add Course",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -197,7 +198,22 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(BrowseMoreCourse.this, "user side failed", Toast.LENGTH_SHORT).show();
+                String errorString = "";
+                if (error.networkResponse != null) {
+                    errorString = new String(error.networkResponse.data);
+                } else {
+                    errorString = error.toString();
+                }
+                Log.d("BrowseMoreCourse", "addusertocourse errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(BrowseMoreCourse.this,
+                            "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(BrowseMoreCourse.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(BrowseMoreCourse.this,
+                            "addusertocourse error: " + errorString, Toast.LENGTH_LONG).show();
+                }
             }
         });
         requestQueue.add(jsonObjectRequest2);
@@ -225,7 +241,17 @@ public class BrowseMoreCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(BrowseMoreCourse.this, "course side failed", Toast.LENGTH_SHORT).show();
+                String errorString = new String(error.networkResponse.data);
+                Log.d("BrowseMoreCourse", "addcoursetouser errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(BrowseMoreCourse.this,
+                            "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(BrowseMoreCourse.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(BrowseMoreCourse.this,
+                            "addcoursetouser error", Toast.LENGTH_LONG).show();
+                }
             }
         });
         requestQueue.add(jsonObjectRequest);

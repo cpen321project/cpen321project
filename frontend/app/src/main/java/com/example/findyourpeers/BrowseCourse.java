@@ -228,8 +228,22 @@ public class BrowseCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("BrowseCourse", "addusertocourse error: " + error.getMessage());
-//                Toast.makeText(BrowseCourse.this, "user side failed", Toast.LENGTH_SHORT).show();
+                String errorString = "";
+                if (error.networkResponse != null) {
+                    errorString = new String(error.networkResponse.data);
+                } else {
+                    errorString = error.toString();
+                }
+                Log.d("BrowseCourse", "addusertocourse errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(BrowseCourse.this,
+                            "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(BrowseCourse.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(BrowseCourse.this,
+                            "addusertocourse error: " + errorString, Toast.LENGTH_LONG).show();
+                }
             }
         });
         requestQueue.add(jsonObjectRequest2);
@@ -258,12 +272,20 @@ public class BrowseCourse extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("BrowseCourse", "addcoursetouser error: " + error.getMessage());
-                Toast.makeText(BrowseCourse.this, "course side failed", Toast.LENGTH_SHORT).show();
+                String errorString = new String(error.networkResponse.data);
+                Log.d("BrowseCourse", "addcoursetouser errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(BrowseCourse.this,
+                            "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(BrowseCourse.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(BrowseCourse.this,
+                            "addcoursetouser error", Toast.LENGTH_LONG).show();
+                }
             }
         });
         requestQueue.add(jsonObjectRequest);
     }
-
 
 }

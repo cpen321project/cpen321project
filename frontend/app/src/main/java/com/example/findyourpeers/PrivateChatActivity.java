@@ -34,20 +34,18 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class PrivateChatActivity extends AppCompatActivity {
-    private Socket socket;
-    private String senderName;
-    private String receiverName;
-    private String senderID;
-    private String receiverID;
-
-    // 1 = receiver has blocked sender
-    private int isBlocked;// = 0;
-
     public RecyclerView myRecyclerView;
     public List<Message> MessageList;
     public ChatBoxAdapter chatBoxAdapter;
     public EditText messageTxt;
     public Button send;
+    private Socket socket;
+    private String senderName;
+    private String receiverName;
+    private String senderID;
+    private String receiverID;
+    // 1 = receiver has blocked sender
+    private int isBlocked;// = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +65,8 @@ public class PrivateChatActivity extends AppCompatActivity {
         receiverID = privateChatIntent.getExtras().getString("userID");
         senderID = privateChatIntent.getExtras().getString("currentUserID");
 
-        messageTxt = (EditText) findViewById(R.id.message) ;
-        send = (Button)findViewById(R.id.send);
+        messageTxt = (EditText) findViewById(R.id.message);
+        send = (Button) findViewById(R.id.send);
 
         MessageList = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.messagelist);
@@ -79,13 +77,9 @@ public class PrivateChatActivity extends AppCompatActivity {
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
 
-        String serverIP = "34.130.14.116";
-
         RequestQueue queue = Volley.newRequestQueue(this);
-        // getPrivateConversationByUserIDs
-        String url = "http://" + serverIP + ":3010/getPrivateConversationByUserIDs/"
+        String url = Urls.URL + "getPrivateConversationByUserIDs/"
                 + senderID + "/" + receiverID + "/" + LoginPage.accessToken;
-
         JsonArrayRequest jsonArrayRequest =
                 new JsonArrayRequest(Request.Method.GET, url, null,
                         new Response.Listener<JSONArray>() {
@@ -125,7 +119,7 @@ public class PrivateChatActivity extends AppCompatActivity {
 
         // connect socket client to the server
         try {
-            socket = IO.socket("http://" + serverIP + ":3010");
+            socket = IO.socket(Urls.URL);
 
             socket.connect();
 
@@ -141,10 +135,10 @@ public class PrivateChatActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(messageTxt.getText().toString().isEmpty()){
+                if (messageTxt.getText().toString().isEmpty()) {
                     Toast.makeText(PrivateChatActivity.this,
                             "Cannot send empty message", Toast.LENGTH_SHORT).show();
-                } else if (isBlocked == 1){
+                } else if (isBlocked == 1) {
                     Toast.makeText(PrivateChatActivity.this,
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
@@ -182,7 +176,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                             String nickname = data.getString("senderNickname");
 
                             // only show the message if we're currently talking to that person
-                            if (nickname.equals(receiverName) ) {
+                            if (nickname.equals(receiverName)) {
                                 String message = data.getString("message");
 
                                 Message m = new Message(nickname, message);

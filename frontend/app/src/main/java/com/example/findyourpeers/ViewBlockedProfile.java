@@ -64,7 +64,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String urlOther = Urls.URL + "getuserprofile/"
-                + "0" + "/" + userID + "/" + LoginPage.accessToken;
+                + userID + "/" + currentUserID + "/" + LoginPage.accessToken;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
                 null,
@@ -111,10 +111,19 @@ public class ViewBlockedProfile extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ViewBlockedProfile.this,
-                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent(ViewBlockedProfile.this, LoginPage.class);
-                        startActivity((loginIntent));
+                        String errorString = new String(error.networkResponse.data);
+                        Log.d(TAG, "getuserprofile errorString: " + errorString);
+                        if (errorString.equals("Token not validated")) {
+                            Toast.makeText(ViewBlockedProfile.this,
+                                    "Session expired, you will be redirected to login",
+                                    Toast.LENGTH_LONG).show();
+                            Intent loginIntent = new Intent(ViewBlockedProfile.this,
+                                    LoginPage.class);
+                            startActivity((loginIntent));
+                        } else {
+                            Toast.makeText(ViewBlockedProfile.this,
+                                    "getuserprofile error", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
@@ -129,8 +138,8 @@ public class ViewBlockedProfile extends AppCompatActivity {
                 Log.d(TAG, "currentUserDisplayName: " + currentUserDisplayName);
                 Log.d(TAG, "otherDisplayName: " + otherDisplayName);
                 if (currentUserDisplayName.equals(otherDisplayName)) {
-                    Toast.makeText(ViewBlockedProfile.this, "You cannot message yourself",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewBlockedProfile.this,
+                            "You cannot message yourself", Toast.LENGTH_SHORT).show();
                 } else {
                     privateChatIntent.putExtra("senderName", currentUserDisplayName);
                     privateChatIntent.putExtra("receiverName", otherDisplayName);
@@ -147,7 +156,8 @@ public class ViewBlockedProfile extends AppCompatActivity {
         unblockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = Urls.URL + "unblock/" + currentUserID + "/" + userID + "/" + LoginPage.accessToken;
+                String url = Urls.URL + "unblock/" +
+                        currentUserID + "/" + userID + "/" + LoginPage.accessToken;
                 StringRequest unblockRequest = new StringRequest(Request.Method.DELETE, url,
                         new Response.Listener<String>() {
                             @Override
@@ -159,10 +169,19 @@ public class ViewBlockedProfile extends AppCompatActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(ViewBlockedProfile.this,
-                                        "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                                Intent loginIntent = new Intent(ViewBlockedProfile.this, LoginPage.class);
-                                startActivity((loginIntent));
+                                String errorString = new String(error.networkResponse.data);
+                                Log.d(TAG, "unblock errorString: " + errorString);
+                                if (errorString.equals("Token not validated")) {
+                                    Toast.makeText(ViewBlockedProfile.this,
+                                            "Session expired, you will be redirected to login",
+                                            Toast.LENGTH_LONG).show();
+                                    Intent loginIntent =
+                                            new Intent(ViewBlockedProfile.this, LoginPage.class);
+                                    startActivity((loginIntent));
+                                } else {
+                                    Toast.makeText(ViewBlockedProfile.this,
+                                            "Unblock error: " + errorString, Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                 );

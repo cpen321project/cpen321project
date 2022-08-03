@@ -2,11 +2,12 @@ package com.example.findyourpeers;
 
 public class Message {
     private String nickname;
-    private String message ;
+    private String message;
 
-    public  Message(){
+    public Message() {
 
     }
+
     public Message(String nickname, String message) {
         this.nickname = nickname;
         this.message = message;

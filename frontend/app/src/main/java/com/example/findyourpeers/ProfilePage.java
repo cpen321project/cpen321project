@@ -43,6 +43,7 @@ public class ProfilePage extends AppCompatActivity {
     public static String displayName;
     private ArrayList<String> courseListAL;
     private ImageView editBtn;
+    private ImageView logoutBtn;
     public Integer courseButtonCounter = 0;
 
     @Override
@@ -51,7 +52,6 @@ public class ProfilePage extends AppCompatActivity {
         setContentView(R.layout.activity_profile_page);
         Intent intentProfile = getIntent();
         String userID = intentProfile.getExtras().getString("userID");
-        String username = intentProfile.getExtras().getString("username");
         String accessToken = LoginPage.accessToken;
         Log.d(TAG, "accessToken in ProfilePage: " + accessToken);
 
@@ -75,12 +75,20 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
+        logoutBtn = findViewById(R.id.logout_button);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                startActivity((loginIntent));
+            }
+        });
+
         // set up bottom navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.my_profile:
                         return true;
@@ -150,10 +158,17 @@ public class ProfilePage extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ProfilePage.this,
-                                "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
-                        startActivity((loginIntent));
+                        String errorString = new String(error.networkResponse.data);
+                        Log.d(TAG, "getuserprofile errorString: " + errorString);
+                        if (errorString.equals("Token not validated")) {
+                            Toast.makeText(ProfilePage.this,
+                                    "Session expired, you will be redirected to login", Toast.LENGTH_LONG).show();
+                            Intent loginIntent = new Intent(ProfilePage.this, LoginPage.class);
+                            startActivity((loginIntent));
+                        } else {
+                            Toast.makeText(ProfilePage.this,
+                                    "getuserprofile error", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
@@ -246,6 +261,7 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 deleteCoursefromUser(courseNameSingle, userID);
                 deleteUserfromCourse(courseNameSingle, userID);
+                courseListAL.remove(courseNameSingle);
                 removeView(courseButtonView);
             }
         });
@@ -344,13 +360,13 @@ public class ProfilePage extends AppCompatActivity {
             newToken.put("userID", userID);
             newToken.put("registrationToken", token);
             newToken.put("jwt", LoginPage.accessToken);
-            Log.d(TAG, "trying to post the regToken");
-            Log.d(TAG, userID);
-            Log.d(TAG, token);
-            Log.d(TAG, LoginPage.accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "trying to post the regToken");
+        Log.d(TAG, userID);
+        Log.d(TAG, token);
+        Log.d(TAG, LoginPage.accessToken);
         // Enter the correct url for your api service site
         String url = Urls.URL + "newRegistrationToken";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,

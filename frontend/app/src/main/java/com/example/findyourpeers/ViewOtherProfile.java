@@ -66,10 +66,10 @@ public class ViewOtherProfile extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.my_profile:
-                        Intent displayProfileBackIntent = new Intent(ViewOtherProfile.this, ProfilePage.class);
+                        Intent displayProfileBackIntent =
+                                new Intent(ViewOtherProfile.this, ProfilePage.class);
                         displayProfileBackIntent.putExtra("userID", currentUserID);
                         startActivity(displayProfileBackIntent);
                         return true;
@@ -99,16 +99,12 @@ public class ViewOtherProfile extends AppCompatActivity {
         String urlOther = Urls.URL + "getuserprofile/"
                 + userID + "/" + currentUserID + "/" + LoginPage.accessToken;
 
-        // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, urlOther,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        // Do something with response
-                        // Process the JSON
                         try {
-                            // Get current json object
                             JSONObject student = response.getJSONObject(0);
 
                             // Get the current student (json object) data
@@ -151,20 +147,31 @@ public class ViewOtherProfile extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Do something when error occurred
-                        Toast.makeText(ViewOtherProfile.this, "Something went wrong in getting data", Toast.LENGTH_SHORT).show();
+                        String errorString = new String(error.networkResponse.data);
+                        Log.d("ViewOtherProfile",
+                                "getuserprofile errorString: " + errorString);
+                        if (errorString.equals("Token not validated")) {
+                            Toast.makeText(ViewOtherProfile.this,
+                                    "Session expired, you will be redirected to login",
+                                    Toast.LENGTH_LONG).show();
+                            Intent loginIntent =
+                                    new Intent(ViewOtherProfile.this, LoginPage.class);
+                            startActivity((loginIntent));
+                        } else {
+                            Toast.makeText(ViewOtherProfile.this,
+                                    "getuserprofile error:" + error, Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
         );
-
-        // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
 
         Button messageButton = findViewById(R.id.button_message);
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messageButtonFcn(currentUserDisplayName, otherdisplayname, isBlocked, currentUserID, userID);
+                messageButtonFcn(currentUserDisplayName, otherdisplayname, isBlocked,
+                        currentUserID, userID);
             }
         });
 
@@ -220,15 +227,25 @@ public class ViewOtherProfile extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(ViewOtherProfile.this,
-                                            "Request error: unable to block user", Toast.LENGTH_SHORT).show();
+                                    String errorString = new String(error.networkResponse.data);
+                                    Log.d("ViewOtherProfile",
+                                            "getuserprofile errorString: " + errorString);
+                                    if (errorString.equals("Token not validated")) {
+                                        Toast.makeText(ViewOtherProfile.this,
+                                                "Session expired, you will be redirected to login",
+                                                Toast.LENGTH_LONG).show();
+                                        Intent loginIntent =
+                                                new Intent(ViewOtherProfile.this, LoginPage.class);
+                                        startActivity((loginIntent));
+                                    } else {
+                                        Toast.makeText(ViewOtherProfile.this,
+                                                "getuserprofile error:" + error, Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                     );
             requestQueue1.add(jsonArrayRequest2);
-
         }
-
     }
 
     private void messageButtonFcn(String currentUserDisplayName1, String otherdisplayname1, int isBlocked, String currentUserID, String userID) {
@@ -268,15 +285,12 @@ public class ViewOtherProfile extends AppCompatActivity {
         String url = Urls.URL + "block";
         JSONObject blockObj = new JSONObject();
         try {
-            //input your API parameters
             blockObj.put("userID", currentUserID);
             blockObj.put("jwt", LoginPage.accessToken);
-            blockObj.put("blockedUserAdd", userID);//the other user's id
+            blockObj.put("blockedUserAdd", userID); // the other user's id
             blockObj.put("jwt", LoginPage.accessToken);
             Log.d("viewOtherProfile:block", "userID: " + currentUserID);
             Log.d("viewOtherProfile:block", "blockedUserAdd: " + userID);
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -292,8 +306,21 @@ public class ViewOtherProfile extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ViewOtherProfile.this,
-                        "Error: failed to block", Toast.LENGTH_SHORT).show();
+                String errorString = new String(error.networkResponse.data);
+                Log.d("ViewOtherProfile",
+                        "block errorString: " + errorString);
+                if (errorString.equals("Token not validated")) {
+                    Toast.makeText(ViewOtherProfile.this,
+                            "Session expired, you will be redirected to login",
+                            Toast.LENGTH_LONG).show();
+                    Intent loginIntent =
+                            new Intent(ViewOtherProfile.this, LoginPage.class);
+                    startActivity((loginIntent));
+                } else {
+                    Toast.makeText(ViewOtherProfile.this,
+                            "block error:" + error, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
         requestQueue.add(jsonObjectRequest);

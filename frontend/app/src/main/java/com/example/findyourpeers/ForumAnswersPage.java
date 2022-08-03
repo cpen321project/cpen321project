@@ -89,7 +89,8 @@ public class ForumAnswersPage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.my_profile:
-                        Intent displayProfileBackIntent = new Intent(ForumAnswersPage.this, ProfilePage.class);
+                        Intent displayProfileBackIntent =
+                                new Intent(ForumAnswersPage.this, ProfilePage.class);
                         displayProfileBackIntent.putExtra("userID", userID);
                         startActivity(displayProfileBackIntent);
                         return true;
@@ -147,7 +148,8 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 if (answerContent.equals("")) {
                                     Log.d(TAG, "answerContent is empty");
                                     Toast.makeText(ForumAnswersPage.this,
-                                            "Cannot post empty answer.", Toast.LENGTH_SHORT).show();
+                                            "Cannot post empty answer.",
+                                            Toast.LENGTH_SHORT).show();
 
                                     // make the fields the default again
                                     answerContentET.setText("");
@@ -158,7 +160,8 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 Boolean isAnsweredAnonymously = false;
                                 // get anon checkBox
                                 if (anonCheckBox.isChecked()) {
-                                    Log.d(TAG, "anonCheckBox.isChecked(): " + anonCheckBox.isChecked());
+                                    Log.d(TAG, "anonCheckBox.isChecked(): " +
+                                            anonCheckBox.isChecked());
                                     isAnsweredAnonymously = true;
                                 }
 
@@ -183,7 +186,8 @@ public class ForumAnswersPage extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ForumAnswersPage.this);
                 builder.setCancelable(true);
                 builder.setTitle("Answer guidelines");
-                builder.setMessage("Please read the posted answers before adding a new answer to avoid duplicates.");
+                builder.setMessage("Please read the posted answers before adding a new answer to " +
+                        "avoid duplicates.");
                 builder.setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -212,41 +216,35 @@ public class ForumAnswersPage extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "-----------------------");
-        Log.d(TAG, questionID);
-        Log.d(TAG, topic);
-        Log.d(TAG, answererID);
-        Log.d(TAG, answererName);
-        Log.d(TAG, answerContent);
-        Log.d(TAG, isAnsweredAnonymously.toString());
-        Log.d(TAG, accessToken);
-        Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Urls.URL + "postAnswer/";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, answerToPost,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(ForumAnswersPage.this, "Answer posted",
-                                Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, url, answerToPost,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(ForumAnswersPage.this, "Answer posted",
+                                        Toast.LENGTH_SHORT).show();
 
-                        answerList.removeAllViews();
-                        makeGetAllAnswersForAQuestionRequest(questionID, answererID, accessToken);
+                                answerList.removeAllViews();
+                                makeGetAllAnswersForAQuestionRequest(questionID, answererID,
+                                        accessToken);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "postAnswer error: " + error.getMessage());
+                        Toast.makeText(ForumAnswersPage.this, "Failed to post answer",
+                                Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "postAnswer error: " + error.getMessage());
-                Toast.makeText(ForumAnswersPage.this, "Failed to post answer",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+                });
         requestQueue.add(jsonObjectRequest);
     }
 
-    private void makeGetAllAnswersForAQuestionRequest(String questionID, String userID, String accessToken) {
+    private void makeGetAllAnswersForAQuestionRequest(String questionID, String userID,
+                                                      String accessToken) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Urls.URL + "getAllAnswersForAQuestion/"
                 + questionID + "/" + userID + "/" + accessToken;
@@ -274,7 +272,8 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 String answererID = nextAnswer.getString("answererID");
                                 String answererName = nextAnswer.getString("answererName");
                                 String answerContent = nextAnswer.getString("answerContent");
-                                Boolean isAnsweredAnonymously = nextAnswer.getBoolean("isAnsweredAnonymously");
+                                Boolean isAnsweredAnonymously =
+                                        nextAnswer.getBoolean("isAnsweredAnonymously");
 
                                 Log.d(TAG, "isAnsweredAnonymously: " + isAnsweredAnonymously);
 
@@ -349,7 +348,8 @@ public class ForumAnswersPage extends AppCompatActivity {
                                 if (answerContent.equals("")) {
                                     Log.d(TAG, "answerContent is empty");
                                     Toast.makeText(ForumAnswersPage.this,
-                                            "Cannot post empty answer.", Toast.LENGTH_SHORT).show();
+                                            "Cannot post empty answer.",
+                                            Toast.LENGTH_SHORT).show();
 
                                     // make the fields the default again
                                     answerContentET.setText("");
@@ -387,36 +387,30 @@ public class ForumAnswersPage extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "-----------------------");
-        Log.d(TAG, answerID);
-        Log.d(TAG, answererID);
-        Log.d(TAG, answererName);
-        Log.d(TAG, answerContent);
-        Log.d(TAG, accessToken);
-        Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Urls.URL + "editAnswer/";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, answerToEdit,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "editAnswer successfully");
-                        Toast.makeText(ForumAnswersPage.this, "Answer edited",
-                                Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.PUT, url, answerToEdit,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "editAnswer successfully");
+                                Toast.makeText(ForumAnswersPage.this, "Answer edited",
+                                        Toast.LENGTH_SHORT).show();
 
-                        answerList.removeAllViews();
-                        makeGetAllAnswersForAQuestionRequest(questionID, userID, accessToken);
+                                answerList.removeAllViews();
+                                makeGetAllAnswersForAQuestionRequest(questionID, userID, accessToken);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "editAnswer error: " + error.getMessage());
+                        Toast.makeText(ForumAnswersPage.this, "Failed to edit answer",
+                                Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "editAnswer error: " + error.getMessage());
-                Toast.makeText(ForumAnswersPage.this, "Failed to edit answer",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+                });
         requestQueue.add(jsonObjectRequest);
     }
 }

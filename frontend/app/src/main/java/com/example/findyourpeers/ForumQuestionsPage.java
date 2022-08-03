@@ -66,7 +66,8 @@ public class ForumQuestionsPage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.my_profile:
-                        Intent displayProfileBackIntent = new Intent(ForumQuestionsPage.this, ProfilePage.class);
+                        Intent displayProfileBackIntent =
+                                new Intent(ForumQuestionsPage.this, ProfilePage.class);
                         displayProfileBackIntent.putExtra("userID", userID);
                         startActivity(displayProfileBackIntent);
                         return true;
@@ -121,18 +122,19 @@ public class ForumQuestionsPage extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ForumQuestionsPage.this);
                 builder.setCancelable(true);
                 builder.setTitle("Filter by topic:");
-                builder.setSingleChoiceItems(topicFilters, -1, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        ListView topicList = ((AlertDialog) dialog).getListView();
-                        if (topicList.getCheckedItemCount() > 0) {
-                            Object checkedItem = topicList.getAdapter()
-                                    .getItem(topicList.getCheckedItemPosition());
-                            Log.d(TAG, "checkedItem: " + checkedItem);
-                            topicToFilterBy[0] = (String) checkedItem;
-                            Log.d(TAG, "topicToFilterBy[0]: " + topicToFilterBy[0]);
-                        }
-                    }
-                });
+                builder.setSingleChoiceItems(topicFilters, -1,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ListView topicList = ((AlertDialog) dialog).getListView();
+                                if (topicList.getCheckedItemCount() > 0) {
+                                    Object checkedItem = topicList.getAdapter()
+                                            .getItem(topicList.getCheckedItemPosition());
+                                    Log.d(TAG, "checkedItem: " + checkedItem);
+                                    topicToFilterBy[0] = (String) checkedItem;
+                                    Log.d(TAG, "topicToFilterBy[0]: " + topicToFilterBy[0]);
+                                }
+                            }
+                        });
                 builder.setPositiveButton("Filter",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -205,7 +207,8 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 String selectedTopic = (String) topicSpinner.getSelectedItem();
                                 if (selectedTopic.equals("select a topic")) {
                                     // user did not choose a topic. "select a topic" is the default
-                                    Log.d(TAG, "selected topic outside of onItemSelected: " + selectedTopic);
+                                    Log.d(TAG, "selected topic outside of onItemSelected: " +
+                                            selectedTopic);
                                     Toast.makeText(ForumQuestionsPage.this,
                                             "Please select a topic.",
                                             Toast.LENGTH_SHORT).show();
@@ -296,24 +299,25 @@ public class ForumQuestionsPage extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Urls.URL + "postQuestion/";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, questionToPost,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(ForumQuestionsPage.this, "Question posted",
-                                Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, url, questionToPost,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(ForumQuestionsPage.this, "Question posted",
+                                        Toast.LENGTH_SHORT).show();
 
-                        questionList.removeAllViews();
-                        makeGetAllQuestionsRequest(accessToken);
+                                questionList.removeAllViews();
+                                makeGetAllQuestionsRequest(accessToken);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "postQuestion error: " + error.getMessage());
+                        Toast.makeText(ForumQuestionsPage.this, "Failed to post question",
+                                Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "postQuestion error: " + error.getMessage());
-                Toast.makeText(ForumQuestionsPage.this, "Failed to post question",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+                });
         requestQueue.add(jsonObjectRequest);
     }
 
@@ -338,13 +342,16 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 String topic = nextQuestion.getString("topic");
                                 String askerID = nextQuestion.getString("askerID");
                                 String askerName = nextQuestion.getString("askerName");
-                                String questionContent = nextQuestion.getString("questionContent");
-                                Boolean isAskedAnonymously = nextQuestion.getBoolean("isAskedAnonymously");
+                                String questionContent =
+                                        nextQuestion.getString("questionContent");
+                                Boolean isAskedAnonymously =
+                                        nextQuestion.getBoolean("isAskedAnonymously");
 
                                 Log.d(TAG, "questionID: " + questionID);
                                 Log.d(TAG, "isAskedAnonymously: " + isAskedAnonymously);
 
-                                addQuestionToView(questionID, topic, askerID, askerName, questionContent, isAskedAnonymously);
+                                addQuestionToView(questionID, topic, askerID, askerName,
+                                        questionContent, isAskedAnonymously);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -385,13 +392,16 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 String topic = nextQuestion.getString("topic");
                                 String askerID = nextQuestion.getString("askerID");
                                 String askerName = nextQuestion.getString("askerName");
-                                String questionContent = nextQuestion.getString("questionContent");
-                                Boolean isAskedAnonymously = nextQuestion.getBoolean("isAskedAnonymously");
+                                String questionContent =
+                                        nextQuestion.getString("questionContent");
+                                Boolean isAskedAnonymously =
+                                        nextQuestion.getBoolean("isAskedAnonymously");
 
                                 Log.d(TAG, "questionID: " + questionID);
                                 Log.d(TAG, "isAskedAnonymously: " + isAskedAnonymously);
 
-                                addQuestionToView(questionID, topic, askerID, askerName, questionContent, isAskedAnonymously);
+                                addQuestionToView(questionID, topic, askerID, askerName,
+                                        questionContent, isAskedAnonymously);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -433,8 +443,10 @@ public class ForumQuestionsPage extends AppCompatActivity {
                                 String topic = nextQuestion.getString("topic");
                                 String askerID = nextQuestion.getString("askerID");
                                 String askerName = nextQuestion.getString("askerName");
-                                String questionContent = nextQuestion.getString("questionContent");
-                                Boolean isAskedAnonymously = nextQuestion.getBoolean("isAskedAnonymously");
+                                String questionContent =
+                                        nextQuestion.getString("questionContent");
+                                Boolean isAskedAnonymously =
+                                        nextQuestion.getBoolean("isAskedAnonymously");
 
                                 Log.d(TAG, "questionID: " + questionID);
                                 Log.d(TAG, "isAskedAnonymously: " + isAskedAnonymously);
@@ -572,39 +584,30 @@ public class ForumQuestionsPage extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "-----------------------");
-        Log.d(TAG, questionID);
-        Log.d(TAG, askerID);
-        Log.d(TAG, askerName);
-        Log.d(TAG, questionContent);
-        Log.d(TAG, accessToken);
-        Log.d(TAG, "-----------------------");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Urls.URL + "editQuestion/";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, questionToEdit,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // JSONException: Value Question of type java.lang.String cannot be converted to JSONObject
-                        // TODO: fix: make sure the backend endpoint returns json not string
-                        // see postQuestion on backend for fix
-                        Log.d(TAG, "editQuestion successfully");
-                        Toast.makeText(ForumQuestionsPage.this, "Question edited",
-                                Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.PUT, url, questionToEdit,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "editQuestion successfully");
+                                Toast.makeText(ForumQuestionsPage.this,
+                                        "Question edited", Toast.LENGTH_SHORT).show();
 
-                        questionList.removeAllViews();
-                        makeGetAllQuestionsRequest(accessToken);
+                                questionList.removeAllViews();
+                                makeGetAllQuestionsRequest(accessToken);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "editQuestion error: " + error.getMessage());
+                        Toast.makeText(ForumQuestionsPage.this,
+                                "Failed to edit question", Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "editQuestion error: " + error.getMessage());
-                Toast.makeText(ForumQuestionsPage.this, "Failed to edit question",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+                });
         requestQueue.add(jsonObjectRequest);
     }
 

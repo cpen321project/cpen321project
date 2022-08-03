@@ -34,16 +34,14 @@ import io.socket.emitter.Emitter;
 
 public class ChatActivity extends AppCompatActivity {
     final String TAG = "ChatActivity";
-
-    private Socket socket;
-    private String Nickname;
-    private String groupID;
-
     public RecyclerView myRecyclerView;
     public List<Message> MessageList;
     public ChatBoxAdapter chatBoxAdapter;
     public EditText messageTxt;
     public Button send;
+    private Socket socket;
+    private String Nickname;
+    private String groupID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
         //https://medium.com/@mohamedaymen.ourabi11/creating-a-realtime-chat-app-with-android-nodejs-and-socket-io-1050bc20c70
 
         messageTxt = (EditText) findViewById(R.id.message);
-        send = (Button)findViewById(R.id.send);
+        send = (Button) findViewById(R.id.send);
 
         MessageList = new ArrayList<>();
         myRecyclerView = (RecyclerView) findViewById(R.id.messagelist);
@@ -68,12 +66,10 @@ public class ChatActivity extends AppCompatActivity {
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
 
-        String serverIP = "34.130.14.116";
-
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://" + serverIP + ":3010/getConversationByGroupID/" + groupID +
-                "/" + userID + "/" + LoginPage.accessToken;
+        String url = Urls.URL + "getConversationByGroupID/" + groupID + "/"
+                + userID + "/" + LoginPage.accessToken;
 
         // Request a string response from the provided URL.
         JsonArrayRequest jsonArrayRequest =
@@ -83,7 +79,7 @@ public class ChatActivity extends AppCompatActivity {
                             public void onResponse(JSONArray response) {
 //                        Log.d("ChatActivity", "Response: " + response);
                                 JSONArray msgsArray = new JSONArray();
-                                msgsArray = response;//.getJSONArray("retrievedMsgs");
+                                msgsArray = response;
 
                                 for (int i = 0; i < msgsArray.length(); i++) {
                                     try {
@@ -114,16 +110,14 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
-        // Add the request to the RequestQueue.
         queue.add(jsonArrayRequest);
 
         // connect socket client to the server
         try {
-            socket = IO.socket("http://" + serverIP + ":3010");
+            socket = IO.socket(Urls.URL);
 
             socket.connect();
 
-//            socket.emit("joinGroupChat", groupID, Nickname);
             socket.emit("joinGroupChat", groupID, userID, LoginPage.accessToken);
             Log.d(TAG, "Joining group chat: " + groupID);
 
@@ -136,7 +130,7 @@ public class ChatActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(messageTxt.getText().toString().isEmpty()){
+                if (messageTxt.getText().toString().isEmpty()) {
                     Toast.makeText(ChatActivity.this,
                             "Cannot send empty message", Toast.LENGTH_SHORT).show();
                 } else {

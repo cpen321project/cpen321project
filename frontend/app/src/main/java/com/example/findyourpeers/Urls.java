@@ -5,8 +5,8 @@ public class Urls {
     public static final String local = "10.0.2.2";
     public static final String URL = "http://" + cloud + ":3010/";
 
-    public void urls(){
+    public void urls() {
         // do nothing
-    };
+    }
 
 }

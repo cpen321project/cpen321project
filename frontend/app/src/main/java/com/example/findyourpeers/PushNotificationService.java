@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+
 import static com.example.findyourpeers.MainActivity.FCM_CHANNEL_ID;
 
 import com.android.volley.Request;
@@ -32,16 +33,11 @@ public class PushNotificationService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         postDataUsingVolley(token);
-
-
-
-
     }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
-
 
         if (message.getNotification() != null) {
             String title = message.getNotification().getTitle();
@@ -79,7 +75,6 @@ public class PushNotificationService extends FirebaseMessagingService {
 
         JSONObject newToken = new JSONObject();
         try {
-            //input your API parameters
             newToken.put("userID", LoginPage.userID);
             newToken.put("registrationToken", token);
             newToken.put("jwt", LoginPage.accessToken);
@@ -90,8 +85,7 @@ public class PushNotificationService extends FirebaseMessagingService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        // Enter the correct url for your api service site
-        String url = Urls.URL +  "newRegistrationToken";
+        String url = Urls.URL + "newRegistrationToken";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, newToken,
                 new Response.Listener<JSONObject>() {
                     @Override
