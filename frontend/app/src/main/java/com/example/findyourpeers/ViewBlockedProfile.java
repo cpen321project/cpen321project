@@ -1,7 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +11,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -137,7 +137,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
                         PrivateChatActivity.class);
                 Log.d(TAG, "currentUserDisplayName: " + currentUserDisplayName);
                 Log.d(TAG, "otherDisplayName: " + otherDisplayName);
-                if (currentUserDisplayName.equals(otherDisplayName)) {
+                if (currentUserID.equals(userID)) {
                     Toast.makeText(ViewBlockedProfile.this,
                             "You cannot message yourself", Toast.LENGTH_SHORT).show();
                 } else {

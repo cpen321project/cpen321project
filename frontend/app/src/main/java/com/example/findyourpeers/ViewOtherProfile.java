@@ -1,8 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,7 +23,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.findyourpeers.LoginPage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -253,7 +252,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                 PrivateChatActivity.class);
         Log.d("ViewOtherProfile", "currentUserDisplayName: " + currentUserDisplayName1);
         Log.d("ViewOtherProfile", "otherdisplayname: " + otherdisplayname1);
-        if (currentUserDisplayName1.equals(otherdisplayname1)) {
+        if (currentUserID.equals(userID)) {
             Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
                     Toast.LENGTH_SHORT).show();
         } else {

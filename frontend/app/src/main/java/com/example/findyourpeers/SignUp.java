@@ -1,7 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -99,9 +99,18 @@ public class SignUp extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(SignUp.this, "Sending credentials failed: " + error, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, String.valueOf(error));
-//                Toast.makeText(SignUp.this, "Sending credentials failed", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Signup VolleyError error: " + error);
+                String errorResponse = new String(error.networkResponse.data);
+                String errorString = "Sending credentials failed"; // default error message
+                try {
+                    JSONObject errorJSON = new JSONObject(errorResponse);
+                    errorString = errorJSON.getString("result");
+                    Log.d(TAG, "Signup errorString: " + errorString);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(SignUp.this,
+                        errorString, Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonObjectRequest);

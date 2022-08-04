@@ -149,22 +149,6 @@ module.exports = {
 
     },
 
-    // getCourseList: async (req, res) => {
-    //     let tokenIsValid = await authUtils.validateAccessToken(req.params.jwt, req.params.userID)
-    //     if (!tokenIsValid) {
-    //         console.log("Token not validated")
-    //         return
-    //     }
-    //     await userCollection.find({ userID: req.params.userID }).project({ courselist: 1, _id: 0 }).toArray((err, resultcourse) => {
-    //         if (err) {
-    //             console.error("Error in getCourseList: " + err)
-    //             res.status(400).send(err)
-    //         } else {
-    //             res.status(200).json(resultcourse)
-    //         }
-    //     })
-    // },
-
     createProfile: async (req, res) => {
         let displayName = req.body.displayName
         let userID = req.body.userID
