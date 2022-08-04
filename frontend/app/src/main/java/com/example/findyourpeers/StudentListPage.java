@@ -139,7 +139,7 @@ public class StudentListPage extends AppCompatActivity {
 
         TextView studentName = (TextView) studentButtonView.findViewById(R.id.text_username);
         studentName.setText(displayName);
-        studentName.setTag("button-" + studentButtonCounter);
+        studentName.setTag("button-" + displayName);
         studentButtonCounter++;
         studentName.setOnClickListener(new View.OnClickListener() {
             @Override

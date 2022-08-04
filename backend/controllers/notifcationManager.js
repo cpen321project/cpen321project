@@ -20,15 +20,16 @@ module.exports = {
     // function to initiate the notification for when a user is added to a course
     _userAddedNotification: async (userID, courseID) => {
         // trying to get the the users in a course
-        let students = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray();
+        let students = await dbCourse.collection(courseID).find({}).project({ userID: 1, displayName: 1, _id: 0, notifyMe: 1 }).toArray();
 
         var take, regToken;
         let otherstudents = students.filter(data => data.userID != userID);
         theTokens = [];
-        otherstudents.forEach( async student => {
+        otherstudents.forEach( async courseStudent => {
+            let student = await userCollection.findOne({ userID: courseStudent.userID })
             if (student.notifyMe == "Yes")
             {
-            console.log("Student: "+ student.displayName)
+            // console.log("Student: "+ student.displayName)
             take = await userCollection.findOne({ userID: student.userID });
             console.log("Take= "+ take.displayName)
             regToken = take.registrationToken;
@@ -95,6 +96,7 @@ module.exports = {
     privateMessageNotification: async (senderName, receiverID) => {
         let resultstudent = await userCollection.findOne({ userID: receiverID }) 
         if (resultstudent.notifyMe == "No"){
+            console.log("User does not want to be notified " + resultstudent.displayName)
             return
         }
 
@@ -125,15 +127,18 @@ module.exports = {
 
     groupMessageNotification: async (senderName, groupID) => {
         var take, userToken
-        let resultstudents = await dbCourse.collection(groupID).find({}).project({ userID: 1, displayName: 1, _id: 0 }).toArray(); 
+        let resultstudents = await dbCourse.collection(groupID).find({}).toArray(); 
         
-        resultstudents.forEach( async (student) => {
+        resultstudents.forEach( async (courseStudent) => {
+            let student = await userCollection.findOne({ userID: courseStudent.userID })
             if (student.displayName == senderName) {
                 console.log("skipping coz it be sender " + senderName);
-                return;
+                return
             }
+            // console.log(student)
             if (student.notifyMe == "No"){
-                return;
+                console.log("User does not want to be notified " + student.displayName)
+                return
             }
             take = await userCollection.findOne({ userID: student.userID });
             console.log("Take= "+ take.displayName)

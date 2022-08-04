@@ -41,6 +41,7 @@ public class ProfilePage extends AppCompatActivity {
     private TextView coopTV;
     private TextView yearTV;
     public static String displayName;
+    private String courseNameDynamic;
     private ArrayList<String> courseListAL;
     ImageView editBtn;
     ImageView logoutBtn;
@@ -227,7 +228,7 @@ public class ProfilePage extends AppCompatActivity {
 
         Button courseBtn = (Button) courseButtonView.findViewById(R.id.coursename_button);
         courseBtn.setText(courseNameSingle);
-        courseBtn.setTag("button-" + courseButtonCounter);
+        courseBtn.setTag("button-" + courseNameSingle);
         //Log.d(TAG, courseNameSingle);
         courseButtonCounter++;
         courseBtn.setOnClickListener(new View.OnClickListener() {
@@ -265,7 +266,7 @@ public class ProfilePage extends AppCompatActivity {
                 removeView(courseButtonView);
             }
         });
-        delCourseBtn.setTag("cross-" + courseButtonCounter);
+        delCourseBtn.setTag("cross-" + courseNameSingle);
 
         layoutCourseButton.addView(courseButtonView);
     }

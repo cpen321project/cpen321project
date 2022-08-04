@@ -103,7 +103,7 @@ public class CreateProfile extends AppCompatActivity {
 
     private void postDataUsingVolley(String name, String coop, String yearstand) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-
+        String NotificationPreference = "Yes";
 //        PushNotificationService.krleTest("lauda");
 
         JSONObject newprofile = new JSONObject();
@@ -114,7 +114,7 @@ public class CreateProfile extends AppCompatActivity {
             newprofile.put("yearStanding", yearstand);
             newprofile.put("userID", userID);
             newprofile.put("registrationToken", token);
-            newprofile.put("notifyME", "Yes");
+            newprofile.put("notifyMe", NotificationPreference);
 
         } catch (JSONException e) {
             e.printStackTrace();

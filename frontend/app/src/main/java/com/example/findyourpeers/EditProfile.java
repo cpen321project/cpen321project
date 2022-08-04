@@ -93,6 +93,7 @@ public class EditProfile extends AppCompatActivity {
             updatedprofile.put("yearStanding", yearstand);
             updatedprofile.put("userID", userID);
             updatedprofile.put("jwt", LoginPage.accessToken);
+            updatedprofile.put("notifyMe", notificationPreference);
 
         } catch (JSONException e) {
             e.printStackTrace();
