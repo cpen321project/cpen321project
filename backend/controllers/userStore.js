@@ -214,7 +214,7 @@ module.exports = {
                 coopStatus,
                 yearStanding,
                 registrationToken,
-                notifyMe = req.body.notifyMe,
+                notifyMe,
                 courselist: courselistarr,
                 blockedUsers: blockeruserarr,
             },
