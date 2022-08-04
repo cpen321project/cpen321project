@@ -1,7 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +29,9 @@ public class EditProfile extends AppCompatActivity {
     public String displayNameStr;
     public String coopStatus;
     public String yearStanding;
+    public String notificationPreference;
     private EditText displayName;
+    private static final String TAG = "EditProfile";
 //    private ArrayList<String> studentCourseList;
 
     @Override
@@ -58,6 +60,12 @@ public class EditProfile extends AppCompatActivity {
         yearSpinner.setAdapter(yearAdapter);
         yearSpinner.setOnItemSelectedListener(new EditProfile.YearSpinnerClassEdit());
 
+        Spinner notificationSpinner = (Spinner) findViewById(R.id.notificationPreferenceSpinner);
+        ArrayAdapter<CharSequence> notificationAdapter = ArrayAdapter.createFromResource(this, R.array.notification_preferences, android.R.layout.simple_spinner_item);
+        notificationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        notificationSpinner.setAdapter(notificationAdapter);
+        notificationSpinner.setOnItemSelectedListener(new EditProfile.NotificationSpinnerClassEdit());
+
         Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +81,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
     }
+
 
 
     private void putDataUsingVolley(String name, String coop, String yearstand) {
@@ -136,6 +145,19 @@ public class EditProfile extends AppCompatActivity {
     private class YearSpinnerClassEdit implements AdapterView.OnItemSelectedListener {
         public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
             yearStanding = parent.getItemAtPosition(position).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            // do nothing
+        }
+    }
+
+    public class NotificationSpinnerClassEdit implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            notificationPreference = parent.getItemAtPosition(position).toString();
+            Log.d(TAG, "notification preference: " + notificationPreference);
         }
 
         @Override

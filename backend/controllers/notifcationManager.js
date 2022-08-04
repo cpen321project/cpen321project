@@ -26,6 +26,8 @@ module.exports = {
         let otherstudents = students.filter(data => data.userID != userID);
         theTokens = [];
         otherstudents.forEach( async student => {
+            if (student.notifyMe == "Yes")
+            {
             console.log("Student: "+ student.displayName)
             take = await userCollection.findOne({ userID: student.userID });
             console.log("Take= "+ take.displayName)
@@ -54,6 +56,7 @@ module.exports = {
                         console.log('Successfully sent message to a user : ' + student.userID);
                     }
                 });
+            }
         });
     },
     get userAddedNotification() {
@@ -91,6 +94,9 @@ module.exports = {
 
     privateMessageNotification: async (senderName, receiverID) => {
         let resultstudent = await userCollection.findOne({ userID: receiverID }) 
+        if (resultstudent.notifyMe == "No"){
+            return
+        }
 
         const message = {
             notification: { 
@@ -124,6 +130,9 @@ module.exports = {
         resultstudents.forEach( async (student) => {
             if (student.displayName == senderName) {
                 console.log("skipping coz it be sender " + senderName);
+                return;
+            }
+            if (student.notifyMe == "No"){
                 return;
             }
             take = await userCollection.findOne({ userID: student.userID });

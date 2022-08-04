@@ -114,6 +114,7 @@ public class CreateProfile extends AppCompatActivity {
             newprofile.put("yearStanding", yearstand);
             newprofile.put("userID", userID);
             newprofile.put("registrationToken", token);
+            newprofile.put("notifyME", "Yes");
 
         } catch (JSONException e) {
             e.printStackTrace();
