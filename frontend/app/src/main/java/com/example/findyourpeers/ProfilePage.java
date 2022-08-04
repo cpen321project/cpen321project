@@ -42,8 +42,8 @@ public class ProfilePage extends AppCompatActivity {
     private TextView yearTV;
     public static String displayName;
     private ArrayList<String> courseListAL;
-    private ImageView editBtn;
-    private ImageView logoutBtn;
+    ImageView editBtn;
+    ImageView logoutBtn;
     public Integer courseButtonCounter = 0;
 
     @Override

@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class getStudentsTests {
+public class GetStudentsTests {
     Instrumentation instr = InstrumentationRegistry.getInstrumentation();
     UiDevice device = UiDevice.getInstance(instr);
 

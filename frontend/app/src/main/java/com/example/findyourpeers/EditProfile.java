@@ -20,7 +20,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +32,7 @@ public class EditProfile extends AppCompatActivity {
     public String coopStatus;
     public String yearStanding;
     private EditText displayName;
-    private ArrayList<String> studentCourseList;
+//    private ArrayList<String> studentCourseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +41,8 @@ public class EditProfile extends AppCompatActivity {
 
         Intent intentEditProfile = getIntent();
         userID = intentEditProfile.getExtras().getString("userID");
-        studentCourseList =
-                (ArrayList<String>) intentEditProfile.getSerializableExtra("courselist");
+//        studentCourseList =
+//                (ArrayList<String>) intentEditProfile.getSerializableExtra("courselist");
 
         displayName = (EditText) findViewById(R.id.display_name_input_edit);
 

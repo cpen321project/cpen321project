@@ -2,7 +2,6 @@ package com.example.findyourpeers;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;

@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class ProfilePageTest {
-    private View decorView;
+
 //    Intent ProfilePageIntent = new Intent();
 //
 //    browseCourseIntent.putExtra("userID", "userID");
