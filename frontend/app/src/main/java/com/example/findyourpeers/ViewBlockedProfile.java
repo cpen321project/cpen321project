@@ -137,7 +137,7 @@ public class ViewBlockedProfile extends AppCompatActivity {
                         PrivateChatActivity.class);
                 Log.d(TAG, "currentUserDisplayName: " + currentUserDisplayName);
                 Log.d(TAG, "otherDisplayName: " + otherDisplayName);
-                if (currentUserDisplayName.equals(otherDisplayName)) {
+                if (currentUserID.equals(userID)) {
                     Toast.makeText(ViewBlockedProfile.this,
                             "You cannot message yourself", Toast.LENGTH_SHORT).show();
                 } else {

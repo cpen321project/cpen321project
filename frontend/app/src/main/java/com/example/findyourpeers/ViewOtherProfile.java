@@ -253,7 +253,7 @@ public class ViewOtherProfile extends AppCompatActivity {
                 PrivateChatActivity.class);
         Log.d("ViewOtherProfile", "currentUserDisplayName: " + currentUserDisplayName1);
         Log.d("ViewOtherProfile", "otherdisplayname: " + otherdisplayname1);
-        if (currentUserDisplayName1.equals(otherdisplayname1)) {
+        if (currentUserID.equals(userID)) {
             Toast.makeText(ViewOtherProfile.this, "You cannot message yourself",
                     Toast.LENGTH_SHORT).show();
         } else {
