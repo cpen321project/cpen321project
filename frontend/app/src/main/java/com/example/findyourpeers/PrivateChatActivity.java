@@ -24,9 +24,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -84,6 +93,13 @@ public class PrivateChatActivity extends AppCompatActivity {
                         new Response.Listener<JSONArray>() {
                             @Override
                             public void onResponse(JSONArray response) {
+                                SecretKey key = null;
+                                try {
+                                    key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+                                } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                }
+
                                 JSONArray msgsArray = new JSONArray();
                                 msgsArray = response;//.getJSONArray("retrievedMsgs");
                                 for (int i = 0; i < msgsArray.length(); i++) {
@@ -93,10 +109,11 @@ public class PrivateChatActivity extends AppCompatActivity {
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
                                         Log.d("PrivateChatActivity", "message: " + message);
+                                        String decryptedMsg = Crypto.decrypt(message, key);
 
-                                        Message m = new Message(nickname, message);
+                                        Message m = new Message(nickname, decryptedMsg);
                                         MessageList.add(m);
-                                    } catch (JSONException e) {
+                                    } catch (JSONException | NoSuchPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -141,10 +158,23 @@ public class PrivateChatActivity extends AppCompatActivity {
                     Toast.makeText(PrivateChatActivity.this,
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
+                    String encryptedMsg = null;
+                    SecretKey key = null;
+                    try {
+                        key = Crypto.generateSecretKeyBasedonChatId(receiverID + senderID, "3");
+                    } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), key);
+                    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
                     socket.emit("privateMessage",
                             senderID,
                             receiverID,
-                            messageTxt.getText().toString(),
+                            encryptedMsg,
                             isBlocked);
 
                     String nickname = senderName;
@@ -171,14 +201,21 @@ public class PrivateChatActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
+                        SecretKey key = null;
+                        try {
+                            key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+                        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        }
                         try {
                             String nickname = data.getString("senderNickname");
 
                             // only show the message if we're currently talking to that person
                             if (nickname.equals(receiverName)) {
                                 String message = data.getString("message");
+                                String decryptedMsg = Crypto.decrypt(message, key);
 
-                                Message m = new Message(nickname, message);
+                                Message m = new Message(nickname, decryptedMsg);
                                 MessageList.add(m);
 
                                 // add the new updated list to the adapter
@@ -188,7 +225,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                                 chatBoxAdapter.notifyDataSetChanged();
                                 myRecyclerView.setAdapter(chatBoxAdapter);
                             }
-                        } catch (JSONException e) {
+                        } catch (JSONException | NoSuchPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
                             e.printStackTrace();
                         }
                     }
