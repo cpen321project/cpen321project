@@ -87,15 +87,6 @@ public class PrivateChatActivity extends AppCompatActivity {
         mLayoutManager.setStackFromEnd(true);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         myRecyclerView.setAdapter(chatBoxAdapter);
-        SecretKey key = null;
-        try {
-            key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        SecretKey finalKey = key;
 
 
         String serverIP = "10.0.2.2";
@@ -152,6 +143,14 @@ public class PrivateChatActivity extends AppCompatActivity {
                         new Response.Listener<JSONArray>() {
                             @Override
                             public void onResponse(JSONArray response) {
+                                SecretKey key = null;
+                                    try {
+                                        key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+                                    } catch (InvalidKeySpecException ex) {
+                                        ex.printStackTrace();
+                                    } catch (NoSuchAlgorithmException ex) {
+                                        ex.printStackTrace();
+                                    }
                                 JSONArray msgsArray = new JSONArray();
                                 msgsArray = response;//.getJSONArray("retrievedMsgs");
                                 for (int i = 0; i < msgsArray.length(); i++) {
@@ -160,7 +159,7 @@ public class PrivateChatActivity extends AppCompatActivity {
 
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
-                                        String decryptedMsg = Crypto.decrypt(message, finalKey);
+                                        String decryptedMsg = Crypto.decrypt(message, key);
                                         Log.d("PrivateChatActivity", "message: " + decryptedMsg);
 
                                         Message m = new Message(nickname, decryptedMsg);
@@ -211,8 +210,16 @@ public class PrivateChatActivity extends AppCompatActivity {
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
                     String encryptedMsg = null;
+                    SecretKey key = null;
                     try {
-                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), finalKey);
+                        key = Crypto.generateSecretKeyBasedonChatId(receiverID + senderID, "3");
+                    } catch (InvalidKeySpecException ex) {
+                        ex.printStackTrace();
+                    } catch (NoSuchAlgorithmException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), key);
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     } catch (IllegalBlockSizeException e) {
@@ -265,7 +272,16 @@ public class PrivateChatActivity extends AppCompatActivity {
                                 String message = data.getString("message");
                                 Log.d("show up on the screen", message);
 
-                                String decryptedMsg = Crypto.decrypt(message, finalKey);
+                                SecretKey key = null;
+                                try {
+                                    key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+                                } catch (InvalidKeySpecException ex) {
+                                    ex.printStackTrace();
+                                } catch (NoSuchAlgorithmException ex) {
+                                    ex.printStackTrace();
+                                }
+
+                                String decryptedMsg = Crypto.decrypt(message, key);
 
                                 Message m = new Message(nickname, decryptedMsg);
                                 MessageList.add(m);

@@ -34,10 +34,11 @@ public class Crypto {
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] cipherText = cipher.doFinal(input.getBytes("UTF-8"));
         String encryptedText = Base64.getEncoder().encodeToString(cipherText);
+        decrypt(encryptedText, key);
         return encryptedText;
     }
 
-    public static String decrypt(String cipherText, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException {
+    public static String decrypt(String cipherText, SecretKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException {
         Log.d("decrypting a message", cipherText);
         if (cipherText == null)
             return " ";
@@ -45,7 +46,7 @@ public class Crypto {
         Log.d("decrypting a message", cipherText);
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] plainText = cipher.doFinal(cipherText.getBytes());
+        byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(cipherText));
         return new String(plainText, "UTF-8");
     }
 }
