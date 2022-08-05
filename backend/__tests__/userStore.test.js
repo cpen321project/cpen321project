@@ -419,13 +419,13 @@ describe("userStore tests", () => {
         let userID = "validUserIDcreate"
         let coopStatus = "Yes"
         let yearStanding = "1"
-        let registrationToken = "sometoken"
+        let registrationToken = "sometoken"; let notifyMe = "No"
         await request(app).post("/createprofile").send({
             displayName,
             userID,
             coopStatus,
             yearStanding,
-            registrationToken
+            registrationToken, notifyMe
         })
             .expect(200)
         jest.setTimeout(30000);
@@ -1073,7 +1073,7 @@ describe("userStore tests", () => {
         let userID = "validUserID6"
         let coopStatus = "Yes"
         let yearStanding = "1"
-        let jwt = "validJWT6"
+        let jwt = "validJWT6"; let notifyMe = "No"
 
         // delete user if it exists 
         //await userCollection.deleteOne({ userID })
@@ -1086,7 +1086,7 @@ describe("userStore tests", () => {
             yearStanding,
             registrationToken: "regToken",
             courselist: [],
-            blockedUsers: [],
+            blockedUsers: [], notifyMe
         })
 
         await userCollection.updateOne({ userID }, { $push: { "courselist": "INDO 100" } })
@@ -1101,7 +1101,7 @@ describe("userStore tests", () => {
             userID,
             coopStatus,
             yearStanding,
-            jwt
+            jwt, notifyMe
         })
             .expect(200).then(userCollection.deleteOne({ userID })).then(dbCourse.collection("INDO 100").deleteOne({ userID }))
         jest.setTimeout(30000);
@@ -1124,8 +1124,8 @@ describe("userStore tests", () => {
             yearStanding,
             jwt
         })
-            .expect(400)
-        jest.setTimeout(30000);
+            .expect('"null parameter"');//.expect(400)
+        // jest.setTimeout(30000);
 
         // await userCollection.deleteOne({ userID })
         // await dbCourse.collection("INDO 100").deleteOne({ userID })
