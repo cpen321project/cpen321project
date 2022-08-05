@@ -23,9 +23,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -51,6 +60,13 @@ public class ChatActivity extends AppCompatActivity {
         groupID = getIntent().getExtras().getString("coursename");
         String userID = getIntent().getExtras().getString("userID");
 
+        SecretKey key = null;
+        try {
+            key = Crypto.generateSecretKeyBasedonChatId(groupID, "3");
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         //https://medium.com/@mohamedaymen.ourabi11/creating-a-realtime-chat-app-with-android-nodejs-and-socket-io-1050bc20c70
 
         messageTxt = (EditText) findViewById(R.id.message);
@@ -71,6 +87,7 @@ public class ChatActivity extends AppCompatActivity {
                 + userID + "/" + LoginPage.accessToken;
 
         // Request a string response from the provided URL.
+        SecretKey finalKey = key;
         JsonArrayRequest jsonArrayRequest =
                 new JsonArrayRequest(Request.Method.GET, url, null,
                         new Response.Listener<JSONArray>() {
@@ -90,9 +107,11 @@ public class ChatActivity extends AppCompatActivity {
                                         Log.d(TAG, "nickname: " + nickname);
                                         Log.d(TAG, "message: " + message);
 
-                                        Message m = new Message(nickname, message);
+                                        String decryptedMsg = Crypto.decrypt(message, finalKey);
+
+                                        Message m = new Message(nickname, decryptedMsg);
                                         MessageList.add(m);
-                                    } catch (JSONException e) {
+                                    } catch (JSONException | NoSuchPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -133,11 +152,17 @@ public class ChatActivity extends AppCompatActivity {
                     Toast.makeText(ChatActivity.this,
                             "Cannot send empty message", Toast.LENGTH_SHORT).show();
                 } else {
+                    String encryptedMsg = null;
+                    try {
+                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), finalKey);
+                    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     socket.emit("groupMessage",
                             groupID,
                             userID,
                             Nickname,
-                            messageTxt.getText().toString());
+                            encryptedMsg);
 
                     messageTxt.setText("");
 
@@ -157,10 +182,12 @@ public class ChatActivity extends AppCompatActivity {
                             String nickname = data.getString("senderNickname");
                             String message = data.getString("message");
 
-                            Message m = new Message(nickname, message);
+                            String decryptedMsg = Crypto.decrypt(message, finalKey);
+
+                            Message m = new Message(nickname, decryptedMsg);
                             MessageList.add(m);
 
-                        } catch (JSONException e) {
+                        } catch (JSONException | NoSuchPaddingException | UnsupportedEncodingException | NoSuchAlgorithmException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException e) {
                             e.printStackTrace();
                         }
                         // add the new updated list to the adapter
