@@ -41,7 +41,6 @@ public class ProfilePage extends AppCompatActivity {
     private TextView coopTV;
     private TextView yearTV;
     public static String displayName;
-    private String courseNameDynamic;
     private ArrayList<String> courseListAL;
     ImageView editBtn;
     ImageView logoutBtn;

@@ -1,5 +1,6 @@
 package com.example.findyourpeers;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -95,13 +96,13 @@ public class PrivateChatActivity extends AppCompatActivity {
                             public void onResponse(JSONArray response) {
                                 SecretKey key = null;
                                 try {
-                                    key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+                                    key = CryptoUtils.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
                                 } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
                                     e.printStackTrace();
                                 }
 
                                 JSONArray msgsArray = new JSONArray();
-                                msgsArray = response;//.getJSONArray("retrievedMsgs");
+                                msgsArray = response;
                                 for (int i = 0; i < msgsArray.length(); i++) {
                                     try {
                                         JSONObject msg = msgsArray.getJSONObject(i);
@@ -109,7 +110,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                                         String nickname = msg.getString("senderName");
                                         String message = msg.getString("messageContent");
                                         Log.d("PrivateChatActivity", "message: " + message);
-                                        String decryptedMsg = Crypto.decrypt(message, key);
+                                        String decryptedMsg = CryptoUtils.decrypt(message, key);
 
                                         Message m = new Message(nickname, decryptedMsg);
                                         MessageList.add(m);
@@ -130,7 +131,6 @@ public class PrivateChatActivity extends AppCompatActivity {
                     }
                 });
 
-        // Add the request to the RequestQueue.
         queue.add(jsonArrayRequest);
 
         // connect socket client to the server
@@ -158,18 +158,7 @@ public class PrivateChatActivity extends AppCompatActivity {
                     Toast.makeText(PrivateChatActivity.this,
                             "Blocked", Toast.LENGTH_SHORT).show();
                 } else {
-                    String encryptedMsg = null;
-                    SecretKey key = null;
-                    try {
-                        key = Crypto.generateSecretKeyBasedonChatId(receiverID + senderID, "3");
-                    } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), key);
-                    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    String encryptedMsg = getEncryptedMsg();
 
                     socket.emit("privateMessage",
                             senderID,
@@ -203,28 +192,14 @@ public class PrivateChatActivity extends AppCompatActivity {
                         JSONObject data = (JSONObject) args[0];
                         SecretKey key = null;
                         try {
-                            key = Crypto.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
+                            key = CryptoUtils.generateSecretKeyBasedonChatId(senderID + receiverID, "3");
                         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
                             e.printStackTrace();
                         }
                         try {
                             String nickname = data.getString("senderNickname");
-
                             // only show the message if we're currently talking to that person
-                            if (nickname.equals(receiverName)) {
-                                String message = data.getString("message");
-                                String decryptedMsg = Crypto.decrypt(message, key);
-
-                                Message m = new Message(nickname, decryptedMsg);
-                                MessageList.add(m);
-
-                                // add the new updated list to the adapter
-                                // notify the adapter to update the recycler view
-                                // set the adapter for the recycler view
-                                chatBoxAdapter = new ChatBoxAdapter(MessageList);
-                                chatBoxAdapter.notifyDataSetChanged();
-                                myRecyclerView.setAdapter(chatBoxAdapter);
-                            }
+                            decryptAndShowMessage(data, key, nickname);
                         } catch (JSONException | NoSuchPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
                             e.printStackTrace();
                         }
@@ -232,5 +207,39 @@ public class PrivateChatActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Nullable
+    private String getEncryptedMsg() {
+        String encryptedMsg = null;
+        SecretKey key = null;
+        try {
+            key = CryptoUtils.generateSecretKeyBasedonChatId(receiverID + senderID, "3");
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            encryptedMsg = CryptoUtils.encrypt(messageTxt.getText().toString(), key);
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return encryptedMsg;
+    }
+
+    private void decryptAndShowMessage(JSONObject data, SecretKey key, String nickname) throws JSONException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException {
+        if (nickname.equals(receiverName)) {
+            String message = data.getString("message");
+            String decryptedMsg = CryptoUtils.decrypt(message, key);
+
+            Message m = new Message(nickname, decryptedMsg);
+            MessageList.add(m);
+
+            // add the new updated list to the adapter
+            // notify the adapter to update the recycler view
+            // set the adapter for the recycler view
+            chatBoxAdapter = new ChatBoxAdapter(MessageList);
+            chatBoxAdapter.notifyDataSetChanged();
+            myRecyclerView.setAdapter(chatBoxAdapter);
+        }
     }
 }

@@ -62,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
 
         SecretKey key = null;
         try {
-            key = Crypto.generateSecretKeyBasedonChatId(groupID, "3");
+            key = CryptoUtils.generateSecretKeyBasedonChatId(groupID, "3");
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
                                         Log.d(TAG, "nickname: " + nickname);
                                         Log.d(TAG, "message: " + message);
 
-                                        String decryptedMsg = Crypto.decrypt(message, finalKey);
+                                        String decryptedMsg = CryptoUtils.decrypt(message, finalKey);
 
                                         Message m = new Message(nickname, decryptedMsg);
                                         MessageList.add(m);
@@ -154,7 +154,7 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     String encryptedMsg = null;
                     try {
-                        encryptedMsg = Crypto.encrypt(messageTxt.getText().toString(), finalKey);
+                        encryptedMsg = CryptoUtils.encrypt(messageTxt.getText().toString(), finalKey);
                     } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -182,7 +182,7 @@ public class ChatActivity extends AppCompatActivity {
                             String nickname = data.getString("senderNickname");
                             String message = data.getString("message");
 
-                            String decryptedMsg = Crypto.decrypt(message, finalKey);
+                            String decryptedMsg = CryptoUtils.decrypt(message, finalKey);
 
                             Message m = new Message(nickname, decryptedMsg);
                             MessageList.add(m);
