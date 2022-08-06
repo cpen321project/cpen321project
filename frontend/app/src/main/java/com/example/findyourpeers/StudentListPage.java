@@ -35,7 +35,6 @@ public class StudentListPage extends AppCompatActivity {
     String currentUserID;
     TextView titleCourse;
     ArrayList<String> courseList;
-    private Integer studentButtonCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,8 +138,7 @@ public class StudentListPage extends AppCompatActivity {
 
         TextView studentName = (TextView) studentButtonView.findViewById(R.id.text_username);
         studentName.setText(displayName);
-        studentName.setTag("button-" + studentButtonCounter);
-        studentButtonCounter++;
+        studentName.setTag("button-" + displayName);
         studentName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,7 +1,5 @@
 package com.example.findyourpeers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,10 +23,10 @@ import org.json.JSONObject;
 
 public class SignUp extends AppCompatActivity {
 
-    private static String TAG = "SignUp";
     private EditText emailSU;
     private EditText usernameSU;
     private EditText passwordSU;
+    private static String TAG = "SignUp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +46,12 @@ public class SignUp extends AppCompatActivity {
                 String passwordStr = passwordSU.getText().toString();
 
                 if (emailStr.isEmpty() || usernameStr.isEmpty() || passwordStr.isEmpty()) {
-                    Toast.makeText(SignUp.this,
-                            "Please enter all fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUp.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 postSignUpData(emailStr, usernameStr, passwordStr);
+
             }
         });
 
@@ -62,12 +62,14 @@ public class SignUp extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject signUpData = new JSONObject();
         try {
-            signUpData.put("email", emailStr);
-            signUpData.put("password", passwordStr);
+            //input your API parameters
+            signUpData.put("email",emailStr);
+            signUpData.put("password",passwordStr);
             signUpData.put("username", usernameStr);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        // Enter the correct url for your api service site
         String url = Urls.URL + "signup";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, signUpData,
                 new Response.Listener<JSONObject>() {
@@ -78,14 +80,12 @@ public class SignUp extends AppCompatActivity {
                         try {
                             success = response.getString("success");
                             result = response.getString("result");
-                            Log.d("SignUp", "success? : " + success);
+                            Log.d("SignUp", "success? : "+success);
                             if (success.equals("false")) {
                                 Toast.makeText(SignUp.this, result, Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(SignUp.this,
-                                        "Credentials sent successfully", Toast.LENGTH_SHORT).show();
-                                Intent enterCodeIntent =
-                                        new Intent(SignUp.this, EnterCode.class);
+                                Toast.makeText(SignUp.this, "Credentials sent successfully", Toast.LENGTH_SHORT).show();
+                                Intent enterCodeIntent = new Intent(SignUp.this, EnterCode.class);
                                 enterCodeIntent.putExtra("email", emailStr);
                                 enterCodeIntent.putExtra("password", passwordStr);
                                 enterCodeIntent.putExtra("username", usernameStr);

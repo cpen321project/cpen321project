@@ -155,6 +155,7 @@ module.exports = {
         let coopStatus = req.body.coopStatus
         let yearStanding = req.body.yearStanding
         let registrationToken = req.body.registrationToken
+        let notifyMe = req.body.notifyMe;
 
         if (displayName === null || userID === null || coopStatus === null || yearStanding === null || registrationToken === null) {
             console.log("null parameter")
@@ -182,8 +183,14 @@ module.exports = {
             return res.status(400).json("year standing invalid")
         }
 
+        if (!(notifyMe == "Yes" || notifyMe == "No")) {
+            console.log("Invalid notification preference")
+            return res.status(400).json("Invalid notification preference")
+        }
+
         var courselistarr = []
         var blockeruserarr = []
+
         userCollection.insertOne(
             {
                 displayName,
@@ -191,6 +198,7 @@ module.exports = {
                 coopStatus,
                 yearStanding,
                 registrationToken,
+                notifyMe,
                 courselist: courselistarr,
                 blockedUsers: blockeruserarr,
             },
@@ -301,6 +309,7 @@ module.exports = {
         let coopStatus = req.body.coopStatus
         let yearStanding = req.body.yearStanding
         let jwt = req.body.jwt
+        let notifyMe = req.body.notifyMe
 
         if(displayName === null|| userID === null || coopStatus === null || yearStanding === null|| jwt === null){
             console.log("null parameter")
@@ -326,6 +335,11 @@ module.exports = {
         if (!(yearStanding == "1" || yearStanding == "2" || yearStanding == "3" || yearStanding == "4" || yearStanding == "5")) {
             console.log("year standing invalid")
             return res.status(400).json("year standing invalid")
+        }
+
+        if(!(notifyMe == "Yes" || notifyMe == "No")){
+            console.log("Invalid notification preference")
+            return res.status(400).json("Invalid notification preference")
         }
 
         let tokenIsValid = await authUtils.validateAccessToken(jwt, userID)

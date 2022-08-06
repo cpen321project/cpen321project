@@ -8,6 +8,17 @@
     android:gravity="center"
     tools:context=".EditProfile">
 
+    <Spinner
+        android:id="@+id/notificationPreferenceSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/notificationPrefenceEdit"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="@string/notifcationEdit" />
+
     <TextView
         android:id="@+id/edit_profile_title"
         android:layout_width="match_parent"
@@ -94,9 +105,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/spinner_coop_edit"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="141dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="@color/ubc_darkblue"
         android:text="Save Changes"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/notificationPrefenceEdit"
+        android:layout_width="327dp"
+        android:layout_height="24dp"
+        android:layout_below="@+id/spinner_coop_edit"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="69dp"
+        android:text="@string/notifcationEdit" />
+
 </RelativeLayout>
