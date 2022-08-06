@@ -45,8 +45,8 @@ public class CreateProfileTest {
                             protected Intent getActivityIntent() {
                                 Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
                                 Intent result = new Intent(targetContext, CreateProfile.class);
-                                result.putExtra("username", "ronydhir9");
-                                result.putExtra("userID", "a321c492-7ec9-4a02-b030-c4272084ce5f");
+                                result.putExtra("username", "drpeppers");
+                                result.putExtra("userID", "14f074b8-9527-42cc-a92e-b3a900c4b60e");
                                 return result;
                             }
                         };
@@ -74,11 +74,6 @@ public class CreateProfileTest {
                         isDisplayed()));
         materialButton4.perform(click());
 
-//        Thread.sleep(1000);
-//                    onView(withText("Sign up failed"))
-//                            .inRoot(withDecorView(not(decorView)))// Here we use decorView
-//                            .check(matches(isDisplayed()))
-
         onView(withText("Sign up failed")).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
 
@@ -90,7 +85,7 @@ public class CreateProfileTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText6.perform(replaceText("John"), closeSoftKeyboard());
+        appCompatEditText6.perform(replaceText("Dr Peppers"), closeSoftKeyboard());
 
         ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.register_button), withText("Register"),
@@ -112,7 +107,7 @@ public class CreateProfileTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText7.perform(replaceText("john"), closeSoftKeyboard());
+        appCompatEditText7.perform(replaceText("drpeppers"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText8 = onView(
                 allOf(withId(R.id.password_login),
@@ -122,7 +117,7 @@ public class CreateProfileTest {
                                         0),
                                 2),
                         isDisplayed()));
-        appCompatEditText8.perform(replaceText("John123??"), closeSoftKeyboard());
+        appCompatEditText8.perform(replaceText("Dhir123!"), closeSoftKeyboard());
 
         ViewInteraction materialButton6 = onView(
                 allOf(withId(R.id.button_login), withText("Login"),
@@ -137,10 +132,10 @@ public class CreateProfileTest {
                     Thread.sleep(4000);
 
                     ViewInteraction textView = onView(
-                allOf(withId(R.id.textView_displayname), withText("Display name: John"),
+                allOf(withId(R.id.textView_displayname), withText("Display name: Dr Peppers"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        textView.check(matches(withText("Display name: John")));
+        textView.check(matches(withText("Display name: Dr Peppers")));
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.textView_yearstanding), withText("I am in year 1"),

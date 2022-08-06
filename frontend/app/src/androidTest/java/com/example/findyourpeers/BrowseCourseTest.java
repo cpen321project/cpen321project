@@ -32,18 +32,15 @@ public class BrowseCourseTest {
     @Rule
     public ActivityScenarioRule<LoginPage> mBrowseCourseTest =
             new ActivityScenarioRule<LoginPage>(LoginPage.class);
-//    @Before
-//    public void idleIt(){
-//        IdlingRegistry.getInstance().register();
-//    }
+
 
     @Test
     public void browseCoursePageTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("cutenames"));
+                .perform(typeText("flyinghamster"));
         onView(withId(R.id.password_login))
-                .perform(typeText("Dhir123!"));
+                .perform(typeText("Rilto123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/find_course_button")),5000);
@@ -68,9 +65,9 @@ public class BrowseCourseTest {
     public void browseCoursePageCancelTest() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("cutenames"));
+                .perform(typeText("flyinghamster"));
         onView(withId(R.id.password_login))
-                .perform(typeText("Dhir123!"));
+                .perform(typeText("Rilto123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/find_course_button")),5000);
@@ -79,7 +76,7 @@ public class BrowseCourseTest {
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/edit_text_course")),1000);
         onView(withId(R.id.edit_text_course))
-                .perform(typeText("CPSC 22"));
+                .perform(typeText("CPSC 12"));
         onView(withId(R.id.dropdown_button))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursenameTV")),3000);
@@ -95,9 +92,9 @@ public class BrowseCourseTest {
     public void browseCourseRandomText() throws Exception {
 
         onView(withId(R.id.username_login))
-                .perform(typeText("cutenames"));
+                .perform(typeText("flyinghamster"));
         onView(withId(R.id.password_login))
-                .perform(typeText("Dhir123!"));
+                .perform(typeText("Rilto123!"));
         onView(withId(R.id.button_login))
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/find_course_button")),5000);
@@ -111,15 +108,11 @@ public class BrowseCourseTest {
                 .perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursenameTV")),3000);
         device.pressBack();
-//        onView(withId(R.id.layout_courses_browse))
-//                .perform(click());
-//        device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursenameTV")),3000);
-//        onView(withText("Cancel")).perform(click());
-//        device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursenameTV")),3000);
+
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/my_profile")),1000);
         onView(withId(R.id.my_profile))
                 .perform(click());
-//        onView(withText("My Profile")).perform(click());
+
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursenameTV")),4000);
         onView(allOf(withTagValue(is((Object) "cross-CPSC 221")), isDisplayed())).perform(click());
         device.wait(Until.findObject(By.res("com.example.findyourpeers:id/coursenameTV")),3000);
